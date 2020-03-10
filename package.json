@@ -20,7 +20,10 @@
 		"lint-js": "eslint './*.js' 'src/**/*.js?(x)'",
 		"format-js": "npm run lint-js -- --fix",
 		"lint-scss": "stylelint 'src/**/*.scss' --syntax scss",
-		"format-scss": "npm run lint-scss -- --fix"
+		"format-scss": "npm run lint-scss -- --fix",
+		"lint-php": "composer run-script lint",
+		"format-php": "composer run-script format"
+
 	},
 	"dependencies": {
 		"@wordpress/eslint-plugin": "^4.0.0"
