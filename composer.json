@@ -1,0 +1,38 @@
+{
+	"name": "cyrale/block-manager-for-block-editor",
+	"version": "1.0.0",
+	"description": "",
+	"keywords": [
+		"WordPress",
+		"wordpress-plugin",
+		"editor"
+	],
+	"homepage": "https://github.com/cyrale/block-manager-for-block-editor",
+	"license": "GPL-2.0-or-later",
+	"support": {
+		"issues": "https://github.com/cyrale/block-manager-for-block-editor/issues",
+		"source": "https://github.com/cyrale/block-manager-for-block-editor"
+	},
+	"type": "wordpress-plugin",
+	"scripts": {
+		"format": "phpcbf --standard=phpcs.xml --report-summary --report-source",
+		"lint": "phpcs --standard=phpcs.xml"
+	},
+	"require": {
+		"composer/installers": "~1.0"
+	},
+	"require-dev": {
+		"dealerdirect/phpcodesniffer-composer-installer": "^0.6.2",
+		"phpcompatibility/php-compatibility": "^9.3",
+		"sirbrillig/phpcs-variable-analysis": "^2.8",
+		"squizlabs/php_codesniffer": "^3.5",
+		"wp-coding-standards/wpcs": "^2.2"
+	},
+	"config": {
+		"optimize-autoloader": true,
+		"preferred-install": "dist",
+		"sort-packages": true
+	},
+	"minimum-stability": "dev",
+	"prefer-stable": true
+}

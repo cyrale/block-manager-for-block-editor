@@ -1,0 +1,83 @@
+{
+	"name": "block-manager-for-block-editor",
+	"title": "Block Manager for WordPress Block Editor (Gutenberg)",
+	"version": "1.0.0",
+	"description": "",
+	"keywords": [
+		"WordPress",
+		"wordpress-plugin",
+		"editor"
+	],
+	"homepage": "https://github.com/cyrale/block-manager-for-block-editor#readme",
+	"repository": "https://github.com/cyrale/block-manager-for-block-editor",
+	"bugs": {
+		"url": "https://github.com/cyrale/block-manager-for-block-editor/issue"
+	},
+	"license": "GPL-2.0-or-later",
+	"scripts": {
+		"build": "webpack --mode production",
+		"watch": "webpack --mode development --watch --progress",
+		"lint-js": "eslint './*.js' 'src/**/*.js?(x)'",
+		"format-js": "npm run lint-js -- --fix",
+		"lint-scss": "stylelint 'src/**/*.scss' --syntax scss",
+		"format-scss": "npm run lint-scss -- --fix"
+	},
+	"dependencies": {
+		"@wordpress/eslint-plugin": "^4.0.0"
+	},
+	"devDependencies": {
+		"@babel/core": "^7.8.7",
+		"@babel/plugin-proposal-class-properties": "^7.8.3",
+		"@babel/plugin-proposal-object-rest-spread": "^7.8.3",
+		"@babel/plugin-syntax-async-generators": "^7.8.4",
+		"@babel/plugin-transform-react-jsx": "^7.8.3",
+		"@babel/plugin-transform-runtime": "^7.8.3",
+		"@babel/preset-env": "^7.8.7",
+		"autoprefixer": "^9.7.4",
+		"babel-eslint": "^10.1.0",
+		"babel-loader": "^8.0.6",
+		"clean-webpack-plugin": "^3.0.0",
+		"css-loader": "^3.4.2",
+		"eslint": "^6.8.0",
+		"eslint-plugin-jest": "^23.8.2",
+		"eslint-plugin-jsx-a11y": "^6.2.3",
+		"eslint-plugin-react": "^7.19.0",
+		"fibers": "^4.0.2",
+		"husky": "^4.2.3",
+		"lint-staged": "^10.0.8",
+		"lodash": "^4.17.15",
+		"mini-css-extract-plugin": "^0.9.0",
+		"optimize-css-assets-webpack-plugin": "^5.0.3",
+		"postcss-loader": "^3.0.0",
+		"prettier": "npm:wp-prettier@^1.19.1",
+		"raw-loader": "^4.0.0",
+		"resolve-url-loader": "^3.1.1",
+		"sass": "^1.26.2",
+		"sass-loader": "^8.0.2",
+		"stylelint": "^12.0.1",
+		"stylelint-config-wordpress": "^16.0.0",
+		"terser-webpack-plugin": "^2.3.5",
+		"typescript": "^3.8.3",
+		"webpack": "^4.42.0",
+		"webpack-cli": "^3.3.11"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
+	},
+	"lint-staged": {
+		"./*.js,src/**/*.js": [
+			"eslint --fix",
+			"eslint"
+		],
+		"src/**/*.scss": [
+			"stylelint --fix --syntax scss",
+			"stylelint --syntax scss"
+		],
+		"*.php": [
+			"composer run-script format",
+			"composer run-script lint"
+		]
+	}
+}
