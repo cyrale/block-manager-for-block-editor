@@ -1,5 +1,3 @@
-const path = require( 'path' );
-
 const merge = require( 'lodash/merge' );
 const MiniCssExtractPlugin = require( 'mini-css-extract-plugin' );
 const TerserPlugin = require( 'terser-webpack-plugin' );
@@ -13,31 +11,7 @@ const externals = require( './config/externals' );
 module.exports = ( env, options ) => {
 	const mode = options.mode || process.env.NODE_ENV || 'production';
 
-	let optimization = {
-		splitChunks: {
-			cacheGroups: {
-				admin: {
-					name: 'admin',
-					test: /admin\.scss$/,
-					chunks: 'all',
-					enforce: true,
-				},
-				editor: {
-					name: 'editor',
-					test: /editor\.scss$/,
-					chunks: 'all',
-					enforce: true,
-				},
-				front: {
-					name: 'front',
-					test: /front\.scss$/,
-					chunks: 'all',
-					enforce: true,
-				},
-			},
-			chunks: 'all',
-		},
-	};
+	let optimization = {};
 
 	if ( mode === 'production' ) {
 		optimization = merge( {}, optimization, {
@@ -127,16 +101,9 @@ module.exports = ( env, options ) => {
 		plugins: [
 			new CleanWebpackPlugin( {
 				cleanOnceBeforeBuildPatterns: [ paths.pluginDist ],
-				cleanAfterEveryBuildPatterns: [
-					path.resolve( paths.pluginDist, './**/*.js' ),
-					'!' + path.resolve( paths.pluginDist, './**/*.build.js' ),
-					path.resolve( paths.pluginDist, './**/*.js.map' ),
-					'!' +
-						path.resolve( paths.pluginDist, './**/*.build.js.map' ),
-				],
 			} ),
 			new MiniCssExtractPlugin( {
-				filename: '[name].build.css',
+				filename: '[name].css',
 			} ),
 		],
 		stats: 'minimal',
