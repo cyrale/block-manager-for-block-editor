@@ -50,20 +50,20 @@ class Front {
 	 */
 	public function enqueue_front_assets() {
 		wp_enqueue_script(
-			'bmfbe-admin',
+			'bmfbe-front',
 			$this->plugin->url . 'dist/front.build.js',
 			array( 'jquery' ),
 			substr( sha1( filemtime( $this->plugin->path . 'dist/front.build.js' ) ), 0, 8 ),
 			true
 		);
 		wp_localize_script(
-			'bmfbe-admin',
+			'bmfbe-front',
 			'bmfbeFrontGlobal',
 			array()
 		);
 
 		wp_enqueue_style(
-			'bmfbe-admin',
+			'bmfbe-front',
 			$this->plugin->url . 'dist/front.build.css',
 			array(),
 			substr( sha1( filemtime( $this->plugin->path . 'dist/front.build.css' ) ), 0, 8 )
