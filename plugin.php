@@ -150,7 +150,7 @@ final class Plugin {
 		$this->admin  = new Admin( $this );
 		$this->common = new Common( $this );
 		$this->editor = new Editor( $this );
-		$this->front = new Front( $this );
+		$this->front  = new Front( $this );
 	} // END OF PLUGIN CLASSES FUNCTION
 
 	/**

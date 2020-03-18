@@ -43,7 +43,7 @@ class Admin {
 	 */
 	public function hooks() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
-		add_action( 'admin_menu', [ $this, 'admin_menu' ] );
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
 
 	/**
@@ -63,7 +63,7 @@ class Admin {
 			array()
 		);
 
-		 wp_enqueue_style(
+		wp_enqueue_style(
 			'bmfbe-admin',
 			$this->plugin->url . 'dist/admin.build.css',
 			array(),
@@ -76,11 +76,11 @@ class Admin {
 	 */
 	public function admin_menu() {
 		add_menu_page(
-			__('Block Manager for WordPress Block Editor (Gutenberg)', 'bmfbe'),
-			__('Block manager', 'bmfbe'),
+			__( 'Block Manager for WordPress Block Editor (Gutenberg)', 'bmfbe' ),
+			__( 'Block manager', 'bmfbe' ),
 			$this->capability(),
 			'bmfbe-settings',
-			[ $this, 'page_settings' ],
+			array( $this, 'page_settings' ),
 			'dashicons-layout',
 			99
 		);

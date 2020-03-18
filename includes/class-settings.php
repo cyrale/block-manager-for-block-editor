@@ -27,9 +27,9 @@ class Settings {
 	/**
 	 * Constructor.
 	 *
-	 * @since  1.0.0
+	 * @param Plugin $plugin Main plugin object.
 	 *
-	 * @param  Plugin $plugin Main plugin object.
+	 * @since  1.0.0
 	 */
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
@@ -42,6 +42,5 @@ class Settings {
 	 * @since  1.0.0
 	 */
 	public function hooks() {
-
 	}
 }

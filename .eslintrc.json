@@ -24,7 +24,9 @@
 		"wp": true,
 		"wpApiSettings": true,
 		"window": true,
-		"document": true
+		"document": true,
+		"lodash": true,
+		"bmfbeEditorGlobal":  true
 	},
 	"plugins": [
 		"react",
