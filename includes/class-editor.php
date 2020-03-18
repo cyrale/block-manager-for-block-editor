@@ -43,6 +43,15 @@ class Editor {
 	 */
 	public function hooks() {
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
+		add_action(
+			'init',
+			function() {
+				add_theme_support( 'editor-color-palette', array() );
+				add_theme_support( 'disable-custom-colors' );
+				add_theme_support( 'editor-font-sizes', array() );
+				add_theme_support( 'disable-custom-font-sizes' );
+			}
+		);
 	}
 
 	/**
@@ -52,14 +61,16 @@ class Editor {
 		wp_enqueue_script(
 			'bmfbe-editor',
 			$this->plugin->url . 'dist/editor.build.js',
-			array( 'wp-blocks', 'wp-dom-ready', 'wp-edit-post', 'wp-element', 'wp-i18n' ),
+			array( 'wp-blocks', 'wp-dom-ready', 'wp-edit-post', 'wp-element', 'wp-i18n', 'lodash' ),
 			substr( sha1( filemtime( $this->plugin->path . 'dist/editor.build.js' ) ), 0, 8 ),
 			true
 		);
 		wp_localize_script(
 			'bmfbe-editor',
-			'bmfbeGlobal',
-			array()
+			'bmfbeEditorGlobal',
+			array(
+				'detection' => ! ! $_GET['detection'],
+			)
 		);
 
 		wp_enqueue_style(
