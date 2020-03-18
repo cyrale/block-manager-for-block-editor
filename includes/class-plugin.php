@@ -1,4 +1,10 @@
 <?php
+/**
+ * Block Manager for WordPress Block Editor (Gutenberg): Main class.
+ *
+ * @since   1.0.0
+ * @package BMFBE
+ */
 
 namespace BMFBE;
 
@@ -7,7 +13,7 @@ use Exception;
 /**
  * Main initiation class.
  *
- * @since  1.0.0
+ * @since 1.0.0
  */
 final class Plugin {
 
@@ -15,7 +21,7 @@ final class Plugin {
 	 * Current version.
 	 *
 	 * @var    string
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	const VERSION = '1.0.0';
 
@@ -23,7 +29,7 @@ final class Plugin {
 	 * URL of plugin directory.
 	 *
 	 * @var    string
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	protected $url = '';
 
@@ -31,7 +37,7 @@ final class Plugin {
 	 * Path of plugin directory.
 	 *
 	 * @var    string
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	protected $path = '';
 
@@ -39,7 +45,7 @@ final class Plugin {
 	 * Plugin basename.
 	 *
 	 * @var    string
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	protected $basename = '';
 
@@ -47,7 +53,7 @@ final class Plugin {
 	 * Detailed activation error messages.
 	 *
 	 * @var    array
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	protected $activation_errors = array();
 
@@ -55,7 +61,7 @@ final class Plugin {
 	 * Singleton instance of plugin.
 	 *
 	 * @var    Plugin
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	protected static $single_instance = null;
 
@@ -115,7 +121,7 @@ final class Plugin {
 	/**
 	 * Sets up our plugin.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	protected function __construct() {
 		$this->basename = plugin_basename( __FILE__ );
@@ -128,7 +134,7 @@ final class Plugin {
 	/**
 	 * Attach other plugin classes to the base plugin class.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function plugin_classes() {
 		$this->admin  = new Admin( $this );
@@ -144,7 +150,7 @@ final class Plugin {
 	 * < 5 for Taxonomy_Core,
 	 * and 0 for Widgets because widgets_init runs at init priority 1.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function hooks() {
 		add_action( 'init', array( $this, 'init' ), 0 );
@@ -153,7 +159,7 @@ final class Plugin {
 	/**
 	 * Activate the plugin.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function plugin_activate() {
 		// Bail early if requirements aren't met.
@@ -166,7 +172,7 @@ final class Plugin {
 	 * Deactivate the plugin.
 	 * Uninstall routines should be in uninstall.php.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function plugin_deactivate() {
 		// Add deactivation cleanup functionality here.
@@ -175,7 +181,7 @@ final class Plugin {
 	/**
 	 * Init hooks
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function init() {
 		// Bail early if requirements aren't met.
@@ -194,7 +200,7 @@ final class Plugin {
 	 * Check if the plugin meets requirements and
 	 * disable it if they are not present.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 *
 	 * @return boolean True if requirements met, false if not.
 	 */
@@ -217,7 +223,7 @@ final class Plugin {
 	/**
 	 * Deactivates this plugin, hook this function on admin_init.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function deactivate_me() {
 		// We do a check for deactivate_plugins before calling it, to protect
@@ -230,7 +236,7 @@ final class Plugin {
 	/**
 	 * Check that all plugin requirements are met.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 *
 	 * @return boolean True if requirements are met.
 	 */
@@ -243,7 +249,7 @@ final class Plugin {
 	/**
 	 * Adds a notice to the dashboard if the plugin requirements are not met.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function requirements_not_met_notice() {
 		// Compile default message.
@@ -274,7 +280,7 @@ final class Plugin {
 	/**
 	 * Magic getter for our object.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 *
 	 * @param  string $field Field to get.
 	 * @throws Exception     Throws an exception if the field is invalid.

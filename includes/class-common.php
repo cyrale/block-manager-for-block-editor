@@ -29,7 +29,7 @@ class Common {
 	 *
 	 * @param Plugin $plugin Main plugin object.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
@@ -39,7 +39,7 @@ class Common {
 	/**
 	 * Initiate our hooks.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function hooks() {
 		add_action( 'after_setup_theme', array( $this, 'theme_supports' ) );

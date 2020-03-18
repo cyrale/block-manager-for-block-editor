@@ -22,7 +22,7 @@ require_once __DIR__ . '/autoload.php';
  * Grab the BMFBE object and return it.
  * Wrapper for BMFBE::get_instance().
  *
- * @since  1.0.0
+ * @since 1.0.0
  * @return Plugin  Singleton instance of plugin class.
  */
 function bmfbe() {

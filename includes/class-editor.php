@@ -29,7 +29,7 @@ class Editor {
 	 *
 	 * @param Plugin $plugin Main plugin object.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
@@ -39,7 +39,7 @@ class Editor {
 	/**
 	 * Initiate our hooks.
 	 *
-	 * @since  1.0.0
+	 * @since 1.0.0
 	 */
 	public function hooks() {
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
