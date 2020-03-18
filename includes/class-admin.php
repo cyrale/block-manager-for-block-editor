@@ -43,6 +43,7 @@ class Admin {
 	 */
 	public function hooks() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+		add_action( 'admin_menu', [ $this, 'admin_menu' ] );
 	}
 
 	/**
@@ -68,5 +69,36 @@ class Admin {
 			array(),
 			substr( sha1( filemtime( $this->plugin->path . 'dist/admin.build.css' ) ), 0, 8 )
 		);
+	}
+
+	/**
+	 * Add menu page in admin menu.
+	 */
+	public function admin_menu() {
+		add_menu_page(
+			__('Block Manager for WordPress Block Editor (Gutenberg)', 'bmfbe'),
+			__('Block manager', 'bmfbe'),
+			$this->capability(),
+			'bmfbe-settings',
+			[ $this, 'page_settings' ],
+			'dashicons-layout',
+			99
+		);
+	}
+
+	/**
+	 * The capability required to use the plugin.
+	 *
+	 * @return string
+	 */
+	public function capability() {
+		return apply_filters( 'bmfbe_capabilty', 'manage_options' );
+	}
+
+	/**
+	 * Display settings page.
+	 */
+	public function page_settings() {
+
 	}
 }
