@@ -8,6 +8,7 @@
 
 namespace BMFBE;
 
+use BMFBE\Rest_API\Blocks;
 use Exception;
 
 /**
@@ -64,6 +65,14 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	protected static $single_instance = null;
+
+	/**
+	 * Instance of BMFBE\Rest_API\Blocks
+	 *
+	 * @since 1.0.0
+	 * @var Blocks
+	 */
+	protected $api_blocks;
 
 	/**
 	 * Instance of BMFBE\Admin.
@@ -137,6 +146,8 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	public function plugin_classes() {
+		$this->api_blocks = new Blocks( $this );
+
 		$this->admin  = new Admin( $this );
 		$this->common = new Common( $this );
 		$this->editor = new Editor( $this );
