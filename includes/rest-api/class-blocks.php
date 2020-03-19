@@ -58,18 +58,172 @@ class Blocks extends Base {
 				array(
 					'methods'             => WP_REST_Server::READABLE,
 					'callback'            => array( $this, 'get_items' ),
-					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 					'args'                => $this->get_collection_params(),
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 				),
-				// array(
-				// 'methods'             => WP_REST_Server::EDITABLE,
-				// 'callback'            => array( $this, 'update_items' ),
-				// 'args'                => array( $this, 'blocks_args' ),
-				// 'permission_callback' => array( $this, 'update_items_permissions_check' ),
-				// ),
-					'schema' => array( $this, 'get_public_item_schema' ),
+				array(
+					'methods'             => WP_REST_Server::CREATABLE,
+					'callback'            => array( $this, 'create_item' ),
+					'permission_callback' => array( $this, 'create_item_permissions_check' ),
+					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::CREATABLE ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+	}
+
+	/**
+	 * Retrieves the block's schema, conforming to JSON Schema.
+	 *
+	 * @return array Item schema data.
+	 * @since 1.0.0
+	 */
+	public function get_item_schema() {
+		if ( $this->schema ) {
+			return $this->add_additional_fields_schema( $this->schema );
+		}
+
+		$schema = array(
+			'$schema'    => 'http://json-schema.org/draft-04/schema#',
+			'title'      => 'block',
+			'type'       => 'object',
+			'properties' => array(
+				'name'        => array(
+					'description' => __( 'The name for a block is a unique string that identifies a block.', 'bmfbe' ),
+					'type'        => 'string',
+					// 'readonly'    => true,
+				),
+				'title'       => array(
+					'description' => __( 'The display title for the block.', 'bmfbe' ),
+					'type'        => 'string',
+					// 'readonly'    => true,
+				),
+				'description' => array(
+					'description' => __( 'A short description for the block.', 'bmfbe' ),
+					'type'        => 'string',
+					// 'readonly'    => true,
+				),
+				'category'    => array(
+					'description' => __( 'Category to help users browse and discover blocks.', 'bmfbe' ),
+					'type'        => 'string',
+					// 'readonly'    => true,
+				),
+				'icon'        => array(
+					'description' => __( 'Icon to make block easier to identify.', 'bmfbe' ),
+					'type'        => 'string',
+					// 'readonly'    => true,
+				),
+				'keywords'    => array(
+					'description' => __( 'Aliases that help users discover block while searching.', 'bmfbe' ),
+					'type'        => 'array',
+					'items'       => array(
+						'type'     => 'string',
+						'readonly' => true,
+					),
+					// 'readonly'    => true,
+				),
+				'supports'    => array(
+					'description' => __( 'Some block supports.', 'bmfbe' ),
+					'type'        => 'object',
+					'default'     => array(),
+				),
+				// TODO: manage variations (https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#variations-optional).
+				'styles'      => array(
+					'description' => __( 'Block styles can be used to provide alternative styles to block.', 'bmfbe' ),
+					'type'        => 'array',
+					'default'     => array(),
+					'items'       => array(
+						'type'       => 'object',
+						'default'    => array(),
+						'properties' => array(
+							'name'      => array(
+								'description' => __( 'The name for a style.', 'bmfbe' ),
+								'type'        => 'string',
+								'required'    => true,
+							),
+							'label'     => array(
+								'description' => __( 'The label displayed for a style.', 'bmfbe' ),
+								'type'        => 'string',
+								'required'    => true,
+							),
+							'isDefault' => array(
+								'description' => __( 'Is default style?', 'bmfbe' ),
+								'type'        => 'boolean',
+								'default'     => false,
+							),
+						),
+					),
+				),
+			),
+		);
+
+		$this->schema = $schema;
+
+		return $this->add_additional_fields_schema( $this->schema );
+	}
+
+	/**
+	 * Prepares a single block for create or update.
+	 *
+	 * @param WP_REST_Request $request Request object.
+	 *
+	 * @return array Block data.
+	 * @since 1.0.0
+	 */
+	protected function prepare_item_for_database( $request ) {
+		$prepared_block = array();
+
+		$schema = $this->get_item_schema();
+
+		// Basic types.
+		foreach ( $schema['properties'] as $field_id => $params ) {
+			if ( ! isset( $request[ $field_id ] ) ) {
+				continue;
+			}
+
+			if ( 'string' === $params['type'] && is_string( $request[ $field_id ] ) ) {
+				$prepared_block[ $field_id ] = $request[ $field_id ];
+			}
+		}
+
+		// Keywords.
+		if ( ! empty( $schema['properties']['keywords'] ) ) {
+			$prepared_block['keywords'] = array();
+
+			if ( ! empty( $request['keywords'] ) && is_array( $request['keywords'] ) ) {
+				$prepared_block['keywords'] = array_filter( $request['keywords'], 'is_string' );
+			}
+		}
+
+		// Supports.
+		if ( ! empty( $schema['properties']['supports'] ) ) {
+			$prepared_block['supports'] = array();
+
+			if ( ! empty( $request['supports'] ) && is_array( $request['supports'] ) ) {
+				$prepared_block['supports'] = array_filter( $request['supports'], 'is_bool' );
+			}
+		}
+
+		// Styles.
+		if ( ! empty( $schema['properties']['styles'] ) ) {
+			$prepared_block['styles'] = array();
+
+			if ( ! empty( $request['styles'] ) && is_array( $request['styles'] ) ) {
+				foreach ( $request['styles'] as $style ) {
+					if ( ! empty( $style['name'] ) && ! empty( $style['label'] ) ) {
+						$prepared_block['styles'][] = array(
+							'name'      => $style['name'],
+							'label'     => $style['label'],
+							'isDefault' => ! empty( $style['isDefault'] ),
+						);
+					}
+				}
+			}
+		}
+
+		// TODO: Access.
+
+		return $prepared_block;
 	}
 
 	/**
@@ -95,7 +249,7 @@ class Blocks extends Base {
 			}
 		}
 
-		$result = $this->plugin->settings->blocks( $args );
+		$result = $this->plugin->settings->get_blocks( $args );
 		$blocks = array();
 
 		foreach ( $result['blocks'] as $block ) {
@@ -110,8 +264,8 @@ class Blocks extends Base {
 
 		if ( $page > $max_pages && $total > 0 ) {
 			return new WP_Error(
-				'rest_post_invalid_page_number',
-				__( 'The page number requested is larger than the number of pages available.' ),
+				'rest_invalid_page_number',
+				__( 'The page number requested is larger than the number of pages available.', 'bmfbe' ),
 				array( 'status' => 400 )
 			);
 		}
@@ -122,7 +276,10 @@ class Blocks extends Base {
 		$response->header( 'X-WP-TotalPages', (int) $max_pages );
 
 		$request_params = $request->get_query_params();
-		$base           = add_query_arg( urlencode_deep( $request_params ), rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) ) );
+		$base           = add_query_arg(
+			urlencode_deep( $request_params ),
+			rest_url( sprintf( '%s/%s', $this->namespace, $this->rest_base ) )
+		);
 
 		if ( $page > 1 ) {
 			$prev_page = $page - 1;
@@ -145,91 +302,18 @@ class Blocks extends Base {
 	}
 
 	/**
-	 * Retrieves the block's schema, conforming to JSON Schema.
+	 * Creates a single block.
 	 *
-	 * @return array Item schema data.
+	 * @param WP_REST_Request $request Full details about the request.
+	 *
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @since 1.0.0
 	 */
-	public function get_item_schema() {
-		if ( $this->schema ) {
-			return $this->add_additional_fields_schema( $this->schema );
-		}
+	public function create_item( $request ) {
+		$prepared_block = $this->prepare_item_for_database( $request );
 
-		$schema = array(
-			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'block',
-			'type'       => 'object',
-			'properties' => array(
-				'name'        => array(
-					'description' => __( '', 'bmfbe' ),
-					'type'        => 'string',
-					'readonly'    => true,
-				),
-				'title'       => array(
-					'description' => __( '', 'bmfbe' ),
-					'type'        => 'string',
-					'readonly'    => true,
-				),
-				'description' => array(
-					'description' => __( '', 'bmfbe' ),
-					'type'        => 'string',
-					'readonly'    => true,
-				),
-				'category'    => array(
-					'description' => __( '', 'bmfbe' ),
-					'type'        => 'string',
-					'readonly'    => true,
-				),
-				'icon'        => array(
-					'description' => __( '', 'bmfbe' ),
-					'type'        => 'string',
-					'readonly'    => true,
-				),
-				'keywords'    => array(
-					'description' => __( '', 'bmfbe' ),
-					'type'        => 'array',
-					'items'       => array(
-						'type'     => 'string',
-						'readonly' => true,
-					),
-					'readonly'    => true,
-				),
-				'supports'    => array(
-					'description' => __( '', 'bmfbe' ),
-					'type'        => 'object',
-				),
-				'styles'      => array(
-					'description' => __( '', 'bmfbe' ),
-					'type'        => 'object',
-				),
-			),
-		);
+		$this->plugin->settings->insert_block( $prepared_block );
 
-		$this->schema = $schema;
-
-		return $this->add_additional_fields_schema( $this->schema );
+		return rest_ensure_response( array() );
 	}
-
-	/**
-	 * Update a collection of items.
-	 *
-	 * @return mixed|WP_REST_Response
-	 */
-	public function update_items() {
-		return new WP_REST_Response( array( 'message' => 'Blocks updated.' ), 204 );
-	}
-
-	public function blocks_args() {
-		$args = array();
-
-		$args['blocks'] = array(
-			'description' => esc_html__( 'List of all blocks.', 'bmfbe' ),
-			'type'        => 'array',
-			// 'validate_callback' => '',
-			'required'    => true,
-		);
-
-		return $args;
-	}
-
 }

@@ -56,15 +56,6 @@ abstract class Base extends \WP_REST_Controller {
 	}
 
 	/**
-	 * Registers the routes for the objects of the controller.
-	 *
-	 * @since 1.0.0
-	 */
-	public function register_routes() {
-		_doing_it_wrong( '\BMFBE\Rest_API\Base::register_routes', sprintf( __( "Method '%s' must be overridden." ), __METHOD__ ), '1.0.0' );
-	}
-
-	/**
 	 * Checks if a given request has access to get items.
 	 *
 	 * @since 1.0.0
@@ -77,6 +68,18 @@ abstract class Base extends \WP_REST_Controller {
 	}
 
 	/**
+	 * Checks if a given request has access to create items.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Full data about the request.
+	 * @return WP_Error|bool True if the request has access to create items, WP_Error object otherwise.
+	 */
+	public function create_item_permissions_check( $request ) {
+		return $this->permission( $request, esc_html__( 'Sorry, you are not allowed to create this item.', 'bmfbe' ) );
+	}
+
+	/**
 	 * Checks if a given request has access to update items.
 	 *
 	 * @since 1.0.0
@@ -84,8 +87,8 @@ abstract class Base extends \WP_REST_Controller {
 	 * @param WP_REST_Request $request Full data about the request.
 	 * @return WP_Error|bool True if the request has read access, WP_Error object otherwise.
 	 */
-	public function update_items_permissions_check( $request ) {
-		return $this->permission( $request, esc_html__( 'Sorry, you are not allowed to update this data.', 'bmfbe' ) );
+	public function update_item_permissions_check( $request ) {
+		return $this->permission( $request, esc_html__( 'Sorry, you are not allowed to update this item.', 'bmfbe' ) );
 	}
 
 	/**
@@ -104,6 +107,13 @@ abstract class Base extends \WP_REST_Controller {
 		return $params;
 	}
 
+	/**
+	 * The capability required to use the Rest API.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string Capability name.
+	 */
 	protected function capability() {
 		return apply_filters( 'bmfbe_rest_api_capability', $this->plugin->settings->capability() );
 	}

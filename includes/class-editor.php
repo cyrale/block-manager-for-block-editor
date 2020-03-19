@@ -52,6 +52,7 @@ class Editor {
 		// add_theme_support( 'disable-custom-font-sizes' );
 		// }
 		// );
+		// .
 	}
 
 	/**
