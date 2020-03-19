@@ -43,4 +43,42 @@ class Settings {
 	 */
 	public function hooks() {
 	}
+
+	/**
+	 * The capability required to use the plugin.
+	 *
+	 * @return string
+	 */
+	public function capability() {
+		return apply_filters( 'bmfbe_capabilty', 'manage_options' );
+	}
+
+	public function blocks( $args = array() ) {
+		$defaults = array(
+			'page'     => 1,
+			'per_page' => 10,
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
+		$blocks = get_option( 'bmfbe_blocks', array() );
+		$blocks = ! is_array( $blocks ) ? array() : $blocks;
+
+		// TODO: order blocks.
+
+		$total = count( $blocks );
+
+		$max_pages = ceil( $total / (int) $args['per_page'] );
+
+		if ( $args['page'] > $max_pages && $total > 0 ) {
+			return false;
+		}
+
+		$blocks = array_slice( $blocks, (int) $args['page'] * (int) $args['per_page'], (int) $args['per_page'] );
+
+		return array(
+			'blocks' => $blocks,
+			'total'  => $total,
+		);
+	}
 }

@@ -42,16 +42,16 @@ class Editor {
 	 * @since 1.0.0
 	 */
 	public function hooks() {
-		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ) );
-		add_action(
-			'init',
-			function() {
-				add_theme_support( 'editor-color-palette', array() );
-				add_theme_support( 'disable-custom-colors' );
-				add_theme_support( 'editor-font-sizes', array() );
-				add_theme_support( 'disable-custom-font-sizes' );
-			}
-		);
+		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ), 999 );
+		// add_action(
+		// 'init',
+		// function() {
+		// add_theme_support( 'editor-color-palette', array() );
+		// add_theme_support( 'disable-custom-colors' );
+		// add_theme_support( 'editor-font-sizes', array() );
+		// add_theme_support( 'disable-custom-font-sizes' );
+		// }
+		// );
 	}
 
 	/**

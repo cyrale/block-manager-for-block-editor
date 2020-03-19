@@ -116,8 +116,8 @@ final class Plugin {
 	/**
 	 * Creates or returns an instance of this class.
 	 *
-	 * @since   0.0.0
-	 * @return  Plugin A single instance of this class.
+	 * @since 1.0.0
+	 * @return Plugin A single instance of this class.
 	 */
 	public static function get_instance() {
 		if ( null === self::$single_instance ) {
@@ -133,9 +133,9 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	protected function __construct() {
-		$this->basename = plugin_basename( __FILE__ );
-		$this->url      = plugin_dir_url( __FILE__ );
-		$this->path     = plugin_dir_path( __FILE__ );
+		$this->basename = plugin_basename( dirname( __FILE__ ) );
+		$this->url      = plugin_dir_url( dirname( __FILE__ ) );
+		$this->path     = plugin_dir_path( dirname( __FILE__ ) );
 
 		$this->settings = new Settings( $this );
 	}
@@ -304,8 +304,6 @@ final class Plugin {
 			case 'basename':
 			case 'url':
 			case 'path':
-			case 'admin':
-			case 'common':
 			case 'settings':
 				return $this->$field;
 			default:

@@ -78,7 +78,7 @@ class Admin {
 		add_menu_page(
 			__( 'Block Manager for WordPress Block Editor (Gutenberg)', 'bmfbe' ),
 			__( 'Block manager', 'bmfbe' ),
-			$this->capability(),
+			$this->plugin->settings->capability(),
 			'bmfbe-settings',
 			array( $this, 'page_settings' ),
 			'dashicons-layout',
@@ -86,14 +86,6 @@ class Admin {
 		);
 	}
 
-	/**
-	 * The capability required to use the plugin.
-	 *
-	 * @return string
-	 */
-	public function capability() {
-		return apply_filters( 'bmfbe_capabilty', 'manage_options' );
-	}
 
 	/**
 	 * Display settings page.
