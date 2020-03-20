@@ -76,12 +76,8 @@ class Settings {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		$blocks = get_option( 'bmfbe_blocks', array() );
-		$blocks = ! is_array( $blocks ) ? array() : $blocks;
-
-		// TODO: order blocks.
-
-		$total = count( $blocks );
+		$blocks = $this->get_blocks_from_database();
+		$total  = count( $blocks );
 
 		$max_pages = ceil( $total / (int) $args['per_page'] );
 
@@ -92,7 +88,8 @@ class Settings {
 			);
 		}
 
-		$blocks = array_slice( $blocks, (int) $args['page'] * (int) $args['per_page'], (int) $args['per_page'] );
+		$offset = ( max( 0, (int) $args['page'] - 1 ) ) * (int) $args['per_page'];
+		$blocks = array_slice( $blocks, $offset, (int) $args['per_page'] );
 
 		return array(
 			'blocks' => $blocks,
