@@ -127,10 +127,10 @@ class Settings {
 		}
 
 		// Check name validity.
-		if ( !preg_match('/^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*$/', $block['name'])) {
+		if ( ! preg_match( '/^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*$/', $block['name'] ) ) {
 			return new WP_Error(
 				'invalid_block_name',
-				__('Block names must contain a namespace prefix, include only lowercase alphanumeric characters or dashes, and start with a letter.', 'bmfbe' )
+				__( 'Block names must contain a namespace prefix, include only lowercase alphanumeric characters or dashes, and start with a letter.', 'bmfbe' )
 			);
 		}
 
@@ -189,16 +189,29 @@ class Settings {
 		return $this->insert_block_in_database( $prepared_block );
 	}
 
-	public function search_block( $name, $return_block = false ) {
+	/**
+	 * Search block with its name.
+	 *
+	 * @param string $name         Unique name for the block.
+	 * @param bool   $return_index True to return index instead of block. Default: false.
+	 *
+	 * @return int|array|null Block data.
+	 */
+	public function search_block( $name, $return_index = false ) {
 		foreach ( $this->get_blocks_from_database() as $index => $block ) {
 			if ( $block['name'] === $name ) {
-				return empty( $return_block ) ? $index : $block;
+				return empty( $return_index ) ? $block : $index;
 			}
 		}
 
 		return null;
 	}
 
+	/**
+	 * Get all blocks from the database.
+	 *
+	 * @return array All blocks registered in database.
+	 */
 	protected function get_blocks_from_database() {
 		$blocks = get_option( 'bmfbe_blocks', array() );
 		$blocks = is_array( $blocks ) ? $blocks : array();
@@ -208,14 +221,32 @@ class Settings {
 		return $blocks;
 	}
 
-	protected function insert_block_in_database( $block, $index = null ) {
+	/**
+	 * Update/Insert block in database.
+	 *
+	 * @param array $block {
+	 *     An array of elements that make up a block to update or insert.
+	 *
+	 *     @type string $name        The name for a block is a unique string that identifies a block.
+	 *     @type string $title       The display title for the block.
+	 *     @type string $description A short description for the block..
+	 *     @type string $category    Category to help users browse and discover blocks.
+	 *     @type string $icon        Icon to make block easier to identify.
+	 *     @type array  $keywords    Optional. Aliases that help users discover block while searching.
+	 *     @type array  $supports    Optional. Some block supports.
+	 *     @type array  $styles      Optional. Block styles can be used to provide alternative styles to block.
+	 * }
+	 *
+	 * @return bool True if block inserted/updated, False otherwise.
+	 */
+	protected function insert_block_in_database( $block ) {
 		$blocks = $this->get_blocks_from_database();
-		$index  = $this->search_block( $block['name'] );
+		$index  = $this->search_block( $block['name'], true );
 
-		if ( $index === null ) {
+		if ( null === $index ) {
 			$blocks[] = $block;
 		} else {
-			$blocks[$index] = $block;
+			$blocks[ $index ] = $block;
 		}
 
 		// TODO: sort blocks.
@@ -225,6 +256,6 @@ class Settings {
 			return true;
 		}
 
-		return update_option('bmfbe_blocks', $blocks, false );
+		return update_option( 'bmfbe_blocks', $blocks, false );
 	}
 }

@@ -283,7 +283,7 @@ class Blocks extends Base {
 		if ( is_wp_error( $result ) ) {
 			$result->add_data( array( 'status' => 400 ) );
 			return $result;
-		} elseif ( $result === false ) {
+		} elseif ( false === $result ) {
 			return new WP_Error(
 				'rest_block_not_inserted',
 				__( 'Block not inserted.', 'bmfbe' ),
