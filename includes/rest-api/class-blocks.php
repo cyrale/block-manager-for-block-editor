@@ -89,7 +89,7 @@ class Blocks extends Base {
 			'type'       => 'object',
 			'properties' => array(
 				'name'        => array(
-					'description' => __( 'The name for a block is a unique string that identifies a block.', 'bmfbe' ),
+					'description' => __( 'Unique name for the block.', 'bmfbe' ),
 					'type'        => 'string',
 					// 'readonly'    => true,
 				),
@@ -193,6 +193,46 @@ class Blocks extends Base {
 	}
 
 	/**
+	 * Prepares a single block output for response.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array           $block   Block object.
+	 * @param WP_REST_Request $request Request object.
+	 * @return WP_REST_Response Response object.
+	 */
+	public function prepare_item_for_response( $block, $request ) {
+		// Wrap the data in a response object.
+		$response = rest_ensure_response( $block );
+
+		$links = $this->prepare_links( $block );
+		$response->add_links( $links );
+
+		return $response;
+	}
+
+	/**
+	 * Prepares links for the request.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $block Block object.
+	 * @return array Links for the given post.
+	 */
+	protected function prepare_links( $block ) {
+		$base = sprintf( '%s/%s', $this->namespace, $this->rest_base );
+
+		return array(
+			'self'       => array(
+				'href' => rest_url( trailingslashit( $base ) . $block['name'] ),
+			),
+			'collection' => array(
+				'href' => rest_url( $base ),
+			),
+		);
+	}
+
+	/**
 	 * Retrieves a collection of items.
 	 *
 	 * @param WP_REST_Request $request Full data about the request.
@@ -276,6 +316,8 @@ class Blocks extends Base {
 	 * @since 1.0.0
 	 */
 	public function create_item( $request ) {
+		// TODO: test if block already exists.
+
 		$prepared_block = $this->prepare_item_for_database( $request );
 
 		$result = $this->plugin->settings->insert_block( $prepared_block );
@@ -291,6 +333,8 @@ class Blocks extends Base {
 			);
 		}
 
-		return rest_ensure_response( $this->plugin->settings->search_block( $prepared_block['name' ], true ) );
+		$block = $this->plugin->settings->search_block( $prepared_block['name'] );
+
+		return $this->prepare_item_for_response( $block, $request );
 	}
 }
