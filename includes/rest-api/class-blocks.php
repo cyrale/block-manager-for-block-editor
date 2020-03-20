@@ -181,43 +181,9 @@ class Blocks extends Base {
 				continue;
 			}
 
-			if ( 'string' === $params['type'] && is_string( $request[ $field_id ] ) ) {
+			if ( ( 'string' === $params['type'] && is_string( $request[ $field_id ] ) )
+				|| ( ( 'array' === $params['type'] || 'object' === $params['type'] ) && is_array( $request[ $field_id ] ) ) ) {
 				$prepared_block[ $field_id ] = $request[ $field_id ];
-			}
-		}
-
-		// Keywords.
-		if ( ! empty( $schema['properties']['keywords'] ) ) {
-			$prepared_block['keywords'] = array();
-
-			if ( ! empty( $request['keywords'] ) && is_array( $request['keywords'] ) ) {
-				$prepared_block['keywords'] = array_filter( $request['keywords'], 'is_string' );
-			}
-		}
-
-		// Supports.
-		if ( ! empty( $schema['properties']['supports'] ) ) {
-			$prepared_block['supports'] = array();
-
-			if ( ! empty( $request['supports'] ) && is_array( $request['supports'] ) ) {
-				$prepared_block['supports'] = array_filter( $request['supports'], 'is_bool' );
-			}
-		}
-
-		// Styles.
-		if ( ! empty( $schema['properties']['styles'] ) ) {
-			$prepared_block['styles'] = array();
-
-			if ( ! empty( $request['styles'] ) && is_array( $request['styles'] ) ) {
-				foreach ( $request['styles'] as $style ) {
-					if ( ! empty( $style['name'] ) && ! empty( $style['label'] ) ) {
-						$prepared_block['styles'][] = array(
-							'name'      => $style['name'],
-							'label'     => $style['label'],
-							'isDefault' => ! empty( $style['isDefault'] ),
-						);
-					}
-				}
 			}
 		}
 
@@ -312,8 +278,19 @@ class Blocks extends Base {
 	public function create_item( $request ) {
 		$prepared_block = $this->prepare_item_for_database( $request );
 
-		$this->plugin->settings->insert_block( $prepared_block );
+		$result = $this->plugin->settings->insert_block( $prepared_block );
 
-		return rest_ensure_response( array() );
+		if ( is_wp_error( $result ) ) {
+			$result->add_data( array( 'status' => 400 ) );
+			return $result;
+		} elseif ( $result === false ) {
+			return new WP_Error(
+				'rest_block_not_inserted',
+				__( 'Block not inserted.', 'bmfbe' ),
+				array( 'status' => 500 )
+			);
+		}
+
+		return rest_ensure_response( $this->plugin->settings->search_block( $prepared_block['name' ], true ) );
 	}
 }

@@ -8,6 +8,7 @@
 
 namespace BMFBE;
 
+use Exception;
 use WP_Error;
 
 /**
@@ -117,7 +118,7 @@ class Settings {
 	 *     @type array  $styles      Optional. Block styles can be used to provide alternative styles to block.
 	 * }
 	 *
-	 * @return WP_Error
+	 * @return WP_Error|bool
 	 */
 	public function insert_block( $block ) {
 		// Check if some fields are empty.
@@ -128,8 +129,13 @@ class Settings {
 			);
 		}
 
-		// TODO: check name validity (name regex: /^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*$/).
-		// Block names must contain a namespace prefix, include only lowercase alphanumeric characters or dashes, and start with a letter.
+		// Check name validity.
+		if ( !preg_match('/^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*$/', $block['name'])) {
+			return new WP_Error(
+				'invalid_block_name',
+				__('Block names must contain a namespace prefix, include only lowercase alphanumeric characters or dashes, and start with a letter.', 'bmfbe' )
+			);
+		}
 
 		$prepared_block = array();
 
@@ -179,8 +185,49 @@ class Settings {
 			}
 		}
 
+		// TODO: Variations.
 		// TODO: Access.
 
-		// TODO: Insert/update block.
+		// Insert/update block.
+		return $this->insert_block_in_database( $prepared_block );
+	}
+
+	public function search_block( $name, $return_block = false ) {
+		foreach ( $this->get_blocks_from_database() as $index => $block ) {
+			if ( $block['name'] === $name ) {
+				return empty( $return_block ) ? $index : $block;
+			}
+		}
+
+		return null;
+	}
+
+	protected function get_blocks_from_database() {
+		$blocks = get_option( 'bmfbe_blocks', array() );
+		$blocks = is_array( $blocks ) ? $blocks : array();
+
+		// TODO: sort blocks.
+
+		return $blocks;
+	}
+
+	protected function insert_block_in_database( $block, $index = null ) {
+		$blocks = $this->get_blocks_from_database();
+		$index  = $this->search_block( $block['name'] );
+
+		if ( $index === null ) {
+			$blocks[] = $block;
+		} else {
+			$blocks[$index] = $block;
+		}
+
+		// TODO: sort blocks.
+
+		// Test if blocks have to be updated.
+		if ( maybe_serialize( $blocks ) === maybe_serialize( $this->get_blocks_from_database() ) ) {
+			return true;
+		}
+
+		return update_option('bmfbe_blocks', $blocks, false );
 	}
 }
