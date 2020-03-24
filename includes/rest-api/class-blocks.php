@@ -70,6 +70,25 @@ class Blocks extends Base {
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
+
+		register_rest_route(
+			$this->namespace,
+			'/' . $this->rest_base . '/(?P<name>[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*)',
+			array(
+				'args'   => array(
+					'name' => array(
+						'description' => __( 'Unique name for the block.', 'bmfbe' ),
+						'type'        => 'string',
+					),
+				),
+				array(
+					'methods'             => WP_REST_Server::READABLE,
+					'callback'            => array( $this, 'get_item' ),
+					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+				),
+				'schema' => array( $this, 'get_public_item_schema' ),
+			)
+		);
 	}
 
 	/**
@@ -308,6 +327,30 @@ class Blocks extends Base {
 	}
 
 	/**
+	 * Retrieves a single block.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function get_item( $request ) {
+		$block = $this->plugin->settings->search_block( $request['name'] );
+
+		if ( null === $block ) {
+			return new WP_Error(
+				'rest_block_not_found',
+				__( 'Block not found.', 'bmfbe' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		$data = $this->prepare_item_for_response( $block, $request );
+
+		return rest_ensure_response( $data );
+	}
+
+	/**
 	 * Creates a single block.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
@@ -335,6 +378,8 @@ class Blocks extends Base {
 
 		$block = $this->plugin->settings->search_block( $prepared_block['name'] );
 
-		return $this->prepare_item_for_response( $block, $request );
+		$data = $this->prepare_item_for_response( $block, $request );
+
+		return rest_ensure_response( $data );
 	}
 }
