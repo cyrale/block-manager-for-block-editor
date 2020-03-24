@@ -166,19 +166,42 @@ class Settings {
 		$prepared_block['supports'] = array();
 		if ( ! empty( $block['supports'] ) && is_array( $block['supports'] ) ) {
 			$prepared_block['supports'] = array_filter( $block['supports'], 'is_bool' );
+
+			// Sort supports.
+			ksort( $prepared_block['supports'] );
 		}
 
 		// Styles.
 		$prepared_block['styles'] = array();
 		if ( ! empty( $block['styles'] ) && is_array( $block['styles'] ) ) {
-			foreach ( $block['styles'] as $style ) {
-				if ( ! empty( $style['name'] ) && ! empty( $style['label'] ) ) {
-					$prepared_block['styles'][] = array(
-						'name'      => $style['name'],
-						'label'     => $style['label'],
-						'isDefault' => ! empty( $style['isDefault'] ),
-					);
-				}
+			$prepared_block['styles'] = array_filter( $block['styles'], array( $this, 'filter_styles_callback' ) );
+
+			// Normalize value of isDefault field.
+			foreach ( $prepared_block['styles'] as &$style ) {
+				$style['isDefault'] = ! empty( $style['isDefault'] );
+			}
+
+			// Sort styles by name alphabetically.
+			array_multisort(
+				array_column( $prepared_block['styles'], 'name' ),
+				SORT_ASC,
+				$prepared_block['styles']
+			);
+
+			// Checks that there is only one default style.
+			$defaults  = array_column( $prepared_block['styles'], 'isDefault' );
+			$true_keys = array_keys( $defaults, true, true );
+
+			if ( count( $true_keys ) === 0 ) {
+				return new WP_Error(
+					'styles_one_default_at_least',
+					__( 'There should be at least one default style.', 'bmfbe' )
+				);
+			} elseif ( count( $true_keys ) > 1 ) {
+				return new WP_Error(
+					'styles_one_default_only',
+					__( 'There should be only one default style', 'bmfbe' )
+				);
 			}
 		}
 
@@ -187,6 +210,62 @@ class Settings {
 
 		// Insert/update block.
 		return $this->insert_block_in_database( $prepared_block );
+	}
+
+	/**
+	 * Update a block.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array $block {
+	 *     An array of elements that make up a block to update or insert.
+	 *
+	 *     @type string $name        The name for a block is a unique string that identifies a block.
+	 *     @type string $title       The display title for the block.
+	 *     @type string $description A short description for the block..
+	 *     @type string $category    Category to help users browse and discover blocks.
+	 *     @type string $icon        Icon to make block easier to identify.
+	 *     @type array  $keywords    Optional. Aliases that help users discover block while searching.
+	 *     @type array  $supports    Optional. Some block supports.
+	 *     @type array  $styles      Optional. Block styles can be used to provide alternative styles to block.
+	 * }
+	 *
+	 * @return WP_Error|bool
+	 */
+	public function update_block( $block ) {
+		$db_block = $this->search_block( $block['name'] );
+
+		if ( null === $db_block ) {
+			return new WP_Error(
+				'invalid_block_name',
+				__( 'Invalid block name.', 'bmfbe' )
+			);
+		}
+
+		// Supports.
+		$supports = $db_block['supports'];
+		if ( ! empty( $block['supports'] ) && is_array( $block['supports'] ) ) {
+			$supports = array_merge( $db_block['supports'], $block['supports'] );
+		}
+
+		// Styles.
+		$styles = $db_block['styles'];
+		if ( ! empty( $block['styles'] ) && is_array( $block['styles'] ) ) {
+			$styles = $this->merge_attributes(
+				$db_block['styles'],
+				array_filter( $block['styles'], array( $this, 'filter_styles_callback' ) )
+			);
+		}
+
+		// TODO: Variations.
+		// TODO: Access.
+
+		// Merge old and new fields with new fields overwriting old ones.
+		$block             = array_merge( $db_block, $block );
+		$block['supports'] = $supports;
+		$block['styles']   = $styles;
+
+		return $this->insert_block( $block );
 	}
 
 	/**
@@ -257,5 +336,75 @@ class Settings {
 		}
 
 		return update_option( 'bmfbe_blocks', $blocks, false );
+	}
+
+	/**
+	 * Callback used to filter valid values for styles.
+	 *
+	 * @param mixed $style Value of style to validate.
+	 *
+	 * @return bool True if style is valid, False otherwise.
+	 */
+	protected function filter_styles_callback( $style ) {
+		return ! empty( $style ) && is_array( $style )
+				&& ! empty( $style['name'] ) && is_string( $style['name'] )
+				&& ! empty( $style['label'] ) && is_string( $style['label'] );
+	}
+
+	/**
+	 * Merge arr2 into arr1, depending on the name field.
+	 *
+	 * @param array $arr1 Array of attributes.
+	 * @param array $arr2 Array of attributes.
+	 *
+	 * @return array Merged array.
+	 */
+	protected function merge_attributes( $arr1, $arr2 ) {
+		$merged_arr = array();
+
+		// Reset index of arrays.
+		$arr1 = array_values( $arr1 );
+		$arr2 = array_values( $arr2 );
+
+		// Simple case, first array is empty.
+		if ( empty( $arr1 ) || ! is_array( $arr1 ) ) {
+			return is_array( $arr2 ) ? $arr2 : array();
+		}
+
+		// Extract names from attributes.
+		$arr1_names = array_column( $arr1, 'name' );
+		$arr2_names = array_column( $arr2, 'name' );
+
+		$old_names = array_diff( $arr1_names, $arr2_names );
+		$new_names = array_diff( $arr2_names, $arr1_names );
+
+		// Old attributes.
+		foreach ( $old_names as $name ) {
+			$key = array_search( $name, $arr1_names, true );
+
+			if ( false !== $key ) {
+				$merged_arr[] = $arr1[ $key ];
+			}
+		}
+
+		// Merge attributes.
+		foreach ( $arr1_names as $key1 => $name ) {
+			$key2 = array_search( $name, $arr2_names, true );
+
+			if ( false !== $key2 ) {
+				$merged_arr[] = array_merge( $arr1[ $key1 ], $arr2[ $key2 ] );
+			}
+		}
+
+		// New attributes.
+		foreach ( $new_names as $name ) {
+			$key = array_search( $name, $arr2_names, true );
+
+			if ( false !== $key ) {
+				$merged_arr[] = $arr2[ $key ];
+			}
+		}
+
+		return $merged_arr;
 	}
 }

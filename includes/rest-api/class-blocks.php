@@ -86,6 +86,12 @@ class Blocks extends Base {
 					'callback'            => array( $this, 'get_item' ),
 					'permission_callback' => array( $this, 'get_item_permissions_check' ),
 				),
+				array(
+					'methods'             => WP_REST_Server::EDITABLE,
+					'callback'            => array( $this, 'update_item' ),
+					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
+				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
@@ -182,6 +188,32 @@ class Blocks extends Base {
 	}
 
 	/**
+	 * Retrieves an array of endpoint arguments from the item schema for the controller.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $method Optional. HTTP method of the request. The arguments for `CREATABLE` requests are
+	 *                       checked for required values and may fall-back to a given default, this is not done
+	 *                       on `EDITABLE` requests. Default WP_REST_Server::CREATABLE.
+	 * @return array Endpoint arguments.
+	 */
+	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
+		$endpoint_args = parent::get_endpoint_args_for_item_schema( $method );
+
+		$unset = array(
+			'name',
+		);
+
+		foreach ( $endpoint_args as $field_id => $params ) {
+			if ( WP_REST_Server::CREATABLE !== $method && in_array( $field_id, $unset, true ) ) {
+				unset( $endpoint_args[ $field_id ] );
+			}
+		}
+
+		return $endpoint_args;
+	}
+
+	/**
 	 * Prepares a single block for create or update.
 	 *
 	 * @param WP_REST_Request $request Request object.
@@ -249,6 +281,27 @@ class Blocks extends Base {
 				'href' => rest_url( $base ),
 			),
 		);
+	}
+
+	/**
+	 * Get a block from its name.
+	 *
+	 * @param string $name Name of the block.
+	 *
+	 * @return array|WP_Error The block if name is valid, WP_Error otherwise.
+	 */
+	protected function get_block( $name ) {
+		$block = $this->plugin->settings->search_block( $name );
+
+		if ( null === $block ) {
+			return new WP_Error(
+				'rest_block_not_found',
+				__( 'Block not found.', 'bmfbe' ),
+				array( 'status' => 404 )
+			);
+		}
+
+		return $block;
 	}
 
 	/**
@@ -335,14 +388,10 @@ class Blocks extends Base {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function get_item( $request ) {
-		$block = $this->plugin->settings->search_block( $request['name'] );
+		$block = $this->get_block( $request['name'] );
 
-		if ( null === $block ) {
-			return new WP_Error(
-				'rest_block_not_found',
-				__( 'Block not found.', 'bmfbe' ),
-				array( 'status' => 404 )
-			);
+		if ( is_wp_error( $block ) ) {
+			return $block;
 		}
 
 		$data = $this->prepare_item_for_response( $block, $request );
@@ -353,10 +402,10 @@ class Blocks extends Base {
 	/**
 	 * Creates a single block.
 	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 *
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 */
 	public function create_item( $request ) {
 		// TODO: test if block already exists.
@@ -376,9 +425,44 @@ class Blocks extends Base {
 			);
 		}
 
-		$block = $this->plugin->settings->search_block( $prepared_block['name'] );
+		$block = $this->get_block( $prepared_block['name'] );
+		$data  = $this->prepare_item_for_response( $block, $request );
 
-		$data = $this->prepare_item_for_response( $block, $request );
+		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Updates a single block.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function update_item( $request ) {
+		$block = $this->get_block( $request['name'] );
+
+		if ( is_wp_error( $block ) ) {
+			return $block;
+		}
+
+		$prepared_block = $this->prepare_item_for_database( $request );
+
+		$result = $this->plugin->settings->update_block( $prepared_block );
+
+		if ( is_wp_error( $result ) ) {
+			$result->add_data( array( 'status' => 400 ) );
+			return $result;
+		} elseif ( false === $result ) {
+			return new WP_Error(
+				'rest_block_not_updated',
+				__( 'Block not updated.', 'bmfbe' ),
+				array( 'status' => 500 )
+			);
+		}
+
+		$block = $this->get_block( $request['name'] );
+		$data  = $this->prepare_item_for_response( $block, $request );
 
 		return rest_ensure_response( $data );
 	}

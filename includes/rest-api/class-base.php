@@ -80,7 +80,7 @@ abstract class Base extends \WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to read a post.
+	 * Checks if a given request has access to read a block.
 	 *
 	 * @since 1.0.0
 	 *
@@ -92,12 +92,12 @@ abstract class Base extends \WP_REST_Controller {
 	}
 
 	/**
-	 * Checks if a given request has access to update items.
+	 * Checks if a given request has access to update a block.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param WP_REST_Request $request Full data about the request.
-	 * @return WP_Error|bool True if the request has read access, WP_Error object otherwise.
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object otherwise.
 	 */
 	public function update_item_permissions_check( $request ) {
 		return $this->permission( $request, esc_html__( 'Sorry, you are not allowed to update this item.', 'bmfbe' ) );
