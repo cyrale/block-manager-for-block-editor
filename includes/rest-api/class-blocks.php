@@ -24,15 +24,6 @@ use WP_REST_Server;
  */
 class Blocks extends Base {
 	/**
-	 * Cached results of get_items_schema.
-	 *
-	 * @since 1.0.0
-	 * @var array
-	 */
-	protected $schema_items;
-
-
-	/**
 	 * Constructor.
 	 *
 	 * @param Plugin $plugin Main plugin object.
