@@ -104,6 +104,18 @@ abstract class Base extends \WP_REST_Controller {
 	}
 
 	/**
+	 * Checks if a given request has access to delete a block.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object otherwise.
+	 */
+	public function delete_item_permissions_check( $request ) {
+		return $this->permission( $request, esc_html__( 'Sorry, you are not allowed to delete this item.', 'bmfbe' ) );
+	}
+
+	/**
 	 * Retrieves the query params for the blocks collection.
 	 *
 	 * @since 1.0.0

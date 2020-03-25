@@ -275,6 +275,28 @@ class Settings {
 	}
 
 	/**
+	 * Delete a block.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $name Name of the block.
+	 *
+	 * @return WP_Error|bool
+	 */
+	public function delete_block( $name ) {
+		$db_block = $this->search_block( $name );
+
+		if ( null === $db_block ) {
+			return new WP_Error(
+				'invalid_block_name',
+				__( 'Invalid block name.', 'bmfbe' )
+			);
+		}
+
+		return $this->delete_block_in_database( $name );
+	}
+
+	/**
 	 * Search block with its name.
 	 *
 	 * @param string $name         Unique name for the block.
@@ -340,6 +362,26 @@ class Settings {
 		if ( maybe_serialize( $blocks ) === maybe_serialize( $this->get_blocks_from_database() ) ) {
 			return true;
 		}
+
+		return update_option( 'bmfbe_blocks', $blocks, false );
+	}
+
+	/**
+	 * Delete block in database.
+	 *
+	 * @param string $name Name of the block.
+	 *
+	 * @return bool True if block inserted/updated, False otherwise.
+	 */
+	protected function delete_block_in_database( $name ) {
+		$blocks = $this->get_blocks_from_database();
+		$index  = $this->search_block( $name, true );
+
+		if ( null === $index ) {
+			return false;
+		}
+
+		unset( $blocks[ $index ] );
 
 		return update_option( 'bmfbe_blocks', $blocks, false );
 	}

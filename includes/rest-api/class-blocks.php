@@ -92,6 +92,11 @@ class Blocks extends Base {
 					'permission_callback' => array( $this, 'update_item_permissions_check' ),
 					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
 				),
+				array(
+					'methods'             => WP_REST_Server::DELETABLE,
+					'callback'            => array( $this, 'delete_item' ),
+					'permission_callback' => array( $this, 'delete_item_permissions_check' ),
+				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
@@ -481,5 +486,41 @@ class Blocks extends Base {
 		$data  = $this->prepare_item_for_response( $block, $request );
 
 		return rest_ensure_response( $data );
+	}
+
+	/**
+	 * Deletes a single block.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param WP_REST_Request $request Full details about the request.
+	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 */
+	public function delete_item( $request ) {
+		$block = $this->get_block( $request['name'] );
+
+		if ( is_wp_error( $block ) ) {
+			return $block;
+		}
+
+		$result = $this->plugin->settings->delete_block( $request['name'] );
+
+		if ( is_wp_error( $result ) ) {
+			$result->add_data( array( 'status' => 400 ) );
+			return $result;
+		} elseif ( false === $result ) {
+			return new WP_Error(
+				'rest_block_not_updated',
+				__( 'Block not updated.', 'bmfbe' ),
+				array( 'status' => 500 )
+			);
+		}
+
+		return rest_ensure_response(
+			array(
+				'deleted'  => true,
+				'previous' => $this->prepare_item_for_response( $block, $request ),
+			)
+		);
 	}
 }
