@@ -229,10 +229,15 @@ class Settings {
 	 *     @type array  $supports    Optional. Some block supports.
 	 *     @type array  $styles      Optional. Block styles can be used to provide alternative styles to block.
 	 * }
+	 * @param array $keep {
+	 *     An array to mark the attributes whose you want to keep old values.
+	 *
+	 *     @type bool $styles Keep old styles.
+	 * }
 	 *
 	 * @return WP_Error|bool
 	 */
-	public function update_block( $block ) {
+	public function update_block( $block, $keep ) {
 		$db_block = $this->search_block( $block['name'] );
 
 		if ( null === $db_block ) {
@@ -253,7 +258,8 @@ class Settings {
 		if ( ! empty( $block['styles'] ) && is_array( $block['styles'] ) ) {
 			$styles = $this->merge_attributes(
 				$db_block['styles'],
-				array_filter( $block['styles'], array( $this, 'filter_styles_callback' ) )
+				array_filter( $block['styles'], array( $this, 'filter_styles_callback' ) ),
+				! empty( $keep['styles'] )
 			);
 		}
 
@@ -356,10 +362,11 @@ class Settings {
 	 *
 	 * @param array $arr1 Array of attributes.
 	 * @param array $arr2 Array of attributes.
+	 * @param bool  $keep Flag to keep old values of attributes.
 	 *
-	 * @return array Merged array.
+	 * @return array Merged array of attributes.
 	 */
-	protected function merge_attributes( $arr1, $arr2 ) {
+	protected function merge_attributes( $arr1, $arr2, $keep = true ) {
 		$merged_arr = array();
 
 		// Reset index of arrays.
@@ -379,11 +386,13 @@ class Settings {
 		$new_names = array_diff( $arr2_names, $arr1_names );
 
 		// Old attributes.
-		foreach ( $old_names as $name ) {
-			$key = array_search( $name, $arr1_names, true );
+		if ( ! empty( $keep ) ) {
+			foreach ( $old_names as $name ) {
+				$key = array_search( $name, $arr1_names, true );
 
-			if ( false !== $key ) {
-				$merged_arr[] = $arr1[ $key ];
+				if ( false !== $key ) {
+					$merged_arr[] = $arr1[ $key ];
+				}
 			}
 		}
 

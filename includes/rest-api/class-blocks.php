@@ -205,10 +205,26 @@ class Blocks extends Base {
 		);
 
 		foreach ( $endpoint_args as $field_id => $params ) {
+			// Unset args.
 			if ( WP_REST_Server::CREATABLE !== $method && in_array( $field_id, $unset, true ) ) {
 				unset( $endpoint_args[ $field_id ] );
 			}
 		}
+
+		// Add args not present in item schema.
+		$endpoint_args['keep'] = array(
+			'description' => __( 'Mark the attributes whose you want to keep old values.', 'bmfbe' ),
+			'type'        => 'object',
+			'properties'  => array(
+				'styles' => array(
+					'description' => __( 'Keep old values of styles.', 'bmfbe' ),
+					'type'        => 'boolean',
+				),
+			),
+			'default'     => array(
+				'styles' => true,
+			),
+		);
 
 		return $endpoint_args;
 	}
@@ -448,7 +464,7 @@ class Blocks extends Base {
 
 		$prepared_block = $this->prepare_item_for_database( $request );
 
-		$result = $this->plugin->settings->update_block( $prepared_block );
+		$result = $this->plugin->settings->update_block( $prepared_block, $request['keep'] );
 
 		if ( is_wp_error( $result ) ) {
 			$result->add_data( array( 'status' => 400 ) );
