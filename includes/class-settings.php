@@ -8,7 +8,6 @@
 
 namespace BMFBE;
 
-use Exception;
 use WP_Error;
 
 /**

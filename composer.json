@@ -24,6 +24,7 @@
 	"require-dev": {
 		"dealerdirect/phpcodesniffer-composer-installer": "^0.6.2",
 		"phpcompatibility/php-compatibility": "^9.3",
+		"phpmd/phpmd": "^2.8",
 		"sirbrillig/phpcs-variable-analysis": "^2.8",
 		"squizlabs/php_codesniffer": "^3.5",
 		"wp-coding-standards/wpcs": "^2.2"
