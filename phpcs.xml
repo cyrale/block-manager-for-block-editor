@@ -31,11 +31,6 @@
 	<file>./plugin.php</file>
 	<!-- <file>./phpunit</file> -->
 
-	<!-- Prefix not required for main file -->
-	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
-		<exclude-pattern>plugin.php</exclude-pattern>
-	</rule>
-
 	<!-- Do not require docblocks for unit tests -->
 	<rule ref="Squiz.Commenting.FunctionComment.Missing">
 		<exclude-pattern>phpunit/*</exclude-pattern>
