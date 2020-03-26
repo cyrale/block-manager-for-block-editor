@@ -21,15 +21,19 @@ class Block_Settings extends Settings {
 	/**
 	 * Constructor.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param Plugin $plugin Main plugin object.
 	 *
-	 * @since 1.0.0
+	 * @throws Exception
 	 */
 	public function __construct( $plugin ) {
 		parent::__construct( $plugin );
 
 		$this->option_name   = 'bmfbe_block_settings';
 		$this->default_value = array();
+
+		$this->load();
 	}
 
 	/**
