@@ -9,6 +9,7 @@
 namespace BMFBE\Settings;
 
 use BMFBE\Plugin;
+use Exception;
 
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
@@ -19,15 +20,26 @@ class Global_Settings extends Settings {
 	/**
 	 * Constructor.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param Plugin $plugin Main plugin object.
 	 *
-	 * @since 1.0.0
+	 * @throws Exception
 	 */
 	public function __construct( $plugin ) {
 		parent::__construct( $plugin );
 
 		$this->option_name   = 'bfmbe_global_settings';
-		$this->default_value = array();
+		$this->default_value = array(
+			'disable_color_palette'      => true,
+			'disable_custom_colors'      => false,
+			'disable_font_sizes'         => true,
+			'disable_custom_font_sizes'  => false,
+			'limit_access_by_user_group' => false,
+			'limit_access_by_post_type'  => false,
+		);
+
+		$this->load();
 	}
 
 	/**
@@ -48,6 +60,8 @@ class Global_Settings extends Settings {
 			return array();
 		}
 
+		$this->settings = wp_parse_args( $this->settings, $this->default_value );
+
 		return $this->settings;
 	}
 
@@ -58,5 +72,25 @@ class Global_Settings extends Settings {
 	 */
 	public function capability() {
 		return apply_filters( 'bmfbe_capabilty', 'manage_options' );
+	}
+
+	/**
+	 * Magic getter for our object.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param  string $field Field to get.
+	 *
+	 * @return mixed         Value of the field.
+	 * @throws Exception     Throws an exception if the field is invalid.
+	 */
+	public function __get( $field ) {
+		switch ( $field ) {
+			case 'settings':
+				return $this->$field;
+			default:
+				throw new Exception( 'Invalid ' . __CLASS__ . ' property: ' . $field );
+		}
+
 	}
 }

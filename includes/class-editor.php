@@ -14,7 +14,6 @@ namespace BMFBE;
  * @since 1.0.0
  */
 class Editor {
-
 	/**
 	 * Parent plugin class.
 	 *
@@ -43,16 +42,7 @@ class Editor {
 	 */
 	public function hooks() {
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ), 999 );
-		// add_action(
-		// 'init',
-		// function() {
-		// add_theme_support( 'editor-color-palette', array() );
-		// add_theme_support( 'disable-custom-colors' );
-		// add_theme_support( 'editor-font-sizes', array() );
-		// add_theme_support( 'disable-custom-font-sizes' );
-		// }
-		// );
-		// .
+		add_action( 'init', array( $this, 'editor_settings' ), 999 );
 	}
 
 	/**
@@ -80,5 +70,28 @@ class Editor {
 			array( 'wp-edit-blocks' ),
 			substr( sha1( filemtime( $this->plugin->path . 'dist/editor.build.css' ) ), 0, 8 )
 		);
+	}
+
+	/**
+	 * Customize editor settings.
+	 */
+	public function editor_settings() {
+		$settings = $this->plugin->global_settings->settings;
+
+		if ( true === $settings['disable_color_palette'] ) {
+			add_theme_support( 'editor-color-palette', array() );
+		}
+
+		if ( true === $settings['disable_custom_colors'] ) {
+			add_theme_support( 'disable-custom-colors' );
+		}
+
+		if ( true === $settings['disable_font_sizes'] ) {
+			add_theme_support( 'editor-font-sizes', array() );
+		}
+
+		if ( true === $settings['disable_custom_font_sizes'] ) {
+			add_theme_support( 'disable-custom-font-sizes' );
+		}
 	}
 }
