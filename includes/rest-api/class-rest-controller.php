@@ -139,7 +139,7 @@ abstract class Rest_Controller extends \WP_REST_Controller {
 	 * @return string Capability name.
 	 */
 	protected function capability() {
-		return apply_filters( 'bmfbe_rest_api_capability', $this->plugin->settings->capability() );
+		return apply_filters( 'bmfbe_rest_api_capability', $this->plugin->global_settings->capability() );
 	}
 
 	/**

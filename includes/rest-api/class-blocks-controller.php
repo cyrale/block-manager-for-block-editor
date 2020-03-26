@@ -10,6 +10,7 @@
 namespace BMFBE\Rest_API;
 
 use BMFBE\Plugin;
+use Exception;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -295,9 +296,10 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param string $name Name of the block.
 	 *
 	 * @return array|WP_Error The block if name is valid, WP_Error otherwise.
+	 * @throws Exception
 	 */
 	protected function get_block( $name ) {
-		$block = $this->plugin->settings->search_block( $name );
+		$block = $this->plugin->block_settings->search_block( $name );
 
 		if ( null === $block ) {
 			return new WP_Error(
@@ -313,10 +315,12 @@ class Blocks_Controller extends Rest_Controller {
 	/**
 	 * Retrieves a collection of items.
 	 *
+	 * @since 1.0.0
+
 	 * @param WP_REST_Request $request Full data about the request.
 	 *
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
-	 * @since 4.7.0
+	 * @throws Exception
 	 */
 	public function get_items( $request ) {
 		// Retrieve the list of registered collection query parameters.
@@ -333,7 +337,7 @@ class Blocks_Controller extends Rest_Controller {
 			}
 		}
 
-		$result = $this->plugin->settings->get_blocks( $args );
+		$result = $this->plugin->block_settings->get_blocks( $args );
 		$blocks = array();
 
 		foreach ( $result['blocks'] as $block ) {
@@ -391,7 +395,9 @@ class Blocks_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @throws Exception
 	 */
 	public function get_item( $request ) {
 		$block = $this->get_block( $request['name'] );
@@ -411,14 +417,16 @@ class Blocks_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @throws Exception
 	 */
 	public function create_item( $request ) {
 		// TODO: test if block already exists.
 
 		$prepared_block = $this->prepare_item_for_database( $request );
 
-		$result = $this->plugin->settings->insert_block( $prepared_block );
+		$result = $this->plugin->block_settings->insert_block( $prepared_block );
 
 		if ( is_wp_error( $result ) ) {
 			$result->add_data( array( 'status' => 400 ) );
@@ -443,7 +451,9 @@ class Blocks_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @throws Exception
 	 */
 	public function update_item( $request ) {
 		$block = $this->get_block( $request['name'] );
@@ -454,7 +464,7 @@ class Blocks_Controller extends Rest_Controller {
 
 		$prepared_block = $this->prepare_item_for_database( $request );
 
-		$result = $this->plugin->settings->update_block( $prepared_block, $request['keep'] );
+		$result = $this->plugin->block_settings->update_block( $prepared_block, $request['keep'] );
 
 		if ( is_wp_error( $result ) ) {
 			$result->add_data( array( 'status' => 400 ) );
@@ -479,7 +489,9 @@ class Blocks_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
+	 * @throws Exception
 	 */
 	public function delete_item( $request ) {
 		$block = $this->get_block( $request['name'] );
@@ -488,7 +500,7 @@ class Blocks_Controller extends Rest_Controller {
 			return $block;
 		}
 
-		$result = $this->plugin->settings->delete_block( $request['name'] );
+		$result = $this->plugin->block_settings->delete_block( $request['name'] );
 
 		if ( is_wp_error( $result ) ) {
 			$result->add_data( array( 'status' => 400 ) );
@@ -504,7 +516,7 @@ class Blocks_Controller extends Rest_Controller {
 		return rest_ensure_response(
 			array(
 				'deleted'  => true,
-				'previous' => $this->prepare_item_for_response( $block, $request ),
+				'previous' => $this->prepare_item_for_response( $block, $request )->get_data(),
 			)
 		);
 	}

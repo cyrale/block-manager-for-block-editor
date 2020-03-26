@@ -9,6 +9,8 @@
 namespace BMFBE;
 
 use BMFBE\Rest_API\Blocks_Controller;
+use BMFBE\Settings\Block_Settings;
+use BMFBE\Settings\Global_Settings;
 use Exception;
 
 /**
@@ -106,12 +108,20 @@ final class Plugin {
 	protected $front;
 
 	/**
-	 * Instance of BMFBE\Settings.
+	 * Instance of BMFBE\Settings\Global_Settings.
 	 *
 	 * @since 1.0.0
-	 * @var Settings
+	 * @var Global_Settings
 	 */
-	protected $settings;
+	protected $global_settings;
+
+	/**
+	 * Instance of BMFBE\Settings\Block_Settings.
+	 *
+	 * @since 1.0.0
+	 * @var Block_Settings
+	 */
+	protected $block_settings;
 
 	/**
 	 * Creates or returns an instance of this class.
@@ -137,7 +147,8 @@ final class Plugin {
 		$this->url      = plugin_dir_url( dirname( __FILE__ ) );
 		$this->path     = plugin_dir_path( dirname( __FILE__ ) );
 
-		$this->settings = new Settings( $this );
+		$this->global_settings = new Global_Settings( $this );
+		$this->block_settings  = new Block_Settings( $this );
 	}
 
 	/**
@@ -304,7 +315,8 @@ final class Plugin {
 			case 'basename':
 			case 'url':
 			case 'path':
-			case 'settings':
+			case 'block_settings':
+			case 'global_settings':
 				return $this->$field;
 			default:
 				throw new Exception( 'Invalid ' . __CLASS__ . ' property: ' . $field );

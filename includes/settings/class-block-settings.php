@@ -1,32 +1,23 @@
 <?php
 /**
- * Block Manager for WordPress Block Editor (Gutenberg): Settings.
+ * Block Manager for WordPress Block Editor (Gutenberg): Block settings.
  *
  * @since   1.0.0
- * @package BMFBE
+ * @package BMFBE\Settings
  */
 
-namespace BMFBE;
+namespace BMFBE\Settings;
 
+use BMFBE\Plugin;
 use Exception;
 use WP_Error;
 
 /**
- * Block Manager for WordPress Block Editor (Gutenberg): Settings.
+ * Block Manager for WordPress Block Editor (Gutenberg): Block settings.
  *
  * @since 1.0.0
  */
-class Settings {
-
-	/**
-	 * Parent plugin class.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var   Plugin
-	 */
-	protected $plugin = null;
-
+class Block_Settings extends Settings {
 	/**
 	 * Constructor.
 	 *
@@ -35,8 +26,10 @@ class Settings {
 	 * @since 1.0.0
 	 */
 	public function __construct( $plugin ) {
-		$this->plugin = $plugin;
-		$this->hooks();
+		parent::__construct( $plugin );
+
+		$this->option_name   = 'bmfbe_block_settings';
+		$this->default_value = array();
 	}
 
 	/**
@@ -48,12 +41,18 @@ class Settings {
 	}
 
 	/**
-	 * The capability required to use the plugin.
+	 * Sanitize settings after load.
 	 *
-	 * @return string Capability name.
+	 * @return array
 	 */
-	public function capability() {
-		return apply_filters( 'bmfbe_capabilty', 'manage_options' );
+	protected function sanitize_settings() {
+		if ( ! is_array( $this->settings ) ) {
+			return array();
+		}
+
+		// TODO: sort blocks.
+
+		return $this->settings;
 	}
 
 	/**
@@ -67,6 +66,7 @@ class Settings {
 	 * }
 	 *
 	 * @return array|WP_Error Array of blocks.
+	 * @throws Exception
 	 */
 	public function get_blocks( $args = array() ) {
 		$defaults = array(
@@ -76,7 +76,7 @@ class Settings {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		$blocks = $this->get_blocks_from_database();
+		$blocks = $this->load();
 		$total  = count( $blocks );
 
 		$max_pages = ceil( $total / (int) $args['per_page'] );
@@ -116,6 +116,7 @@ class Settings {
 	 * }
 	 *
 	 * @return WP_Error|bool
+	 * @throws Exception
 	 */
 	public function insert_block( $block ) {
 		// Check if some fields are empty.
@@ -236,6 +237,7 @@ class Settings {
 	 * }
 	 *
 	 * @return WP_Error|bool
+	 * @throws Exception
 	 */
 	public function update_block( $block, $keep ) {
 		$db_block = $this->search_block( $block['name'] );
@@ -282,6 +284,7 @@ class Settings {
 	 * @param string $name Name of the block.
 	 *
 	 * @return WP_Error|bool
+	 * @throws Exception
 	 */
 	public function delete_block( $name ) {
 		$db_block = $this->search_block( $name );
@@ -303,29 +306,16 @@ class Settings {
 	 * @param bool   $return_index True to return index instead of block. Default: false.
 	 *
 	 * @return int|array|null Block data.
+	 * @throws Exception
 	 */
 	public function search_block( $name, $return_index = false ) {
-		foreach ( $this->get_blocks_from_database() as $index => $block ) {
+		foreach ( $this->load() as $index => $block ) {
 			if ( $block['name'] === $name ) {
 				return empty( $return_index ) ? $block : $index;
 			}
 		}
 
 		return null;
-	}
-
-	/**
-	 * Get all blocks from the database.
-	 *
-	 * @return array All blocks registered in database.
-	 */
-	protected function get_blocks_from_database() {
-		$blocks = get_option( 'bmfbe_blocks', array() );
-		$blocks = is_array( $blocks ) ? $blocks : array();
-
-		// TODO: sort blocks.
-
-		return $blocks;
 	}
 
 	/**
@@ -345,9 +335,10 @@ class Settings {
 	 * }
 	 *
 	 * @return bool True if block inserted/updated, False otherwise.
+	 * @throws Exception
 	 */
 	protected function insert_block_in_database( $block ) {
-		$blocks = $this->get_blocks_from_database();
+		$blocks = $this->load();
 		$index  = $this->search_block( $block['name'], true );
 
 		if ( null === $index ) {
@@ -358,12 +349,9 @@ class Settings {
 
 		// TODO: sort blocks.
 
-		// Test if blocks have to be updated.
-		if ( maybe_serialize( $blocks ) === maybe_serialize( $this->get_blocks_from_database() ) ) {
-			return true;
-		}
+		$this->settings = $blocks;
 
-		return update_option( 'bmfbe_blocks', $blocks, false );
+		return $this->save();
 	}
 
 	/**
@@ -372,9 +360,10 @@ class Settings {
 	 * @param string $name Name of the block.
 	 *
 	 * @return bool True if block inserted/updated, False otherwise.
+	 * @throws Exception
 	 */
 	protected function delete_block_in_database( $name ) {
-		$blocks = $this->get_blocks_from_database();
+		$blocks = $this->load();
 		$index  = $this->search_block( $name, true );
 
 		if ( null === $index ) {
@@ -383,7 +372,7 @@ class Settings {
 
 		unset( $blocks[ $index ] );
 
-		return update_option( 'bmfbe_blocks', $blocks, false );
+		return $this->save();
 	}
 
 	/**
