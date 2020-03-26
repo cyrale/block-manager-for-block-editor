@@ -495,7 +495,7 @@ class Block_Settings extends Settings {
 			$attr['isDefault'] = ! empty( $attr['isDefault'] );
 		}
 
-		// Sort variations by name alphabetically.
+		// Sort attributes by name alphabetically.
 		array_multisort(
 			array_column( $prepared_attributes, 'name' ),
 			SORT_ASC,
