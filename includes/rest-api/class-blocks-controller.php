@@ -22,7 +22,7 @@ use WP_REST_Server;
  *
  * @package BMFBE\Rest_API
  */
-class Blocks extends Base {
+class Blocks_Controller extends Rest_Controller {
 	/**
 	 * Constructor.
 	 *

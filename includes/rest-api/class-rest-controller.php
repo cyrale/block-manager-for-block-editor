@@ -20,7 +20,7 @@ use WP_REST_Request;
  *
  * @package BMFBE\Rest_API
  */
-abstract class Base extends \WP_REST_Controller {
+abstract class Rest_Controller extends \WP_REST_Controller {
 	/**
 	 * Parent plugin class.
 	 *
