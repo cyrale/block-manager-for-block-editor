@@ -175,38 +175,45 @@ class Block_Settings extends Settings {
 		// Styles.
 		$prepared_block['styles'] = array();
 		if ( ! empty( $block['styles'] ) && is_array( $block['styles'] ) ) {
-			$prepared_block['styles'] = array_filter( $block['styles'], array( $this, 'filter_styles_callback' ) );
-
-			// Normalize value of isDefault field.
-			foreach ( $prepared_block['styles'] as &$style ) {
-				$style['isDefault'] = ! empty( $style['isDefault'] );
-			}
-
-			// Sort styles by name alphabetically.
-			array_multisort(
-				array_column( $prepared_block['styles'], 'name' ),
-				SORT_ASC,
-				$prepared_block['styles']
-			);
-
-			// Checks that there is only one default style.
-			$defaults  = array_column( $prepared_block['styles'], 'isDefault' );
-			$true_keys = array_keys( $defaults, true, true );
-
-			if ( count( $true_keys ) === 0 ) {
-				return new WP_Error(
-					'styles_one_default_at_least',
+			$prepared_block['styles'] = $this->prepare_attributes(
+				$block['styles'],
+				array( $this, 'filter_styles_callback' ),
+				new WP_Error(
+					'styles_no_default',
 					__( 'There should be at least one default style.', 'bmfbe' )
-				);
-			} elseif ( count( $true_keys ) > 1 ) {
-				return new WP_Error(
+				),
+				new WP_Error(
 					'styles_one_default_only',
 					__( 'There should be only one default style', 'bmfbe' )
-				);
+				)
+			);
+
+			if ( is_wp_error( $prepared_block['styles'] ) ) {
+				return $prepared_block['styles'];
 			}
 		}
 
-		// TODO: Variations.
+		// Variations.
+		$prepared_block['variations'] = array();
+		if ( ! empty( $block['variations'] ) && is_array( $block['variations'] ) ) {
+			$prepared_block['variations'] = $this->prepare_attributes(
+				$block['variations'],
+				array( $this, 'filter_variations_callback' ),
+				new WP_Error(
+					'variations_no_default',
+					__( 'There should be at least one default variation.', 'bmfbe' )
+				),
+				new WP_Error(
+					'variations_one_default_only',
+					__( 'There should be only one default variation', 'bmfbe' )
+				)
+			);
+
+			if ( is_wp_error( $prepared_block['variations'] ) ) {
+				return $prepared_block['variations'];
+			}
+		}
+
 		// TODO: Access.
 
 		// Insert/update block.
@@ -265,7 +272,16 @@ class Block_Settings extends Settings {
 			);
 		}
 
-		// TODO: Variations.
+		// Variations.
+		$styles = $db_block['variations'];
+		if ( ! empty( $block['variations'] ) && is_array( $block['variations'] ) ) {
+			$styles = $this->merge_attributes(
+				$db_block['variations'],
+				array_filter( $block['variations'], array( $this, 'filter_variations_callback' ) ),
+				! empty( $keep['variations'] )
+			);
+		}
+
 		// TODO: Access.
 
 		// Merge old and new fields with new fields overwriting old ones.
@@ -389,6 +405,19 @@ class Block_Settings extends Settings {
 	}
 
 	/**
+	 * Callback used to filter valid values for variations.
+	 *
+	 * @param mixed $variation Value of variation to validate.
+	 *
+	 * @return bool True if variation is valid, False otherwise.
+	 */
+	protected function filter_variations_callback( $variation ) {
+		return ! empty( $variation ) && is_array( $variation )
+		       && ! empty( $variation['name'] ) && is_string( $variation['name'] )
+		       && ! empty( $variation['title'] ) && is_string( $variation['title'] );
+	}
+
+	/**
 	 * Merge arr2 into arr1, depending on the name field.
 	 *
 	 * @param array $arr1 Array of attributes.
@@ -446,5 +475,43 @@ class Block_Settings extends Settings {
 		}
 
 		return $merged_arr;
+	}
+
+	/**
+	 * Prepare attributes before they are saved.
+	 *
+	 * @param array    $attributes                     Attributes to prepare.
+	 * @param callable $filter_callback                Callback used to filter valid attributes.
+	 * @param WP_Error $no_default_error_message       Error sent when there is no default.
+	 * @param WP_Error $one_default_only_error_message Error sent when there is more than one default.
+	 *
+	 * @return array|WP_Error
+	 */
+	protected function prepare_attributes( $attributes, $filter_callback, $no_default_error_message, $one_default_only_error_message ) {
+		$prepared_attributes = array_filter( $attributes, $filter_callback );
+
+		// Normalize value of isDefault field.
+		foreach ( $prepared_attributes as &$attr ) {
+			$attr['isDefault'] = ! empty( $attr['isDefault'] );
+		}
+
+		// Sort variations by name alphabetically.
+		array_multisort(
+			array_column( $prepared_attributes, 'name' ),
+			SORT_ASC,
+			$prepared_attributes
+		);
+
+		// Checks that there is only one default style.
+		$defaults  = array_column( $prepared_attributes, 'isDefault' );
+		$true_keys = array_keys( $defaults, true, true );
+
+		if ( count( $true_keys ) === 0 ) {
+			return $no_default_error_message;
+		} elseif ( count( $true_keys ) > 1 ) {
+			return $one_default_only_error_message;
+		}
+
+		return $prepared_attributes;
 	}
 }

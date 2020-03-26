@@ -143,7 +143,6 @@ class Blocks_Controller extends Rest_Controller {
 					'type'        => 'object',
 					'default'     => array(),
 				),
-				// TODO: manage variations (https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#variations-optional).
 				'styles'      => array(
 					'description' => __( 'Block styles can be used to provide alternative styles to block.', 'bmfbe' ),
 					'type'        => 'array',
@@ -164,6 +163,40 @@ class Blocks_Controller extends Rest_Controller {
 							),
 							'isDefault' => array(
 								'description' => __( 'Is default style?', 'bmfbe' ),
+								'type'        => 'boolean',
+								'default'     => false,
+							),
+						),
+					),
+				),
+				'variations'      => array(
+					'description' => __( 'Block\'s style variation can be used to provide alternative styles to block.', 'bmfbe' ),
+					'type'        => 'array',
+					'default'     => array(),
+					'items'       => array(
+						'type'       => 'object',
+						'default'    => array(),
+						'properties' => array(
+							'name'      => array(
+								'description' => __( 'The name for a variation.', 'bmfbe' ),
+								'type'        => 'string',
+								'required'    => true,
+							),
+							'title'     => array(
+								'description' => __( 'The title displayed for a variation.', 'bmfbe' ),
+								'type'        => 'string',
+								'required'    => true,
+							),
+							'description'     => array(
+								'description' => __( 'Description of a variation.', 'bmfbe' ),
+								'type'        => 'string',
+							),
+							'icon'     => array(
+								'description' => __( 'Icon of a variation.', 'bmfbe' ),
+								'type'        => 'string',
+							),
+							'isDefault' => array(
+								'description' => __( 'Is default variation?', 'bmfbe' ),
 								'type'        => 'boolean',
 								'default'     => false,
 							),
