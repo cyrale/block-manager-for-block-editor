@@ -455,7 +455,15 @@ class Blocks_Controller extends Rest_Controller {
 	 * @throws Exception
 	 */
 	public function create_item( $request ) {
-		// TODO: test if block already exists.
+		$block = $this->get_block( $request['name'] );
+
+		if ( ! is_wp_error( $block ) ) {
+			return new WP_Error(
+				'rest_block_already_exists',
+				__( 'Block already exists.', 'bmfbe' ),
+				array( 'status' => 400 )
+			);
+		}
 
 		$prepared_block = $this->prepare_item_for_database( $request );
 
