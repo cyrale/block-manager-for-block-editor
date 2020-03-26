@@ -50,9 +50,54 @@ class Block_Settings extends Settings {
 			return array();
 		}
 
-		// TODO: sort blocks.
+		// Sort blocks.
+		$this->settings = self::sort_settings( $this->settings );
 
 		return $this->settings;
+	}
+
+	/**
+	 * Sort settings.
+	 *
+	 * @param array $settings Array of settings.
+	 *
+	 * @return array Sorted array of settings.
+	 */
+	protected static function sort_settings( $settings ) {
+		// Sort settings by categories and names (core categories and blocks first)
+		usort( $settings, function( $a, $b ) {
+			$category_order = array(
+				'common',
+				'formatting',
+				'layout',
+				'widgets',
+				'embed',
+			);
+
+			$cat_a = array_search( $a['category'], $category_order, true );
+			$cat_b = array_search( $b['category'], $category_order, true );
+
+			$core_a = strpos( $a['name'], 'core/' );
+			$core_b = strpos( $b['name'], 'core/' );
+
+			if ( false !== $cat_a && false !== $cat_b && $cat_a !== $cat_b ) {
+				return $cat_a - $cat_b;
+			} elseif ( false !== $cat_a && false === $cat_b ) {
+				return -1;
+			} elseif ( false === $cat_a && false !== $cat_b ) {
+				return 1;
+			} else {
+				if ( 0 === $core_a && false === $core_b ) {
+					return - 1;
+				} elseif ( false === $core_a && 0 === $core_b ) {
+					return 1;
+				}
+			}
+
+			return strcmp( $a['name'], $b['name'] );
+		} );
+
+		return $settings;
 	}
 
 	/**
@@ -363,9 +408,8 @@ class Block_Settings extends Settings {
 			$blocks[ $index ] = $block;
 		}
 
-		// TODO: sort blocks.
-
-		$this->settings = $blocks;
+		// Sort blocks.
+		$this->settings = $this->sort_settings( $blocks );
 
 		return $this->save();
 	}
