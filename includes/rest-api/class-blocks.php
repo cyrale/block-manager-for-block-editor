@@ -112,27 +112,22 @@ class Blocks extends Base {
 				'name'        => array(
 					'description' => __( 'Unique name for the block.', 'bmfbe' ),
 					'type'        => 'string',
-					// 'readonly'    => true,
 				),
 				'title'       => array(
 					'description' => __( 'The display title for the block.', 'bmfbe' ),
 					'type'        => 'string',
-					// 'readonly'    => true,
 				),
 				'description' => array(
 					'description' => __( 'A short description for the block.', 'bmfbe' ),
 					'type'        => 'string',
-					// 'readonly'    => true,
 				),
 				'category'    => array(
 					'description' => __( 'Category to help users browse and discover blocks.', 'bmfbe' ),
 					'type'        => 'string',
-					// 'readonly'    => true,
 				),
 				'icon'        => array(
 					'description' => __( 'Icon to make block easier to identify.', 'bmfbe' ),
 					'type'        => 'string',
-					// 'readonly'    => true,
 				),
 				'keywords'    => array(
 					'description' => __( 'Aliases that help users discover block while searching.', 'bmfbe' ),
@@ -141,7 +136,6 @@ class Blocks extends Base {
 						'type'     => 'string',
 						'readonly' => true,
 					),
-					// 'readonly'    => true,
 				),
 				'supports'    => array(
 					'description' => __( 'Some block supports.', 'bmfbe' ),
