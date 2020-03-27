@@ -18,20 +18,20 @@ use Exception;
  * Main initiation class.
  *
  * @since 1.0.0
+ * @package BMFBE
  *
- * @property-read string          $version
- * @property-read string          $basename
- * @property-read string          $url
- * @property-read string          $path
- * @property-read Block_Settings  $block_settings
- * @property-read Global_Settings $global_settings
+ * @property-read string          $version         Current version.
+ * @property-read string          $basename        Plugin basename.
+ * @property-read string          $url             URL of plugin directory.
+ * @property-read string          $path            Path of plugin directory.
+ * @property-read Block_Settings  $block_settings  Block settings.
+ * @property-read Global_Settings $global_settings Global settings of plugin.
  */
 final class Plugin {
-
 	/**
 	 * Current version.
 	 *
-	 * @var    string
+	 * @var string
 	 * @since 1.0.0
 	 */
 	const VERSION = '1.0.0';
@@ -39,7 +39,7 @@ final class Plugin {
 	/**
 	 * URL of plugin directory.
 	 *
-	 * @var    string
+	 * @var string
 	 * @since 1.0.0
 	 */
 	protected $url = '';
@@ -47,7 +47,7 @@ final class Plugin {
 	/**
 	 * Path of plugin directory.
 	 *
-	 * @var    string
+	 * @var string
 	 * @since 1.0.0
 	 */
 	protected $path = '';
@@ -55,7 +55,7 @@ final class Plugin {
 	/**
 	 * Plugin basename.
 	 *
-	 * @var    string
+	 * @var string
 	 * @since 1.0.0
 	 */
 	protected $basename = '';
@@ -63,7 +63,7 @@ final class Plugin {
 	/**
 	 * Detailed activation error messages.
 	 *
-	 * @var    array
+	 * @var array
 	 * @since 1.0.0
 	 */
 	protected $activation_errors = array();
@@ -71,7 +71,7 @@ final class Plugin {
 	/**
 	 * Singleton instance of plugin.
 	 *
-	 * @var    Plugin
+	 * @var Plugin
 	 * @since 1.0.0
 	 */
 	protected static $single_instance = null;
@@ -79,71 +79,73 @@ final class Plugin {
 	/**
 	 * Instance of BMFBE\Rest_API\Blocks_Controller
 	 *
-	 * @since 1.0.0
 	 * @var Blocks_Controller
+	 * @since 1.0.0
 	 */
 	protected $api_blocks;
 
 	/**
 	 * Instance of BMFBE\Rest_API\Settings_Controller
 	 *
-	 * @since 1.0.0
 	 * @var Settings_Controller
+	 * @since 1.0.0
 	 */
 	protected $api_settings;
 
 	/**
 	 * Instance of BMFBE\Admin.
 	 *
-	 * @since 1.0.0
 	 * @var Admin
+	 * @since 1.0.0
 	 */
 	protected $admin;
 
 	/**
 	 * Instance of BMFBE\Common.
 	 *
-	 * @since 1.0.0
 	 * @var Common
+	 * @since 1.0.0
 	 */
 	protected $common;
 
 	/**
 	 * Instance of BMFBE\Editor.
 	 *
-	 * @since 1.0.0
 	 * @var Editor
+	 * @since 1.0.0
 	 */
 	protected $editor;
+
 	/**
 	 * Instance of BMFBE\Front.
 	 *
-	 * @since 1.0.0
 	 * @var Front
+	 * @since 1.0.0
 	 */
 	protected $front;
 
 	/**
-	 * Instance of BMFBE\Settings\Global_Settings.
+	 * Instance of BMFBE\Settings\Global_Settings: global settings of plugin.
 	 *
-	 * @since 1.0.0
 	 * @var Global_Settings
+	 * @since 1.0.0
 	 */
 	protected $global_settings;
 
 	/**
-	 * Instance of BMFBE\Settings\Block_Settings.
+	 * Instance of BMFBE\Settings\Block_Settings: block settings.
 	 *
-	 * @since 1.0.0
 	 * @var Block_Settings
+	 * @since 1.0.0
 	 */
 	protected $block_settings;
 
 	/**
 	 * Creates or returns an instance of this class.
 	 *
-	 * @since 1.0.0
 	 * @return Plugin A single instance of this class.
+	 * @throws Exception Throws an Exception if settings don't correctly define their option names.
+	 * @since 1.0.0
 	 */
 	public static function get_instance() {
 		if ( null === self::$single_instance ) {
@@ -156,9 +158,8 @@ final class Plugin {
 	/**
 	 * Sets up our plugin.
 	 *
+	 * @throws Exception Throws an Exception if settings don't correctly define their option names.
 	 * @since 1.0.0
-	 *
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	protected function __construct() {
 		$this->basename = plugin_basename( dirname( __FILE__ ) );
@@ -241,9 +242,8 @@ final class Plugin {
 	 * Check if the plugin meets requirements and
 	 * disable it if they are not present.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @return boolean True if requirements met, false if not.
+	 * @since 1.0.0
 	 */
 	public function check_requirements() {
 		// Bail early if plugin meets requirements.
@@ -277,9 +277,8 @@ final class Plugin {
 	/**
 	 * Check that all plugin requirements are met.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @return boolean True if requirements are met.
+	 * @since 1.0.0
 	 */
 	public function meets_requirements() {
 		// Do checks for required classes / functions or similar.
@@ -321,11 +320,11 @@ final class Plugin {
 	/**
 	 * Magic getter for our object.
 	 *
-	 * @since 1.0.0
+	 * @param string $field Field to get.
 	 *
-	 * @param  string $field Field to get.
-	 * @throws Exception     Throws an exception if the field is invalid.
 	 * @return mixed         Value of the field.
+	 * @throws Exception     Throws an exception if the field is invalid.
+	 * @since 1.0.0
 	 */
 	public function __get( $field ) {
 		switch ( $field ) {

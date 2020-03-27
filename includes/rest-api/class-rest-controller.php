@@ -2,8 +2,7 @@
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Settings for blocks.
  *
- * @since   1.0.0
- *
+ * @since 1.0.0
  * @package BMFBE\Rest_API
  */
 
@@ -18,26 +17,24 @@ use WP_REST_Request;
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Settings for blocks.
  *
- * @since   1.0.0
- *
+ * @since 1.0.0
  * @package BMFBE\Rest_API
  */
 abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_Class {
 	/**
 	 * Parent plugin class.
 	 *
+	 * @var Plugin
 	 * @since 1.0.0
-	 *
-	 * @var   Plugin
 	 */
 	protected $plugin = null;
 
 	/**
 	 * Constructor.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param Plugin $plugin Main plugin object.
+	 *
+	 * @since 1.0.0
 	 */
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
@@ -60,10 +57,10 @@ abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_C
 	/**
 	 * Checks if a given request has access to get items.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full data about the request.
+	 *
 	 * @return WP_Error|bool True if the request has read access, WP_Error object otherwise.
+	 * @since 1.0.0
 	 */
 	public function get_items_permissions_check( $request ) {
 		return $this->permission( $request, esc_html__( 'Sorry, you are not allowed to view this data.', 'bmfbe' ) );
@@ -72,10 +69,10 @@ abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_C
 	/**
 	 * Checks if a given request has access to create items.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full data about the request.
+	 *
 	 * @return WP_Error|bool True if the request has access to create items, WP_Error object otherwise.
+	 * @since 1.0.0
 	 */
 	public function create_item_permissions_check( $request ) {
 		return $this->permission( $request, esc_html__( 'Sorry, you are not allowed to create this item.', 'bmfbe' ) );
@@ -84,10 +81,10 @@ abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_C
 	/**
 	 * Checks if a given request has access to read a block.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object otherwise.
+	 * @since 1.0.0
 	 */
 	public function get_item_permissions_check( $request ) {
 		return $this->permission( $request, esc_html__( 'Sorry, you are not allowed to view this item.', 'bmfbe' ) );
@@ -96,10 +93,10 @@ abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_C
 	/**
 	 * Checks if a given request has access to update a block.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object otherwise.
+	 * @since 1.0.0
 	 */
 	public function update_item_permissions_check( $request ) {
 		return $this->permission( $request, esc_html__( 'Sorry, you are not allowed to update this item.', 'bmfbe' ) );
@@ -108,10 +105,10 @@ abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_C
 	/**
 	 * Checks if a given request has access to delete a block.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full details about the request.
+	 *
 	 * @return bool|WP_Error True if the request has read access for the item, WP_Error object otherwise.
+	 * @since 1.0.0
 	 */
 	public function delete_item_permissions_check( $request ) {
 		return $this->permission( $request, esc_html__( 'Sorry, you are not allowed to delete this item.', 'bmfbe' ) );
@@ -120,9 +117,8 @@ abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_C
 	/**
 	 * Retrieves the query params for the blocks collection.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @return array Collection parameters.
+	 * @since 1.0.0
 	 */
 	public function get_collection_params() {
 		$params = parent::get_collection_params();
@@ -136,9 +132,8 @@ abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_C
 	/**
 	 * The capability required to use the Rest API.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @return string Capability name.
+	 * @since 1.0.0
 	 */
 	protected function capability() {
 		return apply_filters( 'bmfbe_rest_api_capability', $this->plugin->global_settings->capability() );
@@ -147,11 +142,11 @@ abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_C
 	/**
 	 * Checks if a given request has access to get items.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 * @param string          $message Error message to send.
+	 *
 	 * @return WP_Error|bool True if the request has read access, WP_Error object otherwise.
+	 * @since 1.0.0
 	 */
 	protected function permission( $request, $message = '' ) {
 		// Restrict endpoint to only users who have the good capability.

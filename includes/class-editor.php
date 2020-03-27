@@ -2,7 +2,7 @@
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Editor.
  *
- * @since   1.0.0
+ * @since 1.0.0
  * @package BMFBE
  */
 
@@ -14,14 +14,14 @@ use BMFBE\Interfaces\WP_Plugin_Class;
  * Block Manager for WordPress Block Editor (Gutenberg): Editor.
  *
  * @since 1.0.0
+ * @package BMFBE
  */
 class Editor implements WP_Plugin_Class {
 	/**
 	 * Parent plugin class.
 	 *
+	 * @var Plugin
 	 * @since 1.0.0
-	 *
-	 * @var   Plugin
 	 */
 	protected $plugin = null;
 

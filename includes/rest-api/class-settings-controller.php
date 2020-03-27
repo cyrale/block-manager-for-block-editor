@@ -2,8 +2,7 @@
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
  *
- * @since   1.0.0
- *
+ * @since 1.0.0
  * @package BMFBE\Rest_API
  */
 
@@ -19,8 +18,7 @@ use WP_REST_Server;
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
  *
- * @since   1.0.0
- *
+ * @since 1.0.0
  * @package BMFBE\Rest_API
  */
 class Settings_Controller extends Rest_Controller {
@@ -92,12 +90,11 @@ class Settings_Controller extends Rest_Controller {
 	/**
 	 * Retrieves all settings.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function get_item( $request ) {
 		$options  = $this->plugin->global_settings->get_options();
@@ -121,12 +118,11 @@ class Settings_Controller extends Rest_Controller {
 	/**
 	 * Updates settings.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function update_item( $request ) {
 		$options  = $this->plugin->global_settings->get_options();

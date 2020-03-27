@@ -2,7 +2,7 @@
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
  *
- * @since   1.0.0
+ * @since 1.0.0
  * @package BMFBE\Settings
  */
 
@@ -15,27 +15,29 @@ use Exception;
  * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
  *
  * @since 1.0.0
+ * @package BMFBE\Settings
  */
 class Global_Settings extends Settings {
 	/**
 	 * Defined options.
 	 *
 	 * @var array
+	 * @since 1.0.0
 	 */
 	protected $options = array();
 
 	/**
 	 * Constructor.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param Plugin $plugin Main plugin object.
 	 *
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function __construct( $plugin ) {
 		parent::__construct( $plugin );
 
+		// Initialize available options like arguments in Rest API.
 		$this->options = array(
 			'disable_color_palettes'     => array(
 				'description' => __( 'Disable all color palettes.', 'bmfbe' ),
@@ -91,7 +93,8 @@ class Global_Settings extends Settings {
 	/**
 	 * Sanitize settings after load.
 	 *
-	 * @return array
+	 * @return array Sanitized settings.
+	 * @since 1.0.0
 	 */
 	protected function sanitize_settings() {
 		if ( ! is_array( $this->settings ) ) {
@@ -129,6 +132,7 @@ class Global_Settings extends Settings {
 	 * The capability required to use the plugin.
 	 *
 	 * @return string Capability name.
+	 * @since 1.0.0
 	 */
 	public function capability() {
 		return apply_filters( 'bmfbe_capabilty', 'manage_options' );
@@ -138,6 +142,7 @@ class Global_Settings extends Settings {
 	 * Retrieves all available options.
 	 *
 	 * @return array All available options.
+	 * @since 1.0.0
 	 */
 	public function get_options() {
 		return $this->options;
@@ -146,8 +151,9 @@ class Global_Settings extends Settings {
 	/**
 	 * Retrieves all settings.
 	 *
-	 * @return array
+	 * @return array Value of settings.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function get_settings() {
 		return $this->load();
@@ -158,8 +164,9 @@ class Global_Settings extends Settings {
 	 *
 	 * @param array $settings Updated values for settings.
 	 *
-	 * @return bool
+	 * @return bool True if settings were updated, False otherwise.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function update_settings( $settings ) {
 		$prepared_settings = array();

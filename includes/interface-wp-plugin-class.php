@@ -2,6 +2,7 @@
 /**
  * Interface WP_Plugin_Class: define class used with WP.
  *
+ * @since 1.0.0
  * @package BMFBE\Interfaces
  */
 
@@ -12,6 +13,7 @@ use BMFBE\Plugin;
 /**
  * Interface WP_Plugin_Class: define class used with WP.
  *
+ * @since 1.0.0
  * @package BMFBE\Interfaces
  */
 interface WP_Plugin_Class {

@@ -2,8 +2,7 @@
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Settings for blocks.
  *
- * @since   1.0.0
- *
+ * @since 1.0.0
  * @package BMFBE\Rest_API
  */
 
@@ -19,8 +18,7 @@ use WP_REST_Server;
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Settings for blocks.
  *
- * @since   1.0.0
- *
+ * @since 1.0.0
  * @package BMFBE\Rest_API
  */
 class Blocks_Controller extends Rest_Controller {
@@ -214,12 +212,12 @@ class Blocks_Controller extends Rest_Controller {
 	/**
 	 * Retrieves an array of endpoint arguments from the item schema for the controller.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param string $method Optional. HTTP method of the request. The arguments for `CREATABLE` requests are
 	 *                       checked for required values and may fall-back to a given default, this is not done
 	 *                       on `EDITABLE` requests. Default WP_REST_Server::CREATABLE.
+	 *
 	 * @return array Endpoint arguments.
+	 * @since 1.0.0
 	 */
 	public function get_endpoint_args_for_item_schema( $method = WP_REST_Server::CREATABLE ) {
 		$endpoint_args = parent::get_endpoint_args_for_item_schema( $method );
@@ -286,11 +284,11 @@ class Blocks_Controller extends Rest_Controller {
 	/**
 	 * Prepares a single block output for response.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param array           $block   Block object.
 	 * @param WP_REST_Request $request Request object.
+	 *
 	 * @return WP_REST_Response Response object.
+	 * @since 1.0.0
 	 */
 	public function prepare_item_for_response( $block, $request ) {
 		// Wrap the data in a response object.
@@ -305,10 +303,10 @@ class Blocks_Controller extends Rest_Controller {
 	/**
 	 * Prepares links for the request.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param array $block Block object.
+	 *
 	 * @return array Links for the given post.
+	 * @since 1.0.0
 	 */
 	protected function prepare_links( $block ) {
 		$base = sprintf( '%s/%s', $this->namespace, $this->rest_base );
@@ -330,6 +328,7 @@ class Blocks_Controller extends Rest_Controller {
 	 *
 	 * @return array|WP_Error The block if name is valid, WP_Error otherwise.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	protected function get_block( $name ) {
 		$block = $this->plugin->block_settings->search_block( $name );
@@ -348,12 +347,11 @@ class Blocks_Controller extends Rest_Controller {
 	/**
 	 * Retrieves a collection of items.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 *
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function get_items( $request ) {
 		// Retrieve the list of registered collection query parameters.
@@ -425,12 +423,11 @@ class Blocks_Controller extends Rest_Controller {
 	/**
 	 * Retrieves a single block.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function get_item( $request ) {
 		$block = $this->get_block( $request['name'] );
@@ -447,12 +444,11 @@ class Blocks_Controller extends Rest_Controller {
 	/**
 	 * Creates a single block.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function create_item( $request ) {
 		$block = $this->get_block( $request['name'] );
@@ -489,12 +485,11 @@ class Blocks_Controller extends Rest_Controller {
 	/**
 	 * Updates a single block.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function update_item( $request ) {
 		$block = $this->get_block( $request['name'] );
@@ -527,12 +522,11 @@ class Blocks_Controller extends Rest_Controller {
 	/**
 	 * Deletes a single block.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function delete_item( $request ) {
 		$block = $this->get_block( $request['name'] );

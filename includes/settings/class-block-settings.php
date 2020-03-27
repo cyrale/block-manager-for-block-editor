@@ -2,7 +2,7 @@
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Block settings.
  *
- * @since   1.0.0
+ * @since 1.0.0
  * @package BMFBE\Settings
  */
 
@@ -16,16 +16,16 @@ use WP_Error;
  * Block Manager for WordPress Block Editor (Gutenberg): Block settings.
  *
  * @since 1.0.0
+ * @package BMFBE\Settings
  */
 class Block_Settings extends Settings {
 	/**
 	 * Constructor.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param Plugin $plugin Main plugin object.
 	 *
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function __construct( $plugin ) {
 		parent::__construct( $plugin );
@@ -47,7 +47,8 @@ class Block_Settings extends Settings {
 	/**
 	 * Sanitize settings after load.
 	 *
-	 * @return array
+	 * @return array Sanitized settings.
+	 * @since 1.0.0
 	 */
 	protected function sanitize_settings() {
 		if ( ! is_array( $this->settings ) ) {
@@ -66,6 +67,7 @@ class Block_Settings extends Settings {
 	 * @param array $settings Array of settings.
 	 *
 	 * @return array Sorted array of settings.
+	 * @since 1.0.0
 	 */
 	protected static function sort_settings( $settings ) {
 		// Sort settings by categories and names (core categories and blocks first).
@@ -119,6 +121,7 @@ class Block_Settings extends Settings {
 	 *
 	 * @return array|WP_Error Array of blocks.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function get_blocks( $args = array() ) {
 		$defaults = array(
@@ -152,8 +155,6 @@ class Block_Settings extends Settings {
 	/**
 	 * Insert or update a block.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param array $block {
 	 *     An array of elements that make up a block to update or insert.
 	 *
@@ -167,8 +168,10 @@ class Block_Settings extends Settings {
 	 *     @type array  $styles      Optional. Block styles can be used to provide alternative styles to block.
 	 * }
 	 *
-	 * @return WP_Error|bool
+	 * @return WP_Error|bool True if block was inserted/updated, False if it was not inserted/updated, WP_Error
+	 *                        otherwise.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function insert_block( $block ) {
 		// Check if some fields are empty.
@@ -275,8 +278,6 @@ class Block_Settings extends Settings {
 	/**
 	 * Update a block.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param array $block {
 	 *     An array of elements that make up a block to update or insert.
 	 *
@@ -295,8 +296,9 @@ class Block_Settings extends Settings {
 	 *     @type bool $styles Keep old styles.
 	 * }
 	 *
-	 * @return WP_Error|bool
+	 * @return WP_Error|bool True if block was updated, False if it was not updated, WP_Error otherwise.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function update_block( $block, $keep ) {
 		$db_block = $this->search_block( $block['name'] );
@@ -347,12 +349,11 @@ class Block_Settings extends Settings {
 	/**
 	 * Delete a block.
 	 *
-	 * @since 1.0.0
-	 *
 	 * @param string $name Name of the block.
 	 *
-	 * @return WP_Error|bool
+	 * @return WP_Error|bool True if block was deleted, False if it was not deleted, Wp_Error otherwise.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function delete_block( $name ) {
 		$db_block = $this->search_block( $name );
@@ -375,6 +376,7 @@ class Block_Settings extends Settings {
 	 *
 	 * @return int|array|null Block data.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	public function search_block( $name, $return_index = false ) {
 		foreach ( $this->load() as $index => $block ) {
@@ -402,8 +404,9 @@ class Block_Settings extends Settings {
 	 *     @type array  $styles      Optional. Block styles can be used to provide alternative styles to block.
 	 * }
 	 *
-	 * @return bool True if block inserted/updated, False otherwise.
+	 * @return bool True if block was inserted/updated, False otherwise.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	protected function insert_block_in_database( $block ) {
 		$blocks = $this->load();
@@ -428,6 +431,7 @@ class Block_Settings extends Settings {
 	 *
 	 * @return bool True if block inserted/updated, False otherwise.
 	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @since 1.0.0
 	 */
 	protected function delete_block_in_database( $name ) {
 		$blocks = $this->load();
@@ -448,6 +452,7 @@ class Block_Settings extends Settings {
 	 * @param mixed $style Value of style to validate.
 	 *
 	 * @return bool True if style is valid, False otherwise.
+	 * @since 1.0.0
 	 */
 	protected function filter_styles_callback( $style ) {
 		return ! empty( $style ) && is_array( $style )
@@ -461,6 +466,7 @@ class Block_Settings extends Settings {
 	 * @param mixed $variation Value of variation to validate.
 	 *
 	 * @return bool True if variation is valid, False otherwise.
+	 * @since 1.0.0
 	 */
 	protected function filter_variations_callback( $variation ) {
 		return ! empty( $variation ) && is_array( $variation )
@@ -476,6 +482,7 @@ class Block_Settings extends Settings {
 	 * @param bool  $keep Flag to keep old values of attributes.
 	 *
 	 * @return array Merged array of attributes.
+	 * @since 1.0.0
 	 */
 	protected function merge_attributes( $arr1, $arr2, $keep = true ) {
 		$merged_arr = array();
@@ -537,6 +544,7 @@ class Block_Settings extends Settings {
 	 * @param WP_Error $one_default_only_error_message Error sent when there is more than one default.
 	 *
 	 * @return array|WP_Error
+	 * @since 1.0.0
 	 */
 	protected function prepare_attributes( $attributes, $filter_callback, $no_default_error_message, $one_default_only_error_message ) {
 		$prepared_attributes = array_filter( $attributes, $filter_callback );
