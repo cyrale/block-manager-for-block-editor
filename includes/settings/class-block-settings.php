@@ -327,9 +327,9 @@ class Block_Settings extends Settings {
 		}
 
 		// Variations.
-		$styles = $db_block['variations'];
+		$variations = $db_block['variations'];
 		if ( ! empty( $block['variations'] ) && is_array( $block['variations'] ) ) {
-			$styles = $this->merge_attributes(
+			$variations = $this->merge_attributes(
 				$db_block['variations'],
 				array_filter( $block['variations'], array( $this, 'filter_variations_callback' ) ),
 				! empty( $keep['variations'] )
@@ -339,9 +339,10 @@ class Block_Settings extends Settings {
 		// TODO: Access.
 
 		// Merge old and new fields with new fields overwriting old ones.
-		$block             = array_merge( $db_block, $block );
-		$block['supports'] = $supports;
-		$block['styles']   = $styles;
+		$block               = array_merge( $db_block, $block );
+		$block['supports']   = $supports;
+		$block['styles']     = $styles;
+		$block['variations'] = $variations;
 
 		return $this->insert_block( $block );
 	}
