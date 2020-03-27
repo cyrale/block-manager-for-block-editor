@@ -8,12 +8,14 @@
 
 namespace BMFBE;
 
+use BMFBE\Interfaces\WP_Plugin_Class;
+
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Front.
  *
  * @since 1.0.0
  */
-class Front {
+class Front implements WP_Plugin_Class {
 
 	/**
 	 * Parent plugin class.

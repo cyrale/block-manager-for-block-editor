@@ -8,12 +8,14 @@
 
 namespace BMFBE;
 
+use BMFBE\Interfaces\WP_Plugin_Class;
+
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Editor.
  *
  * @since 1.0.0
  */
-class Editor {
+class Editor implements WP_Plugin_Class {
 	/**
 	 * Parent plugin class.
 	 *

@@ -9,6 +9,7 @@
 
 namespace BMFBE\Settings;
 
+use BMFBE\Interfaces\WP_Plugin_Class;
 use BMFBE\Plugin;
 use Exception;
 
@@ -19,7 +20,7 @@ use Exception;
  *
  * @package BMFBE\Settings
  */
-abstract class Settings {
+abstract class Settings implements WP_Plugin_Class {
 	/**
 	 * Parent plugin class.
 	 *

@@ -35,11 +35,17 @@ function bmfbe_autoload( $class ) {
 		// Extract last element, it's the filename without extension.
 		$script = array_pop( $sanitized_parts );
 
+		$prefix = 'class';
+		if ( reset( $sanitized_parts ) === 'interfaces' ) {
+			$prefix = 'interface';
+			array_shift( $sanitized_parts );
+		}
+
 		// Build path where to find the script.
 		$path = join( '/', $sanitized_parts );
 		$path = '' !== $path ? '/' . $path : $path;
 
-		require_once __DIR__ . '/includes' . $path . '/class-' . $script . '.php';
+		require_once __DIR__ . "/includes{$path}/{$prefix}-{$script}.php";
 	}
 }
 

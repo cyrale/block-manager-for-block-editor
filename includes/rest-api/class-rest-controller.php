@@ -9,8 +9,10 @@
 
 namespace BMFBE\Rest_API;
 
+use BMFBE\Interfaces\WP_Plugin_Class;
 use BMFBE\Plugin;
 use WP_Error;
+use WP_REST_Controller;
 use WP_REST_Request;
 
 /**
@@ -20,7 +22,7 @@ use WP_REST_Request;
  *
  * @package BMFBE\Rest_API
  */
-abstract class Rest_Controller extends \WP_REST_Controller {
+abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_Class {
 	/**
 	 * Parent plugin class.
 	 *
