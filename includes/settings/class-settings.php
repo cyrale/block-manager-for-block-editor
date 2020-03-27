@@ -84,7 +84,7 @@ abstract class Settings implements WP_Plugin_Class {
 	 * @since 1.0.0
 	 *
 	 * @return mixed
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	protected function load() {
 		if ( isset( $this->settings ) ) {
@@ -103,7 +103,7 @@ abstract class Settings implements WP_Plugin_Class {
 	 * @since 1.0.0
 	 *
 	 * @return bool
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	protected function save() {
 		$db_settings = $this->get_option();
@@ -121,7 +121,7 @@ abstract class Settings implements WP_Plugin_Class {
 	 * Get option where settings were stored from database.
 	 *
 	 * @return mixed
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	protected function get_option() {
 		if ( empty( $this->option_name ) ) {
@@ -135,11 +135,11 @@ abstract class Settings implements WP_Plugin_Class {
 	 * Update option where settings were stored from database.
 	 *
 	 * @return bool
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	protected function update_option() {
 		if ( empty( $this->option_name ) ) {
-			throw new Exception( 'Name of the option not defined.' );
+			throw new Exception( 'Option name not defined.' );
 		}
 
 		return update_option( $this->option_name, $this->settings, false );

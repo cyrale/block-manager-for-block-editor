@@ -169,7 +169,7 @@ class Blocks_Controller extends Rest_Controller {
 						),
 					),
 				),
-				'variations'      => array(
+				'variations'  => array(
 					'description' => __( 'Block\'s style variation can be used to provide alternative styles to block.', 'bmfbe' ),
 					'type'        => 'array',
 					'default'     => array(),
@@ -177,25 +177,25 @@ class Blocks_Controller extends Rest_Controller {
 						'type'       => 'object',
 						'default'    => array(),
 						'properties' => array(
-							'name'      => array(
+							'name'        => array(
 								'description' => __( 'The name for a variation.', 'bmfbe' ),
 								'type'        => 'string',
 								'required'    => true,
 							),
-							'title'     => array(
+							'title'       => array(
 								'description' => __( 'The title displayed for a variation.', 'bmfbe' ),
 								'type'        => 'string',
 								'required'    => true,
 							),
-							'description'     => array(
+							'description' => array(
 								'description' => __( 'Description of a variation.', 'bmfbe' ),
 								'type'        => 'string',
 							),
-							'icon'     => array(
+							'icon'        => array(
 								'description' => __( 'Icon of a variation.', 'bmfbe' ),
 								'type'        => 'string',
 							),
-							'isDefault' => array(
+							'isDefault'   => array(
 								'description' => __( 'Is default variation?', 'bmfbe' ),
 								'type'        => 'boolean',
 								'default'     => false,
@@ -329,7 +329,7 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param string $name Name of the block.
 	 *
 	 * @return array|WP_Error The block if name is valid, WP_Error otherwise.
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	protected function get_block( $name ) {
 		$block = $this->plugin->block_settings->search_block( $name );
@@ -349,11 +349,11 @@ class Blocks_Controller extends Rest_Controller {
 	 * Retrieves a collection of items.
 	 *
 	 * @since 1.0.0
-
+	 *
 	 * @param WP_REST_Request $request Full data about the request.
 	 *
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function get_items( $request ) {
 		// Retrieve the list of registered collection query parameters.
@@ -430,7 +430,7 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function get_item( $request ) {
 		$block = $this->get_block( $request['name'] );
@@ -452,7 +452,7 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function create_item( $request ) {
 		$block = $this->get_block( $request['name'] );
@@ -494,7 +494,7 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function update_item( $request ) {
 		$block = $this->get_block( $request['name'] );
@@ -532,7 +532,7 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function delete_item( $request ) {
 		$block = $this->get_block( $request['name'] );

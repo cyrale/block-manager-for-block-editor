@@ -1,9 +1,19 @@
 <?php
+/**
+ * Interface WP_Plugin_Class: define class used with WP.
+ *
+ * @package BMFBE\Interfaces
+ */
 
 namespace BMFBE\Interfaces;
 
 use BMFBE\Plugin;
 
+/**
+ * Interface WP_Plugin_Class: define class used with WP.
+ *
+ * @package BMFBE\Interfaces
+ */
 interface WP_Plugin_Class {
 	/**
 	 * Constructor.

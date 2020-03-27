@@ -24,7 +24,7 @@ class Global_Settings extends Settings {
 	 *
 	 * @param Plugin $plugin Main plugin object.
 	 *
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function __construct( $plugin ) {
 		parent::__construct( $plugin );

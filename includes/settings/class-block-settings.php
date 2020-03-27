@@ -25,7 +25,7 @@ class Block_Settings extends Settings {
 	 *
 	 * @param Plugin $plugin Main plugin object.
 	 *
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function __construct( $plugin ) {
 		parent::__construct( $plugin );
@@ -68,38 +68,41 @@ class Block_Settings extends Settings {
 	 * @return array Sorted array of settings.
 	 */
 	protected static function sort_settings( $settings ) {
-		// Sort settings by categories and names (core categories and blocks first)
-		usort( $settings, function( $a, $b ) {
-			$category_order = array(
-				'common',
-				'formatting',
-				'layout',
-				'widgets',
-				'embed',
-			);
+		// Sort settings by categories and names (core categories and blocks first).
+		usort(
+			$settings,
+			function( $a, $b ) {
+				$category_order = array(
+					'common',
+					'formatting',
+					'layout',
+					'widgets',
+					'embed',
+				);
 
-			$cat_a = array_search( $a['category'], $category_order, true );
-			$cat_b = array_search( $b['category'], $category_order, true );
+				$cat_a = array_search( $a['category'], $category_order, true );
+				$cat_b = array_search( $b['category'], $category_order, true );
 
-			$core_a = strpos( $a['name'], 'core/' );
-			$core_b = strpos( $b['name'], 'core/' );
+				$core_a = strpos( $a['name'], 'core/' );
+				$core_b = strpos( $b['name'], 'core/' );
 
-			if ( false !== $cat_a && false !== $cat_b && $cat_a !== $cat_b ) {
-				return $cat_a - $cat_b;
-			} elseif ( false !== $cat_a && false === $cat_b ) {
-				return -1;
-			} elseif ( false === $cat_a && false !== $cat_b ) {
-				return 1;
-			} else {
-				if ( 0 === $core_a && false === $core_b ) {
-					return - 1;
-				} elseif ( false === $core_a && 0 === $core_b ) {
+				if ( false !== $cat_a && false !== $cat_b && $cat_a !== $cat_b ) {
+					return $cat_a - $cat_b;
+				} elseif ( false !== $cat_a && false === $cat_b ) {
+					return -1;
+				} elseif ( false === $cat_a && false !== $cat_b ) {
 					return 1;
+				} else {
+					if ( 0 === $core_a && false === $core_b ) {
+						return - 1;
+					} elseif ( false === $core_a && 0 === $core_b ) {
+						return 1;
+					}
 				}
-			}
 
-			return strcmp( $a['name'], $b['name'] );
-		} );
+				return strcmp( $a['name'], $b['name'] );
+			}
+		);
 
 		return $settings;
 	}
@@ -115,7 +118,7 @@ class Block_Settings extends Settings {
 	 * }
 	 *
 	 * @return array|WP_Error Array of blocks.
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function get_blocks( $args = array() ) {
 		$defaults = array(
@@ -165,7 +168,7 @@ class Block_Settings extends Settings {
 	 * }
 	 *
 	 * @return WP_Error|bool
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function insert_block( $block ) {
 		// Check if some fields are empty.
@@ -293,7 +296,7 @@ class Block_Settings extends Settings {
 	 * }
 	 *
 	 * @return WP_Error|bool
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function update_block( $block, $keep ) {
 		$db_block = $this->search_block( $block['name'] );
@@ -349,7 +352,7 @@ class Block_Settings extends Settings {
 	 * @param string $name Name of the block.
 	 *
 	 * @return WP_Error|bool
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function delete_block( $name ) {
 		$db_block = $this->search_block( $name );
@@ -371,7 +374,7 @@ class Block_Settings extends Settings {
 	 * @param bool   $return_index True to return index instead of block. Default: false.
 	 *
 	 * @return int|array|null Block data.
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	public function search_block( $name, $return_index = false ) {
 		foreach ( $this->load() as $index => $block ) {
@@ -400,7 +403,7 @@ class Block_Settings extends Settings {
 	 * }
 	 *
 	 * @return bool True if block inserted/updated, False otherwise.
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	protected function insert_block_in_database( $block ) {
 		$blocks = $this->load();
@@ -424,7 +427,7 @@ class Block_Settings extends Settings {
 	 * @param string $name Name of the block.
 	 *
 	 * @return bool True if block inserted/updated, False otherwise.
-	 * @throws Exception
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	protected function delete_block_in_database( $name ) {
 		$blocks = $this->load();
@@ -461,8 +464,8 @@ class Block_Settings extends Settings {
 	 */
 	protected function filter_variations_callback( $variation ) {
 		return ! empty( $variation ) && is_array( $variation )
-		       && ! empty( $variation['name'] ) && is_string( $variation['name'] )
-		       && ! empty( $variation['title'] ) && is_string( $variation['title'] );
+				&& ! empty( $variation['name'] ) && is_string( $variation['name'] )
+				&& ! empty( $variation['title'] ) && is_string( $variation['title'] );
 	}
 
 	/**
