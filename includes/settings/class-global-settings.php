@@ -18,6 +18,13 @@ use Exception;
  */
 class Global_Settings extends Settings {
 	/**
+	 * Defined options.
+	 *
+	 * @var array
+	 */
+	protected $options = array();
+
+	/**
 	 * Constructor.
 	 *
 	 * @since 1.0.0
@@ -29,14 +36,45 @@ class Global_Settings extends Settings {
 	public function __construct( $plugin ) {
 		parent::__construct( $plugin );
 
-		$this->option_name   = 'bfmbe_global_settings';
-		$this->default_value = array(
-			'disable_color_palette'      => true,
-			'disable_custom_colors'      => false,
-			'disable_font_sizes'         => true,
-			'disable_custom_font_sizes'  => false,
-			'limit_access_by_user_group' => false,
-			'limit_access_by_post_type'  => false,
+		$this->options = array(
+			'disable_color_palettes'     => array(
+				'description' => __( 'Disable all color palettes.', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
+			'disable_custom_colors'      => array(
+				'description' => __( 'Disable custom colors.', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
+			'disable_font_sizes'         => array(
+				'description' => __( 'Disable all font sizes.', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
+			'disable_custom_font_sizes'  => array(
+				'description' => __( 'Disable custom font sizes.', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
+			'limit_access_by_post_type'  => array(
+				'description' => __( 'Limit access to block by post type.', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
+			'limit_access_by_user_group' => array(
+				'description' => __( 'Limit access to block by user group.', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
+		);
+
+		$this->option_name   = 'bmfbe_global_settings';
+		$this->default_value = array_map(
+			function( $option ) {
+				return $option['default'];
+			},
+			$this->options
 		);
 
 		$this->load();
@@ -60,7 +98,29 @@ class Global_Settings extends Settings {
 			return array();
 		}
 
-		$this->settings = wp_parse_args( $this->settings, $this->default_value );
+		$settings = wp_parse_args( $this->settings, $this->default_value );
+
+		$filtered_settings = array();
+
+		foreach ( $this->options as $name => $schema ) {
+			// Default value.
+			$filtered_settings[ $name ] = null;
+			if ( isset( $schema['default'] ) ) {
+				$filtered_settings[ $name ] = $schema['default'];
+			}
+
+			// Pass undefined values.
+			if ( ! isset( $settings[ $name ] ) ) {
+				continue;
+			}
+
+			// Sanitize value.
+			if ( isset( $schema['type'] ) && 'boolean' === $schema['type'] ) {
+				$filtered_settings[ $name ] = ! empty( $settings[ $name ] );
+			}
+		}
+
+		$this->settings = $filtered_settings;
 
 		return $this->settings;
 	}
@@ -75,22 +135,55 @@ class Global_Settings extends Settings {
 	}
 
 	/**
-	 * Magic getter for our object.
+	 * Retrieves all available options.
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param  string $field Field to get.
-	 *
-	 * @return mixed         Value of the field.
-	 * @throws Exception     Throws an exception if the field is invalid.
+	 * @return array All available options.
 	 */
-	public function __get( $field ) {
-		switch ( $field ) {
-			case 'settings':
-				return $this->$field;
-			default:
-				throw new Exception( 'Invalid ' . __CLASS__ . ' property: ' . $field );
+	public function get_options() {
+		return $this->options;
+	}
+
+	/**
+	 * Retrieves all settings.
+	 *
+	 * @return array
+	 * @throws Exception Throws an Exception if option name is not defined.
+	 */
+	public function get_settings() {
+		return $this->load();
+	}
+
+	/**
+	 * Updates settings.
+	 *
+	 * @param array $settings Updated values for settings.
+	 *
+	 * @return bool
+	 * @throws Exception Throws an Exception if option name is not defined.
+	 */
+	public function update_settings( $settings ) {
+		$prepared_settings = array();
+
+		foreach ( $this->options as $name => $schema ) {
+			// Default value.
+			$prepared_settings[ $name ] = null;
+			if ( isset( $schema['default'] ) ) {
+				$prepared_settings[ $name ] = $schema['default'];
+			}
+
+			// Pass not updated value.
+			if ( ! isset( $settings[ $name ] ) ) {
+				continue;
+			}
+
+			// Test types and update value.
+			if ( isset( $schema['type'] ) && 'boolean' === $schema['type'] && is_bool( $settings[ $name ] ) ) {
+				$prepared_settings[ $name ] = $settings[ $name ];
+			}
 		}
 
+		$this->settings = $prepared_settings;
+
+		return $this->save();
 	}
 }

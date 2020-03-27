@@ -78,7 +78,7 @@ class Editor implements WP_Plugin_Class {
 	 * Customize editor settings.
 	 */
 	public function editor_settings() {
-		$settings = $this->plugin->global_settings->settings;
+		$settings = $this->plugin->global_settings->get_settings();
 
 		if ( true === $settings['disable_color_palette'] ) {
 			add_theme_support( 'editor-color-palette', array() );

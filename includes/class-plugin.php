@@ -9,6 +9,7 @@
 namespace BMFBE;
 
 use BMFBE\Rest_API\Blocks_Controller;
+use BMFBE\Rest_API\Settings_Controller;
 use BMFBE\Settings\Block_Settings;
 use BMFBE\Settings\Global_Settings;
 use Exception;
@@ -17,6 +18,13 @@ use Exception;
  * Main initiation class.
  *
  * @since 1.0.0
+ *
+ * @property-read string          $version
+ * @property-read string          $basename
+ * @property-read string          $url
+ * @property-read string          $path
+ * @property-read Block_Settings  $block_settings
+ * @property-read Global_Settings $global_settings
  */
 final class Plugin {
 
@@ -69,12 +77,20 @@ final class Plugin {
 	protected static $single_instance = null;
 
 	/**
-	 * Instance of BMFBE\Rest_API\Blocks
+	 * Instance of BMFBE\Rest_API\Blocks_Controller
 	 *
 	 * @since 1.0.0
 	 * @var Blocks_Controller
 	 */
 	protected $api_blocks;
+
+	/**
+	 * Instance of BMFBE\Rest_API\Settings_Controller
+	 *
+	 * @since 1.0.0
+	 * @var Settings_Controller
+	 */
+	protected $api_settings;
 
 	/**
 	 * Instance of BMFBE\Admin.
@@ -141,6 +157,8 @@ final class Plugin {
 	 * Sets up our plugin.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @throws Exception Throws an Exception if option name is not defined.
 	 */
 	protected function __construct() {
 		$this->basename = plugin_basename( dirname( __FILE__ ) );
@@ -157,7 +175,8 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	public function plugin_classes() {
-		$this->api_blocks = new Blocks_Controller( $this );
+		$this->api_blocks   = new Blocks_Controller( $this );
+		$this->api_settings = new Settings_Controller( $this );
 
 		$this->admin  = new Admin( $this );
 		$this->common = new Common( $this );
