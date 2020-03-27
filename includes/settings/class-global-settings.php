@@ -31,7 +31,6 @@ class Global_Settings extends Settings {
 	 *
 	 * @param Plugin $plugin Main plugin object.
 	 *
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function __construct( $plugin ) {
@@ -152,7 +151,6 @@ class Global_Settings extends Settings {
 	 * Retrieves all settings.
 	 *
 	 * @return array Value of settings.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function get_settings() {
@@ -165,7 +163,6 @@ class Global_Settings extends Settings {
 	 * @param array $settings Updated values for settings.
 	 *
 	 * @return bool True if settings were updated, False otherwise.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function update_settings( $settings ) {

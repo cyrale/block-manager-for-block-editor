@@ -11,6 +11,7 @@ namespace BMFBE\Settings;
 use BMFBE\Interfaces\WP_Plugin_Class;
 use BMFBE\Plugin;
 use Exception;
+use WP_Error;
 
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Manage settings.
@@ -60,7 +61,6 @@ abstract class Settings implements WP_Plugin_Class {
 	 */
 	public function __construct( $plugin ) {
 		$this->plugin = $plugin;
-
 		$this->hooks();
 	}
 
@@ -76,7 +76,6 @@ abstract class Settings implements WP_Plugin_Class {
 	 * Load settings from database.
 	 *
 	 * @return mixed Settings value sanitized.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	protected function load() {
@@ -84,29 +83,36 @@ abstract class Settings implements WP_Plugin_Class {
 			return $this->settings;
 		}
 
-		$this->settings = $this->get_option();
-		$this->settings = $this->sanitize_settings();
+		try {
+			$this->settings = $this->get_option();
+			$this->settings = $this->sanitize_settings();
 
-		return $this->settings;
+			return $this->settings;
+		} catch ( Exception $e ) {
+			return $this->default_value;
+		}
 	}
 
 	/**
 	 * Save settings to database.
 	 *
-	 * @return bool True if settings was updated, False otherwise.
-	 * @throws Exception Throws an Exception if option name is not defined.
+	 * @return bool True if settings were updated, False otherwise.
 	 * @since 1.0.0
 	 */
 	protected function save() {
-		$db_settings = $this->get_option();
+		try {
+			$db_settings = $this->get_option();
 
-		// Test if settings have to be updated.
-		if ( $this->settings === $db_settings
-			|| maybe_serialize( $this->settings ) === maybe_serialize( $db_settings ) ) {
-			return true;
+			// Test if settings have to be updated.
+			if ( $this->settings === $db_settings
+				|| maybe_serialize( $this->settings ) === maybe_serialize( $db_settings ) ) {
+				return true;
+			}
+
+			return $this->update_option();
+		} catch ( Exception $e ) {
+			return false;
 		}
-
-		return $this->update_option();
 	}
 
 	/**

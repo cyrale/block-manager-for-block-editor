@@ -327,7 +327,6 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param string $name Name of the block.
 	 *
 	 * @return array|WP_Error The block if name is valid, WP_Error otherwise.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	protected function get_block( $name ) {
@@ -350,7 +349,6 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full data about the request.
 	 *
 	 * @return WP_Error|WP_REST_Response Response object on success, or WP_Error object on failure.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function get_items( $request ) {
@@ -426,7 +424,6 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function get_item( $request ) {
@@ -447,7 +444,6 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function create_item( $request ) {
@@ -488,7 +484,6 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function update_item( $request ) {
@@ -525,7 +520,6 @@ class Blocks_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function delete_item( $request ) {

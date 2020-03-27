@@ -144,7 +144,6 @@ final class Plugin {
 	 * Creates or returns an instance of this class.
 	 *
 	 * @return Plugin A single instance of this class.
-	 * @throws Exception Throws an Exception if settings don't correctly define their option names.
 	 * @since 1.0.0
 	 */
 	public static function get_instance() {
@@ -158,7 +157,6 @@ final class Plugin {
 	/**
 	 * Sets up our plugin.
 	 *
-	 * @throws Exception Throws an Exception if settings don't correctly define their option names.
 	 * @since 1.0.0
 	 */
 	protected function __construct() {
@@ -322,8 +320,8 @@ final class Plugin {
 	 *
 	 * @param string $field Field to get.
 	 *
-	 * @return mixed         Value of the field.
-	 * @throws Exception     Throws an exception if the field is invalid.
+	 * @return mixed     Value of the field.
+	 * @throws Exception Throws an exception if the field is invalid.
 	 * @since 1.0.0
 	 */
 	public function __get( $field ) {

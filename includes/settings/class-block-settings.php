@@ -24,7 +24,6 @@ class Block_Settings extends Settings {
 	 *
 	 * @param Plugin $plugin Main plugin object.
 	 *
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function __construct( $plugin ) {
@@ -120,7 +119,6 @@ class Block_Settings extends Settings {
 	 * }
 	 *
 	 * @return array|WP_Error Array of blocks.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function get_blocks( $args = array() ) {
@@ -170,7 +168,6 @@ class Block_Settings extends Settings {
 	 *
 	 * @return WP_Error|bool True if block was inserted/updated, False if it was not inserted/updated, WP_Error
 	 *                        otherwise.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function insert_block( $block ) {
@@ -297,7 +294,6 @@ class Block_Settings extends Settings {
 	 * }
 	 *
 	 * @return WP_Error|bool True if block was updated, False if it was not updated, WP_Error otherwise.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function update_block( $block, $keep ) {
@@ -353,7 +349,6 @@ class Block_Settings extends Settings {
 	 * @param string $name Name of the block.
 	 *
 	 * @return WP_Error|bool True if block was deleted, False if it was not deleted, Wp_Error otherwise.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function delete_block( $name ) {
@@ -376,7 +371,6 @@ class Block_Settings extends Settings {
 	 * @param bool   $return_index True to return index instead of block. Default: false.
 	 *
 	 * @return int|array|null Block data.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function search_block( $name, $return_index = false ) {
@@ -406,7 +400,6 @@ class Block_Settings extends Settings {
 	 * }
 	 *
 	 * @return bool True if block was inserted/updated, False otherwise.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	protected function insert_block_in_database( $block ) {
@@ -431,7 +424,6 @@ class Block_Settings extends Settings {
 	 * @param string $name Name of the block.
 	 *
 	 * @return bool True if block inserted/updated, False otherwise.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	protected function delete_block_in_database( $name ) {

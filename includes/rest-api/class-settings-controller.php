@@ -93,7 +93,6 @@ class Settings_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function get_item( $request ) {
@@ -121,7 +120,6 @@ class Settings_Controller extends Rest_Controller {
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @throws Exception Throws an Exception if option name is not defined.
 	 * @since 1.0.0
 	 */
 	public function update_item( $request ) {
