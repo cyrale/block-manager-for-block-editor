@@ -238,13 +238,23 @@ class Blocks_Controller extends Rest_Controller {
 			'description' => __( 'Mark the attributes whose you want to keep old values.', 'bmfbe' ),
 			'type'        => 'object',
 			'properties'  => array(
-				'styles' => array(
+				'supports'   => array(
+					'description' => __( 'Keep old values of supports.', 'bmfbe' ),
+					'type'        => 'boolean',
+				),
+				'styles'     => array(
 					'description' => __( 'Keep old values of styles.', 'bmfbe' ),
+					'type'        => 'boolean',
+				),
+				'variations' => array(
+					'description' => __( 'Keep old values of variations.', 'bmfbe' ),
 					'type'        => 'boolean',
 				),
 			),
 			'default'     => array(
-				'styles' => true,
+				'supports'   => true,
+				'styles'     => true,
+				'variations' => true,
 			),
 		);
 

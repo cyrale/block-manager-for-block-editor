@@ -309,6 +309,16 @@ class Block_Settings extends Settings {
 		// Supports.
 		$supports = $db_block['supports'];
 		if ( ! empty( $block['supports'] ) && is_array( $block['supports'] ) ) {
+			// Remove old values.
+			if ( isset( $keep['supports'] ) && false === $keep['supports'] ) {
+				$db_block_keys = array_keys( $db_block['supports'] );
+				$block_keys    = array_keys( $block['supports'] );
+
+				$keys_to_delete = array_diff( $db_block_keys, $block_keys );
+
+				$db_block['supports'] = array_diff_key( $db_block['supports'], array_flip( $keys_to_delete ) );
+			}
+
 			$supports = array_merge( $db_block['supports'], $block['supports'] );
 		}
 
