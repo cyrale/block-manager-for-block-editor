@@ -28,16 +28,21 @@ define( 'BMFBE_MAIN_FILE', __FILE__ );
  * Grab the BMFBE object and return it.
  * Wrapper for BMFBE::get_instance().
  *
- * @since 1.0.0
  * @return Plugin  Singleton instance of plugin class.
+ * @throws Exception If plugin not correctly initialized.
+ * @since 1.0.0
  */
 function bmfbe() {
 	return Plugin::get_instance();
 }
 
-// Kick it off.
-add_action( 'plugins_loaded', array( bmfbe(), 'hooks' ) );
+try {
+	// Kick it off.
+	add_action( 'plugins_loaded', array( bmfbe(), 'hooks' ) );
 
-// Activation and deactivation.
-register_activation_hook( __FILE__, array( bmfbe(), 'plugin_activate' ) );
-register_deactivation_hook( __FILE__, array( bmfbe(), 'plugin_deactivate' ) );
+	// Activation and deactivation.
+	register_activation_hook( __FILE__, array( bmfbe(), 'plugin_activate' ) );
+	register_deactivation_hook( __FILE__, array( bmfbe(), 'plugin_deactivate' ) );
+} catch ( Exception $e ) {
+	wp_die( $e->getMessage() );
+}
