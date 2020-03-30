@@ -144,6 +144,7 @@ final class Plugin {
 	 * Creates or returns an instance of this class.
 	 *
 	 * @return Plugin A single instance of this class.
+	 * @throws Exception If plugin not correctly initialized.
 	 * @since 1.0.0
 	 */
 	public static function get_instance() {
@@ -157,12 +158,17 @@ final class Plugin {
 	/**
 	 * Sets up our plugin.
 	 *
+	 * @throws Exception If plugin not correctly initialized.
 	 * @since 1.0.0
 	 */
 	protected function __construct() {
-		$this->basename = plugin_basename( dirname( __FILE__ ) );
-		$this->url      = plugin_dir_url( dirname( __FILE__ ) );
-		$this->path     = plugin_dir_path( dirname( __FILE__ ) );
+		if ( ! defined( 'BMFBE_MAIN_FILE' ) ) {
+			throw new Exception( 'Plugin not correctly initialized.' );
+		}
+
+		$this->basename = plugin_basename( BMFBE_MAIN_FILE );
+		$this->url      = plugin_dir_url( BMFBE_MAIN_FILE );
+		$this->path     = plugin_dir_path( BMFBE_MAIN_FILE );
 
 		$this->global_settings = new Global_Settings( $this );
 		$this->block_settings  = new Block_Settings( $this );

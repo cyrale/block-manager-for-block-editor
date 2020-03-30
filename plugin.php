@@ -18,6 +18,8 @@ use BMFBE\Plugin;
 
 require_once __DIR__ . '/autoload.php';
 
+define( 'BMFBE_MAIN_FILE', __FILE__ );
+
 /**
  * Grab the BMFBE object and return it.
  * Wrapper for BMFBE::get_instance().
