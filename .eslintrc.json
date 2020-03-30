@@ -21,10 +21,12 @@
 		}
 	},
 	"globals": {
-		"wp": true,
-		"wpApiSettings": true,
 		"window": true,
 		"document": true,
+	  	"React": true,
+	  	"ReactDOM": true,
+		"wp": true,
+		"wpApiSettings": true,
 		"lodash": true,
 		"bmfbeEditorGlobal":  true
 	},

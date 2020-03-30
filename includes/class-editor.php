@@ -62,7 +62,8 @@ class Editor implements WP_Plugin_Class {
 			'bmfbe-editor',
 			'bmfbeEditorGlobal',
 			array(
-				'detection' => ! ! $_GET['detection'],
+				'detection'    => ! empty( $_GET['detection'] ),
+				'settingsPage' => add_query_arg( array( 'page' => 'bmfbe-settings' ), admin_url( 'admin.php' ) ),
 			)
 		);
 
@@ -80,19 +81,19 @@ class Editor implements WP_Plugin_Class {
 	public function editor_settings() {
 		$settings = $this->plugin->global_settings->get_settings();
 
-		if ( true === $settings['disable_color_palette'] ) {
+		if ( isset( $settings['disable_color_palette'] ) && true === $settings['disable_color_palette'] ) {
 			add_theme_support( 'editor-color-palette', array() );
 		}
 
-		if ( true === $settings['disable_custom_colors'] ) {
+		if ( isset( $settings['disable_custom_colors'] ) && true === $settings['disable_custom_colors'] ) {
 			add_theme_support( 'disable-custom-colors' );
 		}
 
-		if ( true === $settings['disable_font_sizes'] ) {
+		if ( isset( $settings['disable_font_sizes'] ) && true === $settings['disable_font_sizes'] ) {
 			add_theme_support( 'editor-font-sizes', array() );
 		}
 
-		if ( true === $settings['disable_custom_font_sizes'] ) {
+		if ( isset( $settings['disable_custom_font_sizes'] ) && true === $settings['disable_custom_font_sizes'] ) {
 			add_theme_support( 'disable-custom-font-sizes' );
 		}
 	}
