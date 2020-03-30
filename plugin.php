@@ -16,6 +16,10 @@
 
 use BMFBE\Plugin;
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit; // Exit if accessed directly.
+}
+
 require_once __DIR__ . '/autoload.php';
 
 define( 'BMFBE_MAIN_FILE', __FILE__ );
