@@ -525,8 +525,8 @@ class Block_Settings extends Settings {
 	/**
 	 * Prepare attributes before they are saved.
 	 *
-	 * @param array    $attributes                     Attributes to prepare.
-	 * @param callable $filter_callback                Callback used to filter valid attributes.
+	 * @param array    $attributes      Attributes to prepare.
+	 * @param callable $filter_callback Callback used to filter valid attributes.
 	 *
 	 * @return array|WP_Error
 	 * @since 1.0.0
