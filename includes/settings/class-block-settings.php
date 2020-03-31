@@ -552,9 +552,10 @@ class Block_Settings extends Settings {
 	protected function prepare_attributes( $attributes, $filter_callback, $no_default_error_message, $one_default_only_error_message ) {
 		$prepared_attributes = array_filter( $attributes, $filter_callback );
 
-		// Normalize value of isDefault field.
+		// Normalize value of isDefault and isActive fields.
 		foreach ( $prepared_attributes as &$attr ) {
 			$attr['isDefault'] = ! empty( $attr['isDefault'] );
+			$attr['isActive']  = ! empty( $attr['isActive'] );
 		}
 
 		// Sort attributes by name alphabetically.
@@ -564,14 +565,23 @@ class Block_Settings extends Settings {
 			$prepared_attributes
 		);
 
-		// Checks that there is only one default style.
-		$defaults  = array_column( $prepared_attributes, 'isDefault' );
-		$true_keys = array_keys( $defaults, true, true );
+		// Checks that there is only one default style in action.
+		$active_attributes = array_filter(
+			$prepared_attributes,
+			function ( $attr ) {
+				return $attr['isActive'];
+			}
+		);
 
-		if ( count( $true_keys ) === 0 ) {
-			return $no_default_error_message;
-		} elseif ( count( $true_keys ) > 1 ) {
-			return $one_default_only_error_message;
+		if ( count( $active_attributes ) > 0 ) {
+			$defaults  = array_column( $prepared_attributes, 'isDefault' );
+			$true_keys = array_keys( $defaults, true, true );
+
+			if ( count( $true_keys ) === 0 ) {
+				return $no_default_error_message;
+			} elseif ( count( $true_keys ) > 1 ) {
+				return $one_default_only_error_message;
+			}
 		}
 
 		return $prepared_attributes;

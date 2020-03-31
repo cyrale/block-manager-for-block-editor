@@ -164,6 +164,11 @@ class Blocks_Controller extends Rest_Controller {
 								'type'        => 'boolean',
 								'default'     => false,
 							),
+							'isActive'  => array(
+								'description' => __( 'Is active style?', 'bmfbe' ),
+								'type'        => 'boolean',
+								'default'     => true,
+							),
 						),
 					),
 				),
@@ -197,6 +202,11 @@ class Blocks_Controller extends Rest_Controller {
 								'description' => __( 'Is default variation?', 'bmfbe' ),
 								'type'        => 'boolean',
 								'default'     => false,
+							),
+							'isActive'    => array(
+								'description' => __( 'Is active variation?', 'bmfbe' ),
+								'type'        => 'boolean',
+								'default'     => true,
 							),
 						),
 					),
