@@ -229,15 +229,7 @@ class Block_Settings extends Settings {
 		if ( ! empty( $block['styles'] ) && is_array( $block['styles'] ) ) {
 			$prepared_block['styles'] = $this->prepare_attributes(
 				$block['styles'],
-				array( $this, 'filter_styles_callback' ),
-				new WP_Error(
-					'styles_no_default',
-					__( 'There should be at least one default style.', 'bmfbe' )
-				),
-				new WP_Error(
-					'styles_one_default_only',
-					__( 'There should be only one default style', 'bmfbe' )
-				)
+				array( $this, 'filter_styles_callback' )
 			);
 
 			if ( is_wp_error( $prepared_block['styles'] ) ) {
@@ -250,15 +242,7 @@ class Block_Settings extends Settings {
 		if ( ! empty( $block['variations'] ) && is_array( $block['variations'] ) ) {
 			$prepared_block['variations'] = $this->prepare_attributes(
 				$block['variations'],
-				array( $this, 'filter_variations_callback' ),
-				new WP_Error(
-					'variations_no_default',
-					__( 'There should be at least one default variation.', 'bmfbe' )
-				),
-				new WP_Error(
-					'variations_one_default_only',
-					__( 'There should be only one default variation', 'bmfbe' )
-				)
+				array( $this, 'filter_variations_callback' )
 			);
 
 			if ( is_wp_error( $prepared_block['variations'] ) ) {
@@ -543,13 +527,11 @@ class Block_Settings extends Settings {
 	 *
 	 * @param array    $attributes                     Attributes to prepare.
 	 * @param callable $filter_callback                Callback used to filter valid attributes.
-	 * @param WP_Error $no_default_error_message       Error sent when there is no default.
-	 * @param WP_Error $one_default_only_error_message Error sent when there is more than one default.
 	 *
 	 * @return array|WP_Error
 	 * @since 1.0.0
 	 */
-	protected function prepare_attributes( $attributes, $filter_callback, $no_default_error_message, $one_default_only_error_message ) {
+	protected function prepare_attributes( $attributes, $filter_callback ) {
 		$prepared_attributes = array_filter( $attributes, $filter_callback );
 
 		// Normalize value of isDefault and isActive fields.
@@ -564,25 +546,6 @@ class Block_Settings extends Settings {
 			SORT_ASC,
 			$prepared_attributes
 		);
-
-		// Checks that there is only one default style in action.
-		$active_attributes = array_filter(
-			$prepared_attributes,
-			function ( $attr ) {
-				return $attr['isActive'];
-			}
-		);
-
-		if ( count( $active_attributes ) > 0 ) {
-			$defaults  = array_column( $prepared_attributes, 'isDefault' );
-			$true_keys = array_keys( $defaults, true, true );
-
-			if ( count( $true_keys ) === 0 ) {
-				return $no_default_error_message;
-			} elseif ( count( $true_keys ) > 1 ) {
-				return $one_default_only_error_message;
-			}
-		}
 
 		return $prepared_attributes;
 	}
