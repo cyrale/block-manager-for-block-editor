@@ -536,8 +536,8 @@ class Block_Settings extends Settings {
 
 		// Normalize value of isDefault and isActive fields.
 		foreach ( $prepared_attributes as &$attr ) {
-			$attr['isDefault'] = ! empty( $attr['isDefault'] );
-			$attr['isActive']  = ! empty( $attr['isActive'] );
+			$attr['isDefault'] = isset( $attr['isDefault'] ) ? ! empty( $attr['isDefault'] ) : false;
+			$attr['isActive']  = isset( $attr['isactive'] ) ? ! empty( $attr['isActive'] ) : true;
 		}
 
 		// Sort attributes by name alphabetically.
