@@ -89,6 +89,14 @@ class Editor implements WP_Plugin_Class {
 			add_theme_support( 'disable-custom-colors' );
 		}
 
+		if ( isset( $settings['disable_gradient_presets'] ) && true === $settings['disable_gradient_presets'] ) {
+			add_theme_support( 'editor-gradient-presets', array() );
+		}
+
+		if ( isset( $settings['disable_custom_gradients'] ) && true === $settings['disable_custom_gradients'] ) {
+			add_theme_support( 'disable-custom-gradients' );
+		}
+
 		if ( isset( $settings['disable_font_sizes'] ) && true === $settings['disable_font_sizes'] ) {
 			add_theme_support( 'editor-font-sizes', array() );
 		}

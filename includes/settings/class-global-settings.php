@@ -48,6 +48,16 @@ class Global_Settings extends Settings {
 				'type'        => 'boolean',
 				'default'     => false,
 			),
+			'disable_gradient_presets'   => array(
+				'description' => __( 'Disable all gradient presets.', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
+			'disable_custom_gradients'   => array(
+				'description' => __( 'Disable custom gradients.', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
 			'disable_font_sizes'         => array(
 				'description' => __( 'Disable all font sizes.', 'bmfbe' ),
 				'type'        => 'boolean',
