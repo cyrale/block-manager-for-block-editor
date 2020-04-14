@@ -31,6 +31,9 @@
 	<file>./plugin.php</file>
 	<!-- <file>./phpunit</file> -->
 
+	<!-- Exclude index files (there are empty) -->
+	<exclude-pattern>*/index.php</exclude-pattern>
+
 	<!-- Do not require docblocks for unit tests -->
 	<rule ref="Squiz.Commenting.FunctionComment.Missing">
 		<exclude-pattern>phpunit/*</exclude-pattern>

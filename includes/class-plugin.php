@@ -170,8 +170,8 @@ final class Plugin {
 		$this->url      = plugin_dir_url( BMFBE_MAIN_FILE );
 		$this->path     = plugin_dir_path( BMFBE_MAIN_FILE );
 
-		$this->global_settings = new Global_Settings( $this );
-		$this->block_settings  = new Block_Settings( $this );
+		$this->global_settings = Global_Settings::get_instance();
+		$this->block_settings  = Block_Settings::get_instance();
 	}
 
 	/**

@@ -8,9 +8,6 @@
 
 namespace BMFBE\Settings;
 
-use BMFBE\Plugin;
-use Exception;
-
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
  *
@@ -19,25 +16,36 @@ use Exception;
  */
 class Global_Settings extends Settings {
 	/**
-	 * Defined options.
-	 *
-	 * @var array
-	 * @since 1.0.0
-	 */
-	protected $options = array();
-
-	/**
 	 * Constructor.
 	 *
-	 * @param Plugin $plugin Main plugin object.
-	 *
 	 * @since 1.0.0
 	 */
-	public function __construct( $plugin ) {
-		parent::__construct( $plugin );
+	public function __construct() {
+		parent::__construct();
+
+		$this->option_name   = 'global_settings';
 
 		// Initialize available options like arguments in Rest API.
-		$this->options = array(
+		// TODO: extends supports: https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#supports-optional
+		$this->schema = array(
+			'supports'                   => array(
+				'description'       => __( 'Global block supports.', 'bmfbe' ),
+				'type'              => array( 'boolean', 'object' ),
+				'default'           => false,
+				'properties'        => array(
+					'align'     => array(
+						'description' => __( 'This property adds block controls which allow to change block’s alignment.', 'bmfbe' ),
+						'type'        => 'boolean',
+						'default'     => false,
+					),
+					'alignWide' => array(
+						'description' => __( 'This property allows to enable wide alignment for your theme.', 'bmfbe' ),
+						'type'        => 'boolean',
+						'default'     => true,
+					),
+				),
+				'validate_callback' => array( $this, 'validate_supports' ),
+			),
 			'disable_color_palettes'     => array(
 				'description' => __( 'Disable all color palettes.', 'bmfbe' ),
 				'type'        => 'boolean',
@@ -79,16 +87,6 @@ class Global_Settings extends Settings {
 				'default'     => false,
 			),
 		);
-
-		$this->option_name   = 'bmfbe_global_settings';
-		$this->default_value = array_map(
-			function( $option ) {
-				return $option['default'];
-			},
-			$this->options
-		);
-
-		$this->load();
 	}
 
 	/**
@@ -97,44 +95,6 @@ class Global_Settings extends Settings {
 	 * @since 1.0.0
 	 */
 	public function hooks() {
-	}
-
-	/**
-	 * Sanitize settings after load.
-	 *
-	 * @return array Sanitized settings.
-	 * @since 1.0.0
-	 */
-	protected function sanitize_settings() {
-		if ( ! is_array( $this->settings ) ) {
-			return array();
-		}
-
-		$settings = wp_parse_args( $this->settings, $this->default_value );
-
-		$filtered_settings = array();
-
-		foreach ( $this->options as $name => $schema ) {
-			// Default value.
-			$filtered_settings[ $name ] = null;
-			if ( isset( $schema['default'] ) ) {
-				$filtered_settings[ $name ] = $schema['default'];
-			}
-
-			// Pass undefined values.
-			if ( ! isset( $settings[ $name ] ) ) {
-				continue;
-			}
-
-			// Sanitize value.
-			if ( isset( $schema['type'] ) && 'boolean' === $schema['type'] ) {
-				$filtered_settings[ $name ] = ! empty( $settings[ $name ] );
-			}
-		}
-
-		$this->settings = $filtered_settings;
-
-		return $this->settings;
 	}
 
 	/**
@@ -147,57 +107,17 @@ class Global_Settings extends Settings {
 		return apply_filters( 'bmfbe_capabilty', 'manage_options' );
 	}
 
-	/**
-	 * Retrieves all available options.
-	 *
-	 * @return array All available options.
-	 * @since 1.0.0
-	 */
-	public function get_options() {
-		return $this->options;
-	}
-
-	/**
-	 * Retrieves all settings.
-	 *
-	 * @return array Value of settings.
-	 * @since 1.0.0
-	 */
-	public function get_settings() {
-		return $this->load();
-	}
-
-	/**
-	 * Updates settings.
-	 *
-	 * @param array $settings Updated values for settings.
-	 *
-	 * @return bool True if settings were updated, False otherwise.
-	 * @since 1.0.0
-	 */
-	public function update_settings( $settings ) {
-		$prepared_settings = array();
-
-		foreach ( $this->options as $name => $schema ) {
-			// Default value.
-			$prepared_settings[ $name ] = null;
-			if ( isset( $schema['default'] ) ) {
-				$prepared_settings[ $name ] = $schema['default'];
+	public function validate_supports( $value ) {
+		if ( is_bool( $value ) ) {
+			if ( true === $value ) {
+				return new \WP_Error( 'invalid_params', __( "Supports can't be true.", 'bfmbe' ) );
 			}
 
-			// Pass not updated value.
-			if ( ! isset( $settings[ $name ] ) ) {
-				continue;
-			}
-
-			// Test types and update value.
-			if ( isset( $schema['type'] ) && 'boolean' === $schema['type'] && is_bool( $settings[ $name ] ) ) {
-				$prepared_settings[ $name ] = $settings[ $name ];
-			}
+			return true;
 		}
 
-		$this->settings = $prepared_settings;
+		$options = $this->get_schema();
 
-		return $this->save();
+		return self::validate_value_from_schema( $value, $options['supports'], 'supports' );
 	}
 }

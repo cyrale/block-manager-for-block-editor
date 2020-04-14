@@ -8,8 +8,6 @@
 
 namespace BMFBE\Settings;
 
-use BMFBE\Plugin;
-use Exception;
 use WP_Error;
 
 /**
@@ -22,17 +20,135 @@ class Block_Settings extends Settings {
 	/**
 	 * Constructor.
 	 *
-	 * @param Plugin $plugin Main plugin object.
-	 *
 	 * @since 1.0.0
 	 */
-	public function __construct( $plugin ) {
-		parent::__construct( $plugin );
+	public function __construct() {
+		parent::__construct();
 
-		$this->option_name   = 'bmfbe_block_settings';
-		$this->default_value = array();
+		$this->option_name   = 'block_settings';
 
-		$this->load();
+		$global_options = Global_Settings::get_instance()->get_schema();
+
+		$supports = $global_options['supports'];
+		$supports = array_merge( $supports, array(
+			'description'       => __( 'Block supports', 'bmfbe' ),
+			'type'              => 'object',
+			'validate_callback' => null,
+		) );
+
+		// Initialize available options like arguments in Rest API.
+		$this->schema = array(
+			'description' => __( 'List of supported blocks.', 'bmfbe' ),
+			'type'        => 'array',
+			'default'     => array(),
+			'items'       => array(
+				'name'        => array(
+					'description'       => __( 'Unique name for the block.', 'bmfbe' ),
+					'type'              => 'string',
+					'required'          => true,
+					'validate_callback' => array( $this, 'validate_name' ),
+				),
+				'title'       => array(
+					'description' => __( 'The display title for the block.', 'bmfbe' ),
+					'type'        => 'string',
+					'required'    => true,
+				),
+				'description' => array(
+					'description' => __( 'A short description for the block.', 'bmfbe' ),
+					'type'        => 'string',
+					'required'    => true,
+				),
+				'category'    => array(
+					'description' => __( 'Category to help users browse and discover blocks.', 'bmfbe' ),
+					'type'        => 'string',
+					'required'    => true,
+				),
+				'icon'        => array(
+					'description' => __( 'Icon to make block easier to identify.', 'bmfbe' ),
+					'type'        => 'string',
+				),
+				'keywords'    => array(
+					'description' => __( 'Aliases that help users discover block while searching.', 'bmfbe' ),
+					'type'        => 'array',
+					'default'     => array(),
+					'items'       => array(
+						'type' => 'string',
+					),
+				),
+				'supports'    => $supports,
+				'styles'      => array(
+					'description' => __( 'Block styles can be used to provide alternative styles to block.', 'bmfbe' ),
+					'type'        => 'array',
+					'default'     => array(),
+					'items'       => array(
+						'type'        => 'object',
+						'default'     => array(),
+						'properties'  => array(
+							'name'      => array(
+								'description' => __( 'The name for a style.', 'bmfbe' ),
+								'type'        => 'string',
+								'required'    => true,
+							),
+							'label'     => array(
+								'description' => __( 'The label displayed for a style.', 'bmfbe' ),
+								'type'        => 'string',
+								'required'    => true,
+							),
+							'isDefault' => array(
+								'description' => __( 'Is default style?', 'bmfbe' ),
+								'type'        => 'boolean',
+								'default'     => false,
+							),
+							'isActive'  => array(
+								'description' => __( 'Is active style?', 'bmfbe' ),
+								'type'        => 'boolean',
+								'default'     => true,
+							),
+						),
+					),
+				),
+				'variations'  => array(
+					'description' => __( 'Block\'s style variation can be used to provide alternative styles to block.',
+						'bmfbe' ),
+					'type'        => 'array',
+					'default'     => array(),
+					'items'       => array(
+						'type'       => 'object',
+						'default'    => array(),
+						'properties' => array(
+							'name'        => array(
+								'description' => __( 'The name for a variation.', 'bmfbe' ),
+								'type'        => 'string',
+								'required'    => true,
+							),
+							'title'       => array(
+								'description' => __( 'The title displayed for a variation.', 'bmfbe' ),
+								'type'        => 'string',
+								'required'    => true,
+							),
+							'description' => array(
+								'description' => __( 'Description of a variation.', 'bmfbe' ),
+								'type'        => 'string',
+							),
+							'icon'        => array(
+								'description' => __( 'Icon of a variation.', 'bmfbe' ),
+								'type'        => 'string',
+							),
+							'isDefault'   => array(
+								'description' => __( 'Is default variation?', 'bmfbe' ),
+								'type'        => 'boolean',
+								'default'     => false,
+							),
+							'isActive'    => array(
+								'description' => __( 'Is active variation?', 'bmfbe' ),
+								'type'        => 'boolean',
+								'default'     => true,
+							),
+						),
+					),
+				),
+			),
+		);
 	}
 
 	/**
@@ -43,21 +159,23 @@ class Block_Settings extends Settings {
 	public function hooks() {
 	}
 
-	/**
-	 * Sanitize settings after load.
-	 *
-	 * @return array Sanitized settings.
-	 * @since 1.0.0
-	 */
-	protected function sanitize_settings() {
-		if ( ! is_array( $this->settings ) ) {
-			return array();
+	public function validate_name( $value, $property ) {
+		$options = $this->get_schema();
+
+		$valid_check = self::validate_value_from_schema( $value, $options['name'], $property );
+
+		if ( true !== $valid_check ) {
+			return $valid_check;
 		}
 
-		// Sort blocks.
-		$this->settings = self::sort_settings( $this->settings );
+		if ( ! preg_match( '/^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*$/', $value ) ) {
+			return new WP_Error(
+				'invalid_block_name',
+				__( 'Block names must contain a namespace prefix, include only lowercase alphanumeric characters or dashes, and start with a letter.', 'bmfbe' )
+			);
+		}
 
-		return $this->settings;
+		return true;
 	}
 
 	/**
@@ -129,7 +247,7 @@ class Block_Settings extends Settings {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		$blocks = $this->load();
+		$blocks = $this->get_settings();
 		$total  = count( $blocks );
 
 		$max_pages = ceil( $total / (int) $args['per_page'] );
@@ -171,89 +289,26 @@ class Block_Settings extends Settings {
 	 * @since 1.0.0
 	 */
 	public function insert_block( $block ) {
-		// Check if some fields are empty.
-		if ( empty( $block['name'] ) || empty( $block['title'] ) || empty( $block['description'] ) || empty( $block['category'] ) ) {
-			return new WP_Error(
-				'empty_block',
-				__( 'Name, title, description or category are empty.', 'bmfbe' )
-			);
+		$options = $this->get_schema();
+
+		$valid_check = self::validate_params( $block, $options['items'] );
+		if ( is_wp_error( $valid_check ) ) {
+			return $valid_check;
 		}
 
-		// Check name validity.
-		if ( ! preg_match( '/^[a-z][a-z0-9-]*\/[a-z][a-z0-9-]*$/', $block['name'] ) ) {
-			return new WP_Error(
-				'invalid_block_name',
-				__( 'Block names must contain a namespace prefix, include only lowercase alphanumeric characters or dashes, and start with a letter.', 'bmfbe' )
-			);
+		$db_block = $this->search_block( $block['name'] );
+
+		$block = self::sanitize_params( $block, $options['items'] );
+		$block = self::prepare_settings_walker( $block, $options['items'], $db_block );
+
+		// Insert new block.
+		$inserted = $this->insert_block_in_database( $block );
+
+		if ( false === $inserted ) {
+			return $inserted;
 		}
 
-		$prepared_block = array();
-
-		$string_fields = array(
-			'name',
-			'title',
-			'description',
-			'category',
-			'icon',
-		);
-
-		foreach ( $string_fields as $field ) {
-			if ( isset( $block[ $field ] ) && ! is_string( $block[ $field ] ) ) {
-				return new WP_Error(
-					'invalid_type',
-					/* translators: %s: Field name */
-					sprintf( __( 'Invalid type for field: %s.', 'bmfbe' ), $field )
-				);
-			}
-
-			$prepared_block[ $field ] = $block[ $field ];
-		}
-
-		// Keywords.
-		$prepared_block['keywords'] = array();
-		if ( ! empty( $block['keywords'] ) && is_array( $block['keywords'] ) ) {
-			$prepared_block['keywords'] = array_filter( $block['keywords'], 'is_string' );
-		}
-
-		// Supports.
-		$prepared_block['supports'] = array();
-		if ( ! empty( $block['supports'] ) && is_array( $block['supports'] ) ) {
-			$prepared_block['supports'] = array_filter( $block['supports'], 'is_bool' );
-
-			// Sort supports.
-			ksort( $prepared_block['supports'] );
-		}
-
-		// Styles.
-		$prepared_block['styles'] = array();
-		if ( ! empty( $block['styles'] ) && is_array( $block['styles'] ) ) {
-			$prepared_block['styles'] = $this->prepare_attributes(
-				$block['styles'],
-				array( $this, 'filter_styles_callback' )
-			);
-
-			if ( is_wp_error( $prepared_block['styles'] ) ) {
-				return $prepared_block['styles'];
-			}
-		}
-
-		// Variations.
-		$prepared_block['variations'] = array();
-		if ( ! empty( $block['variations'] ) && is_array( $block['variations'] ) ) {
-			$prepared_block['variations'] = $this->prepare_attributes(
-				$block['variations'],
-				array( $this, 'filter_variations_callback' )
-			);
-
-			if ( is_wp_error( $prepared_block['variations'] ) ) {
-				return $prepared_block['variations'];
-			}
-		}
-
-		// TODO: Access.
-
-		// Insert/update block.
-		return $this->insert_block_in_database( $prepared_block );
+		return $block;
 	}
 
 	/**
@@ -280,7 +335,7 @@ class Block_Settings extends Settings {
 	 * @return WP_Error|bool True if block was updated, False if it was not updated, WP_Error otherwise.
 	 * @since 1.0.0
 	 */
-	public function update_block( $block, $keep ) {
+	public function update_block( $block, $keep = array() ) {
 		$db_block = $this->search_block( $block['name'] );
 
 		if ( null === $db_block ) {
@@ -288,6 +343,18 @@ class Block_Settings extends Settings {
 				'invalid_block_name',
 				__( 'Invalid block name.', 'bmfbe' )
 			);
+		}
+
+		$options = $this->get_schema();
+
+		$options['items']['title']['required']       = false;
+		$options['items']['description']['required'] = false;
+		$options['items']['category']['required']    = false;
+
+		$valid_check = self::validate_params( $block, $options['items'] );
+
+		if ( is_wp_error( $valid_check ) ) {
+			return $valid_check;
 		}
 
 		// Supports.
@@ -309,21 +376,13 @@ class Block_Settings extends Settings {
 		// Styles.
 		$styles = $db_block['styles'];
 		if ( ! empty( $block['styles'] ) && is_array( $block['styles'] ) ) {
-			$styles = $this->merge_attributes(
-				$db_block['styles'],
-				array_filter( $block['styles'], array( $this, 'filter_styles_callback' ) ),
-				! empty( $keep['styles'] )
-			);
+			$styles = $this->merge_attributes( $db_block['styles'], $block['styles'], ! empty( $keep['styles'] ) );
 		}
 
 		// Variations.
 		$variations = $db_block['variations'];
 		if ( ! empty( $block['variations'] ) && is_array( $block['variations'] ) ) {
-			$variations = $this->merge_attributes(
-				$db_block['variations'],
-				array_filter( $block['variations'], array( $this, 'filter_variations_callback' ) ),
-				! empty( $keep['variations'] )
-			);
+			$variations = $this->merge_attributes( $db_block['variations'], $block['variations'], ! empty( $keep['variations'] ) );
 		}
 
 		// TODO: Access.
@@ -358,23 +417,43 @@ class Block_Settings extends Settings {
 		return $this->delete_block_in_database( $name );
 	}
 
-	/**
-	 * Search block with its name.
-	 *
-	 * @param string $name         Unique name for the block.
-	 * @param bool   $return_index True to return index instead of block. Default: false.
-	 *
-	 * @return int|array|null Block data.
-	 * @since 1.0.0
-	 */
-	public function search_block( $name, $return_index = false ) {
-		foreach ( $this->load() as $index => $block ) {
+	protected function search_block_by_name( $name ) {
+		foreach ( $this->get_settings() as $index => $block ) {
 			if ( $block['name'] === $name ) {
-				return empty( $return_index ) ? $block : $index;
+				return array(
+					'index' => $index,
+					'block' => $block,
+				);
 			}
 		}
 
 		return null;
+	}
+
+	/**
+	 * Search block with its name.
+	 *
+	 * @param string $name Unique name for the block.
+	 *
+	 * @return int|array|null Block data.
+	 * @since 1.0.0
+	 */
+	public function search_block( $name ) {
+		$block = $this->search_block_by_name( $name );
+		if ( is_null( $block ) ) {
+			return null;
+		}
+
+		return $block['block'];
+	}
+
+	public function search_block_index( $name ) {
+		$block = $this->search_block_by_name( $name );
+		if ( is_null( $block ) ) {
+			return null;
+		}
+
+		return $block['index'];
 	}
 
 	/**
@@ -397,7 +476,7 @@ class Block_Settings extends Settings {
 	 * @since 1.0.0
 	 */
 	protected function insert_block_in_database( $block ) {
-		$blocks = $this->load();
+		$blocks = $this->get_settings();
 		$index  = $this->search_block( $block['name'], true );
 
 		if ( null === $index ) {
@@ -407,9 +486,15 @@ class Block_Settings extends Settings {
 		}
 
 		// Sort blocks.
-		$this->settings = $this->sort_settings( $blocks );
+		$settings = self::sort_settings( $blocks );
 
-		return $this->save();
+		$updated = $this->update_db_value( $settings );
+
+		if ( $updated ) {
+			$this->settings = $settings;
+		}
+
+		return $updated;
 	}
 
 	/**
@@ -421,8 +506,8 @@ class Block_Settings extends Settings {
 	 * @since 1.0.0
 	 */
 	protected function delete_block_in_database( $name ) {
-		$blocks = $this->load();
-		$index  = $this->search_block( $name, true );
+		$blocks = $this->get_settings();
+		$index  = $this->search_block_index( $name );
 
 		if ( null === $index ) {
 			return false;
@@ -430,35 +515,7 @@ class Block_Settings extends Settings {
 
 		unset( $blocks[ $index ] );
 
-		return $this->save();
-	}
-
-	/**
-	 * Callback used to filter valid values for styles.
-	 *
-	 * @param mixed $style Value of style to validate.
-	 *
-	 * @return bool True if style is valid, False otherwise.
-	 * @since 1.0.0
-	 */
-	protected function filter_styles_callback( $style ) {
-		return ! empty( $style ) && is_array( $style )
-				&& ! empty( $style['name'] ) && is_string( $style['name'] )
-				&& ! empty( $style['label'] ) && is_string( $style['label'] );
-	}
-
-	/**
-	 * Callback used to filter valid values for variations.
-	 *
-	 * @param mixed $variation Value of variation to validate.
-	 *
-	 * @return bool True if variation is valid, False otherwise.
-	 * @since 1.0.0
-	 */
-	protected function filter_variations_callback( $variation ) {
-		return ! empty( $variation ) && is_array( $variation )
-				&& ! empty( $variation['name'] ) && is_string( $variation['name'] )
-				&& ! empty( $variation['title'] ) && is_string( $variation['title'] );
+		return $this->update_db_value( $blocks );
 	}
 
 	/**
@@ -520,33 +577,5 @@ class Block_Settings extends Settings {
 		}
 
 		return $merged_arr;
-	}
-
-	/**
-	 * Prepare attributes before they are saved.
-	 *
-	 * @param array    $attributes      Attributes to prepare.
-	 * @param callable $filter_callback Callback used to filter valid attributes.
-	 *
-	 * @return array|WP_Error
-	 * @since 1.0.0
-	 */
-	protected function prepare_attributes( $attributes, $filter_callback ) {
-		$prepared_attributes = array_filter( $attributes, $filter_callback );
-
-		// Normalize value of isDefault and isActive fields.
-		foreach ( $prepared_attributes as &$attr ) {
-			$attr['isDefault'] = isset( $attr['isDefault'] ) ? ! empty( $attr['isDefault'] ) : false;
-			$attr['isActive']  = isset( $attr['isactive'] ) ? ! empty( $attr['isActive'] ) : true;
-		}
-
-		// Sort attributes by name alphabetically.
-		array_multisort(
-			array_column( $prepared_attributes, 'name' ),
-			SORT_ASC,
-			$prepared_attributes
-		);
-
-		return $prepared_attributes;
 	}
 }
