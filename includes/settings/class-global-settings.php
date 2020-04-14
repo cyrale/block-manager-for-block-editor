@@ -8,6 +8,8 @@
 
 namespace BMFBE\Settings;
 
+use WP_Error;
+
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
  *
@@ -23,10 +25,10 @@ class Global_Settings extends Settings {
 	public function __construct() {
 		parent::__construct();
 
-		$this->option_name   = 'global_settings';
+		$this->option_name = 'global_settings';
 
 		// Initialize available options like arguments in Rest API.
-		// TODO: extends supports: https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#supports-optional
+		// TODO: extends supports: https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#supports-optional.
 		$this->schema = array(
 			'supports'                   => array(
 				'description'       => __( 'Global block supports.', 'bmfbe' ),
@@ -107,10 +109,17 @@ class Global_Settings extends Settings {
 		return apply_filters( 'bmfbe_capabilty', 'manage_options' );
 	}
 
+	/**
+	 * Validate value of supports (cf. schema).
+	 *
+	 * @param mixed $value Value of supports.
+	 *
+	 * @return true|WP_Error True if supports are validated, WP_Error otherwise.
+	 */
 	public function validate_supports( $value ) {
 		if ( is_bool( $value ) ) {
 			if ( true === $value ) {
-				return new \WP_Error( 'invalid_params', __( "Supports can't be true.", 'bfmbe' ) );
+				return new WP_Error( 'invalid_params', __( "Supports can't be true.", 'bmfbe' ) );
 			}
 
 			return true;

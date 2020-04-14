@@ -67,7 +67,7 @@ abstract class Settings {
 	 */
 	final public static function get_instance() {
 		$called_class = get_called_class();
-		if ( !isset( self::$single_instances[ $called_class ] ) ) {
+		if ( ! isset( self::$single_instances[ $called_class ] ) ) {
 			self::$single_instances[ $called_class ] = new $called_class();
 		}
 
@@ -114,7 +114,9 @@ abstract class Settings {
 	/**
 	 * Save settings to database.
 	 *
-	 * @return bool True if settings were updated, False if they were not updated, WP_Error otherwise.
+	 * @param array $settings New values for settings.
+	 *
+	 * @return array|WP_Error Updated settings, WP_Error otherwise.
 	 * @since 1.0.0
 	 */
 	public function update_settings( $settings ) {
@@ -148,6 +150,8 @@ abstract class Settings {
 	/**
 	 * Update option where settings were stored in database.
 	 *
+	 * @param array $settings Updated value of settings.
+	 *
 	 * @return bool True if settings was updated, False otherwise.
 	 * @since 1.0.0
 	 */
@@ -156,13 +160,21 @@ abstract class Settings {
 
 		// Test if settings have to be updated.
 		if ( $settings === $db_settings
-		     || maybe_serialize( $settings ) === maybe_serialize( $db_settings ) ) {
+			|| maybe_serialize( $settings ) === maybe_serialize( $db_settings ) ) {
 			return true;
 		}
 
 		return update_option( $this->prefix_option_name . $this->option_name, $settings, false );
 	}
 
+	/**
+	 * Convert error from REST functions.
+	 *
+	 * @param WP_Error $error Error from REST functions.
+	 *
+	 * @return WP_Error Converted error.
+	 * @since 1.0.0
+	 */
 	private static function convert_rest_wp_error( $error ) {
 		$converted_error = new WP_Error();
 
@@ -179,6 +191,15 @@ abstract class Settings {
 		return $converted_error;
 	}
 
+	/**
+	 * Concatenate properties names.
+	 *
+	 * @param string $prop1 First name of the property.
+	 * @param string $prop2 Second name of the property.
+	 *
+	 * @return string Concatenate name.
+	 * @since 1.0.0
+	 */
 	protected static function concat_properties( $prop1, $prop2 ) {
 		if ( empty( $prop1 ) ) {
 			return $prop2;
@@ -187,6 +208,15 @@ abstract class Settings {
 		return $prop1 . '[' . $prop2 . ']';
 	}
 
+	/**
+	 * Check required parameters based on a schema.
+	 *
+	 * @param array $params Parameters to check.
+	 * @param array $schema Schema array to use for validation.
+	 *
+	 * @return true|WP_Error True if all required parameters are set, WP_Error otherwise.
+	 * @since 1.0.0
+	 */
 	protected static function required_params( $params, $schema ) {
 		$required_check = self::required_params_walker( $params, $schema );
 
@@ -201,6 +231,16 @@ abstract class Settings {
 		return true;
 	}
 
+	/**
+	 * Walk through parameters to check required values.
+	 *
+	 * @param mixed  $params   Parameters to check.
+	 * @param array  $schema   Schema array to use for validation.
+	 * @param string $property Name of the current property.
+	 *
+	 * @return array List of missing parameters.
+	 * @since 1.0.0
+	 */
 	protected static function required_params_walker( $params, $schema, $property = '' ) {
 		$required_params = array();
 
@@ -234,7 +274,6 @@ abstract class Settings {
 				$params = wp_parse_list( $params );
 			}
 
-			// TODO: validate arrays.
 			if ( wp_is_numeric_array( $params ) ) {
 				foreach ( $params as $index => $p ) {
 					$required_params = array_merge(
@@ -243,7 +282,6 @@ abstract class Settings {
 					);
 				}
 			}
-
 		} elseif ( 'object' === $schema['type'] && ! is_null( $params ) ) {
 			foreach ( $schema['properties'] as $p => $s ) {
 				$required_params = array_merge(
@@ -256,6 +294,15 @@ abstract class Settings {
 		return array_unique( $required_params );
 	}
 
+	/**
+	 * Validate parameters based on a schema.
+	 *
+	 * @param mixed $params Parameters to validate.
+	 * @param array $schema Schema array to use for validation.
+	 *
+	 * @return true|WP_Error True if parameters are validated, false or WP_Error otherwise.
+	 * @since 1.0.0
+	 */
 	protected static function validate_params( $params, $schema ) {
 		// Check required params.
 		$required_check = self::required_params( $params, $schema );
@@ -267,6 +314,16 @@ abstract class Settings {
 		return self::validate_params_walker( $params, $schema );
 	}
 
+	/**
+	 * Walk through parameters to validate them.
+	 *
+	 * @param mixed  $params   Parameters to validate.
+	 * @param array  $schema   Schema array to use for validation.
+	 * @param string $property Name of the current property.
+	 *
+	 * @return true|WP_Error True if parameters are validated, false or WP_Error otherwise.
+	 * @since 1.0.0
+	 */
 	protected static function validate_params_walker( $params, $schema, $property = '' ) {
 		if ( ! isset( $schema['type'] ) ) {
 			foreach ( $schema as $p => $s ) {
@@ -295,7 +352,7 @@ abstract class Settings {
 					$valid_error = $valid_check;
 				}
 
-				if ( true ===  $valid_check ) {
+				if ( true === $valid_check ) {
 					return true;
 				}
 			}
@@ -307,7 +364,7 @@ abstract class Settings {
 			return new WP_Error(
 				'invalid_param',
 				/* translators: 1: Parameter, 2: List of types. */
-				sprintf( __( '%1$s is not of type %2$s.' ), $property, implode( ',', $schema['type'] ) )
+				sprintf( __( '%1$s is not of type %2$s.', 'bmfbe' ), $property, implode( ',', $schema['type'] ) )
 			);
 		}
 
@@ -322,7 +379,7 @@ abstract class Settings {
 
 			if ( ! wp_is_numeric_array( $params ) ) {
 				/* translators: 1: Parameter, 2: Type name. */
-				return new WP_Error( 'invalid_param', sprintf( __( '%1$s is not of type %2$s.' ), $property, 'array' ) );
+				return new WP_Error( 'invalid_param', sprintf( __( '%1$s is not of type %2$s.', 'bmfbe' ), $property, 'array' ) );
 			}
 
 			foreach ( $params as $index => $p ) {
@@ -331,7 +388,6 @@ abstract class Settings {
 					return $valid_check;
 				}
 			}
-
 		} else {
 			$valid_check = self::validate_value_from_schema( $params, $schema, $property );
 
@@ -339,7 +395,7 @@ abstract class Settings {
 				$valid_check = new WP_Error(
 					'invalid_param',
 					/* translators: %s: Invalid parameter. */
-					sprintf( __( 'Invalid parameter: %s' ), $property )
+					sprintf( __( 'Invalid parameter: %s', 'bmfbe' ), $property )
 				);
 			}
 		}
@@ -347,6 +403,16 @@ abstract class Settings {
 		return $valid_check;
 	}
 
+	/**
+	 * Validate a value based on a schema.
+	 *
+	 * @param mixed  $value  The value to validate.
+	 * @param array  $schema Schema array to use for validation.
+	 * @param string $param  The parameter name, used in error messages.
+	 *
+	 * @return true|WP_Error True if value is validated, false or WP_Error otherwise.
+	 * @since 1.0.0
+	 */
 	protected static function validate_value_from_schema( $value, $schema, $param = '' ) {
 		$valid_check = rest_validate_value_from_schema( $value, $schema, $param );
 		if ( is_wp_error( $valid_check ) ) {
@@ -356,10 +422,29 @@ abstract class Settings {
 		return true;
 	}
 
+	/**
+	 * Sanitize parameters based on a schema.
+	 *
+	 * @param mixed $params Parameters to sanitize.
+	 * @param array $schema Schema array to use for sanitization.
+	 *
+	 * @return mixed|WP_Error Sanitized parameters.
+	 * @since 1.0.0
+	 */
 	protected static function sanitize_params( $params, $schema ) {
 		return self::sanitize_params_walker( $params, $schema );
 	}
 
+	/**
+	 * Walk through parameters to sanitize them.
+	 *
+	 * @param mixed  $params   Parameters to sanitize.
+	 * @param array  $schema   Schema array to use for sanitization.
+	 * @param string $property Name of the current property.
+	 *
+	 * @return mixed|WP_Error Sanitized parameters.
+	 * @since 1.0.0
+	 */
 	protected static function sanitize_params_walker( $params, $schema, $property = '' ) {
 		if ( ! isset( $schema['type'] ) ) {
 			$sanitized_values = array();
@@ -388,6 +473,15 @@ abstract class Settings {
 		return self::sanitize_value_from_schema( $params, $schema );
 	}
 
+	/**
+	 * Sanitize a value based on a schema.
+	 *
+	 * @param mixed $value  The value to sanitize.
+	 * @param array $schema Schema array to use for sanitization.
+	 *
+	 * @return mixed|WP_Error Sanitized value.
+	 * @since 1.0.0
+	 */
 	protected static function sanitize_value_from_schema( $value, $schema ) {
 		$sanitized_value = rest_sanitize_value_from_schema( $value, $schema );
 		if ( is_wp_error( $sanitized_value ) ) {
@@ -397,6 +491,16 @@ abstract class Settings {
 		return $sanitized_value;
 	}
 
+	/**
+	 * Walk through settings to prepare them.
+	 *
+	 * @param array      $settings        Settings to prepare.
+	 * @param array      $schema          Schema of current settings.
+	 * @param array|null $database_values Values stored in database.
+	 *
+	 * @return array|mixed|null Prepared settings.
+	 * @since 1.0.0
+	 */
 	protected static function prepare_settings_walker( $settings, $schema, $database_values = null ) {
 		if ( ! isset( $schema['type'] ) ) {
 			$prepared_settings = array();
@@ -453,6 +557,14 @@ abstract class Settings {
 		return $value;
 	}
 
+	/**
+	 * Validate settings.
+	 *
+	 * @param array $settings Settings to validate.
+	 *
+	 * @return array|WP_Error Validated settings, WP_Error otherwise.
+	 * @since 1.0.0
+	 */
 	protected function validate_settings( $settings ) {
 		return self::validate_params( $settings, $this->get_schema() );
 	}
@@ -460,17 +572,35 @@ abstract class Settings {
 	/**
 	 * Sanitize settings.
 	 *
-	 * @return mixed Sanitized settings.
+	 * @param array $settings Settings to sanitize.
+	 *
+	 * @return array Sanitized settings.
 	 * @since 1.0.0
 	 */
 	protected function sanitize_settings( $settings ) {
 		return self::sanitize_params( $settings, $this->get_schema() );
 	}
 
+	/**
+	 * Prepare settings after loading them.
+	 *
+	 * @param array $settings Settings to prepare.
+	 *
+	 * @return array Prepared settings.
+	 * @since 1.0.0
+	 */
 	protected function prepare_settings( $settings ) {
 		return self::prepare_settings_walker( $settings, $this->get_schema() );
 	}
 
+	/**
+	 * Prepare settings before updating them in database.
+	 *
+	 * @param array $settings Settings to prepare.
+	 *
+	 * @return array Prepared settings.
+	 * @since 1.0.0
+	 */
 	protected function prepare_settings_for_database( $settings ) {
 		return self::prepare_settings_walker( $settings, $this->get_schema(), $this->get_settings() );
 	}

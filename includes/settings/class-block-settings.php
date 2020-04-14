@@ -25,16 +25,19 @@ class Block_Settings extends Settings {
 	public function __construct() {
 		parent::__construct();
 
-		$this->option_name   = 'block_settings';
+		$this->option_name = 'block_settings';
 
-		$global_options = Global_Settings::get_instance()->get_schema();
+		$global_schema = Global_Settings::get_instance()->get_schema();
 
-		$supports = $global_options['supports'];
-		$supports = array_merge( $supports, array(
-			'description'       => __( 'Block supports', 'bmfbe' ),
-			'type'              => 'object',
-			'validate_callback' => null,
-		) );
+		$supports = $global_schema['supports'];
+		$supports = array_merge(
+			$supports,
+			array(
+				'description'       => __( 'Block supports', 'bmfbe' ),
+				'type'              => 'object',
+				'validate_callback' => null,
+			)
+		);
 
 		// Initialize available options like arguments in Rest API.
 		$this->schema = array(
@@ -81,9 +84,9 @@ class Block_Settings extends Settings {
 					'type'        => 'array',
 					'default'     => array(),
 					'items'       => array(
-						'type'        => 'object',
-						'default'     => array(),
-						'properties'  => array(
+						'type'       => 'object',
+						'default'    => array(),
+						'properties' => array(
 							'name'      => array(
 								'description' => __( 'The name for a style.', 'bmfbe' ),
 								'type'        => 'string',
@@ -108,8 +111,10 @@ class Block_Settings extends Settings {
 					),
 				),
 				'variations'  => array(
-					'description' => __( 'Block\'s style variation can be used to provide alternative styles to block.',
-						'bmfbe' ),
+					'description' => __(
+						"Block's style variation can be used to provide alternative styles to block.",
+						'bmfbe'
+					),
 					'type'        => 'array',
 					'default'     => array(),
 					'items'       => array(
@@ -159,10 +164,17 @@ class Block_Settings extends Settings {
 	public function hooks() {
 	}
 
-	public function validate_name( $value, $property ) {
+	/**
+	 * Validate the name of a block.
+	 *
+	 * @param mixed $value Name of a block.
+	 *
+	 * @return true|WP_Error True if name was validated, WP_Error otherwise.
+	 */
+	public function validate_name( $value ) {
 		$options = $this->get_schema();
 
-		$valid_check = self::validate_value_from_schema( $value, $options['name'], $property );
+		$valid_check = self::validate_value_from_schema( $value, $options['name'], 'name' );
 
 		if ( true !== $valid_check ) {
 			return $valid_check;
@@ -417,6 +429,14 @@ class Block_Settings extends Settings {
 		return $this->delete_block_in_database( $name );
 	}
 
+	/**
+	 * Search block with its name.
+	 *
+	 * @param string $name Unique name of the block.
+	 *
+	 * @return array|null Index and block data, null if block was not found.
+	 * @since 1.0.0
+	 */
 	protected function search_block_by_name( $name ) {
 		foreach ( $this->get_settings() as $index => $block ) {
 			if ( $block['name'] === $name ) {
@@ -433,9 +453,9 @@ class Block_Settings extends Settings {
 	/**
 	 * Search block with its name.
 	 *
-	 * @param string $name Unique name for the block.
+	 * @param string $name Unique name of the block.
 	 *
-	 * @return int|array|null Block data.
+	 * @return array|null Block data, null if block was not found.
 	 * @since 1.0.0
 	 */
 	public function search_block( $name ) {
@@ -447,6 +467,14 @@ class Block_Settings extends Settings {
 		return $block['block'];
 	}
 
+	/**
+	 * Search block with its name.
+	 *
+	 * @param string $name Unique name of the block.
+	 *
+	 * @return int|null Index, null if block was not found.
+	 * @since 1.0.0
+	 */
 	public function search_block_index( $name ) {
 		$block = $this->search_block_by_name( $name );
 		if ( is_null( $block ) ) {
