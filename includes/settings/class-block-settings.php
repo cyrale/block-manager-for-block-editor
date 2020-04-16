@@ -157,14 +157,6 @@ class Block_Settings extends Settings {
 	}
 
 	/**
-	 * Initiate our hooks.
-	 *
-	 * @since 1.0.0
-	 */
-	public function hooks() {
-	}
-
-	/**
 	 * Validate the name of a block.
 	 *
 	 * @param mixed $value Name of a block.

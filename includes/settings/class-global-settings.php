@@ -8,8 +8,6 @@
 
 namespace BMFBE\Settings;
 
-use WP_Error;
-
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
  *
@@ -200,14 +198,6 @@ class Global_Settings extends Settings {
 				'default'     => false,
 			),
 		);
-	}
-
-	/**
-	 * Initiate our hooks.
-	 *
-	 * @since 1.0.0
-	 */
-	public function hooks() {
 	}
 
 	/**
