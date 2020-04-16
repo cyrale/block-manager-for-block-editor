@@ -112,7 +112,7 @@ class Block_Settings extends Settings {
 				),
 				'variations'  => array(
 					'description' => __(
-						"Block's style variation can be used to provide alternative styles to block.",
+						'Block’s style variation can be used to provide alternative styles to block.',
 						'bmfbe'
 					),
 					'type'        => 'array',
