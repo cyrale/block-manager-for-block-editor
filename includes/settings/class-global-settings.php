@@ -51,92 +51,110 @@ class Global_Settings extends Settings {
 					'align'           => array_merge_recursive(
 						$supports_schema,
 						array(
-							'description' => __( 'This property adds block controls which allow to change block’s alignment.',
-								'bmfbe' ),
+							'description' => __(
+								'This property adds block controls which allow to change block’s alignment.',
+								'bmfbe'
+							),
 							'properties'  => array(
 								'value' => array( 'default' => false ),
 							),
-						),
+						)
 					),
 					'alignWide'       => array_merge_recursive(
 						$supports_schema,
 						array(
-							'description' => __( 'This property allows to enable wide alignment for your theme.',
-								'bmfbe' ),
+							'description' => __(
+								'This property allows to enable wide alignment for your theme.',
+								'bmfbe'
+							),
 							'properties'  => array(
 								'value' => array( 'default' => true ),
 							),
-						),
+						)
 					),
 					'anchor'          => array_merge_recursive(
 						$supports_schema,
 						array(
-							'description' => __( 'This property adds a field to define an id for the block and a button to copy the direct link.',
-								'bmfbe' ),
+							'description' => __(
+								'This property adds a field to define an id for the block and a button to copy the direct link.',
+								'bmfbe'
+							),
 							'properties'  => array(
 								'value' => array( 'default' => false ),
 							),
-						),
+						)
 					),
 					'customClassName' => array_merge_recursive(
 						$supports_schema,
 						array(
-							'description' => __( 'This property adds a field to define a custom className for the block’s wrapper.',
-								'bmfbe' ),
+							'description' => __(
+								'This property adds a field to define a custom className for the block’s wrapper.',
+								'bmfbe'
+							),
 							'properties'  => array(
 								'value' => array( 'default' => false ),
 							),
-						),
+						)
 					),
 					'className'       => array_merge_recursive(
 						$supports_schema,
 						array(
-							'description' => __( 'This property remove the support for the generated className.',
-								'bmfbe' ),
+							'description' => __(
+								'This property remove the support for the generated className.',
+								'bmfbe'
+							),
 							'properties'  => array(
 								'value' => array( 'default' => true ),
 							),
-						),
+						)
 					),
 					'html'            => array_merge_recursive(
 						$supports_schema,
 						array(
-							'description' => __( 'This property remove the ability to edit a block’s markup.',
-								'bmfbe' ),
+							'description' => __(
+								'This property remove the ability to edit a block’s markup.',
+								'bmfbe'
+							),
 							'properties'  => array(
 								'value' => array( 'default' => true ),
 							),
-						),
+						)
 					),
 					'inserter'        => array_merge_recursive(
 						$supports_schema,
 						array(
-							'description' => __( 'Hide a block so that it can only be inserted programmatically.',
-								'bmfbe' ),
+							'description' => __(
+								'Hide a block so that it can only be inserted programmatically.',
+								'bmfbe'
+							),
 							'properties'  => array(
 								'value' => array( 'default' => true ),
 							),
-						),
+						)
 					),
 					'multiple'        => array_merge_recursive(
 						$supports_schema,
 						array(
-							'description' => __( 'A non-multiple block can be inserted into each post, one time only.',
-								'bmfbe' ),
+							'description' => __(
+								'A non-multiple block can be inserted into each post, one time only.',
+								'bmfbe'
+							),
 							'properties'  => array(
 								'value' => array( 'default' => true ),
 							),
-						),
+						)
 					),
 					'reusable'        => array_merge_recursive(
 						$supports_schema,
 						array(
-							'description' => __( 'This property remove the ability to convert a block into a reusable block.',
-								'bmfbe' ),
+							'description' => __(
+								'This property remove the ability to convert a block into a reusable block.',
+								'bmfbe'
+							),
 							'properties'  => array(
 								'value' => array( 'default' => true ),
 							),
-						),
+						)
 					),
 				),
 				'validate_callback' => array( $this, 'validate_supports' ),
