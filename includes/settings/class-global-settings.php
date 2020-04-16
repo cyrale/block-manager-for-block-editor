@@ -27,23 +27,116 @@ class Global_Settings extends Settings {
 
 		$this->option_name = 'global_settings';
 
+		$supports_schema = array(
+			'type'       => 'object',
+			'properties' => array(
+				'isActive' => array(
+					'description' => __( 'Is current support active?', 'bmfbe' ),
+					'type'        => 'boolean',
+					'default'     => false,
+				),
+				'value'    => array(
+					'description' => __( 'Value of current support', 'bmfbe' ),
+					'type'        => 'boolean',
+				),
+			),
+		);
+
 		// Initialize available options like arguments in Rest API.
-		// TODO: extends supports: https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#supports-optional.
 		$this->schema = array(
 			'supports'                   => array(
 				'description'       => __( 'Global block supports.', 'bmfbe' ),
-				'type'              => array( 'boolean', 'object' ),
-				'default'           => false,
+				'type'              => 'object',
 				'properties'        => array(
-					'align'     => array(
-						'description' => __( 'This property adds block controls which allow to change block’s alignment.', 'bmfbe' ),
-						'type'        => 'boolean',
-						'default'     => false,
+					'align'           => array_merge_recursive(
+						$supports_schema,
+						array(
+							'description' => __( 'This property adds block controls which allow to change block’s alignment.',
+								'bmfbe' ),
+							'properties'  => array(
+								'value' => array( 'default' => false ),
+							),
+						),
 					),
-					'alignWide' => array(
-						'description' => __( 'This property allows to enable wide alignment for your theme.', 'bmfbe' ),
-						'type'        => 'boolean',
-						'default'     => true,
+					'alignWide'       => array_merge_recursive(
+						$supports_schema,
+						array(
+							'description' => __( 'This property allows to enable wide alignment for your theme.',
+								'bmfbe' ),
+							'properties'  => array(
+								'value' => array( 'default' => true ),
+							),
+						),
+					),
+					'anchor'          => array_merge_recursive(
+						$supports_schema,
+						array(
+							'description' => __( 'This property adds a field to define an id for the block and a button to copy the direct link.',
+								'bmfbe' ),
+							'properties'  => array(
+								'value' => array( 'default' => false ),
+							),
+						),
+					),
+					'customClassName' => array_merge_recursive(
+						$supports_schema,
+						array(
+							'description' => __( 'This property adds a field to define a custom className for the block’s wrapper.',
+								'bmfbe' ),
+							'properties'  => array(
+								'value' => array( 'default' => false ),
+							),
+						),
+					),
+					'className'       => array_merge_recursive(
+						$supports_schema,
+						array(
+							'description' => __( 'This property remove the support for the generated className.',
+								'bmfbe' ),
+							'properties'  => array(
+								'value' => array( 'default' => true ),
+							),
+						),
+					),
+					'html'            => array_merge_recursive(
+						$supports_schema,
+						array(
+							'description' => __( 'This property remove the ability to edit a block’s markup.',
+								'bmfbe' ),
+							'properties'  => array(
+								'value' => array( 'default' => true ),
+							),
+						),
+					),
+					'inserter'        => array_merge_recursive(
+						$supports_schema,
+						array(
+							'description' => __( 'Hide a block so that it can only be inserted programmatically.',
+								'bmfbe' ),
+							'properties'  => array(
+								'value' => array( 'default' => true ),
+							),
+						),
+					),
+					'multiple'        => array_merge_recursive(
+						$supports_schema,
+						array(
+							'description' => __( 'A non-multiple block can be inserted into each post, one time only.',
+								'bmfbe' ),
+							'properties'  => array(
+								'value' => array( 'default' => true ),
+							),
+						),
+					),
+					'reusable'        => array_merge_recursive(
+						$supports_schema,
+						array(
+							'description' => __( 'This property remove the ability to convert a block into a reusable block.',
+								'bmfbe' ),
+							'properties'  => array(
+								'value' => array( 'default' => true ),
+							),
+						),
 					),
 				),
 				'validate_callback' => array( $this, 'validate_supports' ),
@@ -107,26 +200,5 @@ class Global_Settings extends Settings {
 	 */
 	public function capability() {
 		return apply_filters( 'bmfbe_capabilty', 'manage_options' );
-	}
-
-	/**
-	 * Validate value of supports (cf. schema).
-	 *
-	 * @param mixed $value Value of supports.
-	 *
-	 * @return true|WP_Error True if supports are validated, WP_Error otherwise.
-	 */
-	public function validate_supports( $value ) {
-		if ( is_bool( $value ) ) {
-			if ( true === $value ) {
-				return new WP_Error( 'invalid_params', __( "Supports can't be true.", 'bmfbe' ) );
-			}
-
-			return true;
-		}
-
-		$options = $this->get_schema();
-
-		return self::validate_value_from_schema( $value, $options['supports'], 'supports' );
 	}
 }
