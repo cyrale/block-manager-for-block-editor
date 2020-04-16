@@ -8,8 +8,8 @@
 
 namespace BMFBE;
 
-use BMFBE\Rest_API\Blocks_Controller;
-use BMFBE\Rest_API\Settings_Controller;
+use BMFBE\Rest_API\Block_Settings_Controller;
+use BMFBE\Rest_API\Global_Settings_Controller;
 use BMFBE\Settings\Block_Settings;
 use BMFBE\Settings\Global_Settings;
 use Exception;
@@ -77,20 +77,20 @@ final class Plugin {
 	protected static $single_instance = null;
 
 	/**
-	 * Instance of BMFBE\Rest_API\Blocks_Controller
+	 * Instance of BMFBE\Rest_API\Block_Settings_Controller
 	 *
-	 * @var Blocks_Controller
+	 * @var Block_Settings_Controller
 	 * @since 1.0.0
 	 */
-	protected $api_blocks;
+	protected $api_block_settings;
 
 	/**
-	 * Instance of BMFBE\Rest_API\Settings_Controller
+	 * Instance of BMFBE\Rest_API\Global_Settings_Controller
 	 *
-	 * @var Settings_Controller
+	 * @var Global_Settings_Controller
 	 * @since 1.0.0
 	 */
-	protected $api_settings;
+	protected $api_global_settings;
 
 	/**
 	 * Instance of BMFBE\Admin.
@@ -180,8 +180,8 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	public function plugin_classes() {
-		$this->api_blocks   = new Blocks_Controller( $this );
-		$this->api_settings = new Settings_Controller( $this );
+		$this->api_block_settings  = new Block_Settings_Controller( $this );
+		$this->api_global_settings = new Global_Settings_Controller( $this );
 
 		$this->admin  = new Admin( $this );
 		$this->common = new Common( $this );

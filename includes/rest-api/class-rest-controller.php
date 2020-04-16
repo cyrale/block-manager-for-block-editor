@@ -10,6 +10,7 @@ namespace BMFBE\Rest_API;
 
 use BMFBE\Interfaces\WP_Plugin_Class;
 use BMFBE\Plugin;
+use BMFBE\Settings\Global_Settings;
 use WP_Error;
 use WP_REST_Controller;
 use WP_REST_Request;
@@ -136,7 +137,7 @@ abstract class Rest_Controller extends WP_REST_Controller implements WP_Plugin_C
 	 * @since 1.0.0
 	 */
 	protected function capability() {
-		return apply_filters( 'bmfbe_rest_api_capability', $this->plugin->global_settings->capability() );
+		return apply_filters( 'bmfbe_rest_api_capability', Global_Settings::get_instance()->capability() );
 	}
 
 	/**

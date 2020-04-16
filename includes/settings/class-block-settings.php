@@ -164,9 +164,9 @@ class Block_Settings extends Settings {
 	 * @return true|WP_Error True if name was validated, WP_Error otherwise.
 	 */
 	public function validate_name( $value ) {
-		$options = $this->get_schema();
+		$schema = $this->get_schema();
 
-		$valid_check = self::validate_value_from_schema( $value, $options['name'], 'name' );
+		$valid_check = self::validate_value_from_schema( $value, $schema['name'], 'name' );
 
 		if ( true !== $valid_check ) {
 			return $valid_check;
@@ -293,17 +293,17 @@ class Block_Settings extends Settings {
 	 * @since 1.0.0
 	 */
 	public function insert_block( $block ) {
-		$options = $this->get_schema();
+		$schema = $this->get_schema();
 
-		$valid_check = self::validate_params( $block, $options['items'] );
+		$valid_check = self::validate_params( $block, $schema['items'] );
 		if ( is_wp_error( $valid_check ) ) {
 			return $valid_check;
 		}
 
 		$db_block = $this->search_block( $block['name'] );
 
-		$block = self::sanitize_params( $block, $options['items'] );
-		$block = self::prepare_settings_walker( $block, $options['items'], $db_block );
+		$block = self::sanitize_params( $block, $schema['items'] );
+		$block = self::prepare_settings_walker( $block, $schema['items'], $db_block );
 
 		// Insert new block.
 		$inserted = $this->insert_block_in_database( $block );
@@ -329,6 +329,7 @@ class Block_Settings extends Settings {
 	 *     @type array  $keywords    Optional. Aliases that help users discover block while searching.
 	 *     @type array  $supports    Optional. Some block supports.
 	 *     @type array  $styles      Optional. Block styles can be used to provide alternative styles to block.
+	 *     @type array  $variations  Optional. Block style variations allow providing alternative styles to existing blocks..
 	 * }
 	 * @param array $keep {
 	 *     An array to mark the attributes whose you want to keep old values.
@@ -349,13 +350,13 @@ class Block_Settings extends Settings {
 			);
 		}
 
-		$options = $this->get_schema();
+		$schema = $this->get_schema();
 
-		$options['items']['title']['required']       = false;
-		$options['items']['description']['required'] = false;
-		$options['items']['category']['required']    = false;
+		$schema['items']['title']['required']       = false;
+		$schema['items']['description']['required'] = false;
+		$schema['items']['category']['required']    = false;
 
-		$valid_check = self::validate_params( $block, $options['items'] );
+		$valid_check = self::validate_params( $block, $schema['items'] );
 
 		if ( is_wp_error( $valid_check ) ) {
 			return $valid_check;
@@ -364,29 +365,19 @@ class Block_Settings extends Settings {
 		// Supports.
 		$supports = $db_block['supports'];
 		if ( ! empty( $block['supports'] ) && is_array( $block['supports'] ) ) {
-			// Remove old values.
-			if ( isset( $keep['supports'] ) && false === $keep['supports'] ) {
-				$db_block_keys = array_keys( $db_block['supports'] );
-				$block_keys    = array_keys( $block['supports'] );
-
-				$keys_to_delete = array_diff( $db_block_keys, $block_keys );
-
-				$db_block['supports'] = array_diff_key( $db_block['supports'], array_flip( $keys_to_delete ) );
-			}
-
-			$supports = array_merge( $db_block['supports'], $block['supports'] );
+			$supports = array_replace_recursive( $supports, $block['supports'] );
 		}
 
 		// Styles.
 		$styles = $db_block['styles'];
 		if ( ! empty( $block['styles'] ) && is_array( $block['styles'] ) ) {
-			$styles = $this->merge_attributes( $db_block['styles'], $block['styles'], ! empty( $keep['styles'] ) );
+			$styles = $this->merge_attributes( $styles, $block['styles'], ! empty( $keep['styles'] ) );
 		}
 
 		// Variations.
 		$variations = $db_block['variations'];
 		if ( ! empty( $block['variations'] ) && is_array( $block['variations'] ) ) {
-			$variations = $this->merge_attributes( $db_block['variations'], $block['variations'], ! empty( $keep['variations'] ) );
+			$variations = $this->merge_attributes( $variations, $block['variations'], ! empty( $keep['variations'] ) );
 		}
 
 		// TODO: Access.
@@ -497,7 +488,7 @@ class Block_Settings extends Settings {
 	 */
 	protected function insert_block_in_database( $block ) {
 		$blocks = $this->get_settings();
-		$index  = $this->search_block( $block['name'], true );
+		$index  = $this->search_block_index( $block['name'] );
 
 		if ( null === $index ) {
 			$blocks[] = $block;

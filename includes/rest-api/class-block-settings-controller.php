@@ -9,7 +9,7 @@
 namespace BMFBE\Rest_API;
 
 use BMFBE\Plugin;
-use Exception;
+use BMFBE\Settings\Block_Settings;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -21,7 +21,7 @@ use WP_REST_Server;
  * @since 1.0.0
  * @package BMFBE\Rest_API
  */
-class Blocks_Controller extends Rest_Controller {
+class Block_Settings_Controller extends Rest_Controller {
 	/**
 	 * Constructor.
 	 *
@@ -103,115 +103,13 @@ class Blocks_Controller extends Rest_Controller {
 			return $this->add_additional_fields_schema( $this->schema );
 		}
 
+		$block_schema = Block_Settings::get_instance()->get_schema();
+
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'block',
 			'type'       => 'object',
-			'properties' => array(
-				'name'        => array(
-					'description' => __( 'Unique name for the block.', 'bmfbe' ),
-					'type'        => 'string',
-				),
-				'title'       => array(
-					'description' => __( 'The display title for the block.', 'bmfbe' ),
-					'type'        => 'string',
-				),
-				'description' => array(
-					'description' => __( 'A short description for the block.', 'bmfbe' ),
-					'type'        => 'string',
-				),
-				'category'    => array(
-					'description' => __( 'Category to help users browse and discover blocks.', 'bmfbe' ),
-					'type'        => 'string',
-				),
-				'icon'        => array(
-					'description' => __( 'Icon to make block easier to identify.', 'bmfbe' ),
-					'type'        => 'string',
-				),
-				'keywords'    => array(
-					'description' => __( 'Aliases that help users discover block while searching.', 'bmfbe' ),
-					'type'        => 'array',
-					'items'       => array(
-						'type'     => 'string',
-						'readonly' => true,
-					),
-				),
-				'supports'    => array(
-					'description' => __( 'Some block supports.', 'bmfbe' ),
-					'type'        => 'object',
-					'default'     => array(),
-				),
-				'styles'      => array(
-					'description' => __( 'Block styles can be used to provide alternative styles to block.', 'bmfbe' ),
-					'type'        => 'array',
-					'default'     => array(),
-					'items'       => array(
-						'type'       => 'object',
-						'default'    => array(),
-						'properties' => array(
-							'name'      => array(
-								'description' => __( 'The name for a style.', 'bmfbe' ),
-								'type'        => 'string',
-								'required'    => true,
-							),
-							'label'     => array(
-								'description' => __( 'The label displayed for a style.', 'bmfbe' ),
-								'type'        => 'string',
-								'required'    => true,
-							),
-							'isDefault' => array(
-								'description' => __( 'Is default style?', 'bmfbe' ),
-								'type'        => 'boolean',
-								'default'     => false,
-							),
-							'isActive'  => array(
-								'description' => __( 'Is active style?', 'bmfbe' ),
-								'type'        => 'boolean',
-								'default'     => true,
-							),
-						),
-					),
-				),
-				'variations'  => array(
-					'description' => __( 'Block\'s style variation can be used to provide alternative styles to block.', 'bmfbe' ),
-					'type'        => 'array',
-					'default'     => array(),
-					'items'       => array(
-						'type'       => 'object',
-						'default'    => array(),
-						'properties' => array(
-							'name'        => array(
-								'description' => __( 'The name for a variation.', 'bmfbe' ),
-								'type'        => 'string',
-								'required'    => true,
-							),
-							'title'       => array(
-								'description' => __( 'The title displayed for a variation.', 'bmfbe' ),
-								'type'        => 'string',
-								'required'    => true,
-							),
-							'description' => array(
-								'description' => __( 'Description of a variation.', 'bmfbe' ),
-								'type'        => 'string',
-							),
-							'icon'        => array(
-								'description' => __( 'Icon of a variation.', 'bmfbe' ),
-								'type'        => 'string',
-							),
-							'isDefault'   => array(
-								'description' => __( 'Is default variation?', 'bmfbe' ),
-								'type'        => 'boolean',
-								'default'     => false,
-							),
-							'isActive'    => array(
-								'description' => __( 'Is active variation?', 'bmfbe' ),
-								'type'        => 'boolean',
-								'default'     => true,
-							),
-						),
-					),
-				),
-			),
+			'properties' => $block_schema['items'],
 		);
 
 		$this->schema = $schema;
@@ -280,25 +178,9 @@ class Blocks_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 */
 	protected function prepare_item_for_database( $request ) {
-		$prepared_block = array();
+		$params = $request->get_params();
 
-		$schema = $this->get_item_schema();
-
-		// Basic types.
-		foreach ( $schema['properties'] as $field_id => $params ) {
-			if ( ! isset( $request[ $field_id ] ) ) {
-				continue;
-			}
-
-			if ( ( 'string' === $params['type'] && is_string( $request[ $field_id ] ) )
-				|| ( ( 'array' === $params['type'] || 'object' === $params['type'] ) && is_array( $request[ $field_id ] ) ) ) {
-				$prepared_block[ $field_id ] = $request[ $field_id ];
-			}
-		}
-
-		// TODO: Access.
-
-		return $prepared_block;
+		return Block_Settings::get_instance()->prepare_settings_for_database( $params );
 	}
 
 	/**
@@ -350,7 +232,7 @@ class Blocks_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 */
 	protected function get_block( $name ) {
-		$block = $this->plugin->block_settings->search_block( $name );
+		$block = Block_Settings::get_instance()->search_block( $name );
 
 		if ( null === $block ) {
 			return new WP_Error(
@@ -386,7 +268,7 @@ class Blocks_Controller extends Rest_Controller {
 			}
 		}
 
-		$result = $this->plugin->block_settings->get_blocks( $args );
+		$result = Block_Settings::get_instance()->get_blocks( $args );
 		$blocks = array();
 
 		foreach ( $result['blocks'] as $block ) {
@@ -479,7 +361,7 @@ class Blocks_Controller extends Rest_Controller {
 
 		$prepared_block = $this->prepare_item_for_database( $request );
 
-		$result = $this->plugin->block_settings->insert_block( $prepared_block );
+		$result = Block_Settings::get_instance()->insert_block( $prepared_block );
 
 		if ( is_wp_error( $result ) ) {
 			$result->add_data( array( 'status' => 400 ) );
@@ -515,7 +397,10 @@ class Blocks_Controller extends Rest_Controller {
 
 		$prepared_block = $this->prepare_item_for_database( $request );
 
-		$result = $this->plugin->block_settings->update_block( $prepared_block, $request['keep'] );
+		$keep = isset( $prepared_block['keep'] ) ? $prepared_block['keep'] : array();
+		unset( $prepared_block['keep'] );
+
+		$result = Block_Settings::get_instance()->update_block( $prepared_block, $keep );
 
 		if ( is_wp_error( $result ) ) {
 			$result->add_data( array( 'status' => 400 ) );
@@ -549,7 +434,7 @@ class Blocks_Controller extends Rest_Controller {
 			return $block;
 		}
 
-		$result = $this->plugin->block_settings->delete_block( $request['name'] );
+		$result = Block_Settings::get_instance()->delete_block( $request['name'] );
 
 		if ( is_wp_error( $result ) ) {
 			$result->add_data( array( 'status' => 400 ) );

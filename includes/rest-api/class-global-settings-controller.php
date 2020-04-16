@@ -9,7 +9,7 @@
 namespace BMFBE\Rest_API;
 
 use BMFBE\Plugin;
-use Exception;
+use BMFBE\Settings\Global_Settings;
 use WP_Error;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -21,7 +21,7 @@ use WP_REST_Server;
  * @since 1.0.0
  * @package BMFBE\Rest_API
  */
-class Settings_Controller extends Rest_Controller {
+class Global_Settings_Controller extends Rest_Controller {
 	/**
 	 * Constructor.
 	 *
@@ -73,13 +73,13 @@ class Settings_Controller extends Rest_Controller {
 			return $this->add_additional_fields_schema( $this->schema );
 		}
 
-		$options = $this->plugin->global_settings->get_options();
+		$global_schema = Global_Settings::get_instance()->get_schema();
 
 		$schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'settings',
 			'type'       => 'object',
-			'properties' => $options,
+			'properties' => $global_schema,
 		);
 
 		$this->schema = $schema;
@@ -95,23 +95,8 @@ class Settings_Controller extends Rest_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @since 1.0.0
 	 */
-	public function get_item( $request ) {
-		$options  = $this->plugin->global_settings->get_options();
-		$settings = $this->plugin->global_settings->get_settings();
-		$response = array();
-
-		foreach ( $options as $name => $schema ) {
-			$value = $settings[ $name ];
-
-			$validation = rest_validate_value_from_schema( $value, $schema );
-			if ( is_wp_error( $validation ) ) {
-				return $validation;
-			}
-
-			$response[ $name ] = $value;
-		}
-
-		return rest_ensure_response( $response );
+	public function get_item( $request ) { // phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+		return rest_ensure_response( Global_Settings::get_instance()->get_settings() );
 	}
 
 	/**
@@ -123,20 +108,18 @@ class Settings_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 */
 	public function update_item( $request ) {
-		$options  = $this->plugin->global_settings->get_options();
-		$settings = $this->plugin->global_settings->get_settings();
-
 		$params = $request->get_params();
 
-		foreach ( $options as $name => $schema ) {
-			if ( ! array_key_exists( $name, $params ) ) {
-				continue;
-			}
-
-			$settings[ $name ] = $params[ $name ];
+		$valid_check = Global_Settings::get_instance()->validate_settings( $params );
+		if ( is_wp_error( $valid_check ) ) {
+			return $valid_check;
 		}
 
-		$this->plugin->global_settings->update_settings( $settings );
+		$updated = Global_Settings::get_instance()->update_settings( $params );
+
+		if ( is_wp_error( $updated ) ) {
+			return $updated;
+		}
 
 		return $this->get_item( $request );
 	}

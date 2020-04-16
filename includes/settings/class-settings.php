@@ -119,9 +119,9 @@ abstract class Settings {
 	 * @since 1.0.0
 	 */
 	public function update_settings( $settings ) {
-		$validation = $this->validate_settings( $settings );
-		if ( is_wp_error( $validation ) ) {
-			return $validation;
+		$valid_check = $this->validate_settings( $settings );
+		if ( is_wp_error( $valid_check ) ) {
+			return $valid_check;
 		}
 
 		$settings = $this->sanitize_settings( $settings );
@@ -522,21 +522,9 @@ abstract class Settings {
 
 		$value = null;
 
-		if (
-			is_array( $settings )
-			&& (
-				'object' === $schema['type']
-				|| ( is_array( $schema['type'] ) && in_array( 'object', $schema['type'], true ) )
-			)
-		) {
+		if ( ! isset( $schema['default'] ) && 'object' === $schema['type'] ) {
 			$value = self::prepare_settings_walker( $settings, $schema['properties'], $database_values );
-		} elseif (
-			is_array( $settings )
-			&& (
-				'array' === $schema['type']
-				|| ( is_array( $schema['type'] ) && in_array( 'array', $schema['type'], true ) )
-			)
-		) {
+		} elseif ( ! isset( $schema['default'] ) && 'array' === $schema['type'] ) {
 			$value = array();
 
 			foreach ( $settings as $index => $s ) {
@@ -564,7 +552,7 @@ abstract class Settings {
 	 * @return array|WP_Error Validated settings, WP_Error otherwise.
 	 * @since 1.0.0
 	 */
-	protected function validate_settings( $settings ) {
+	public function validate_settings( $settings ) {
 		return self::validate_params( $settings, $this->get_schema() );
 	}
 
@@ -576,7 +564,7 @@ abstract class Settings {
 	 * @return array Sanitized settings.
 	 * @since 1.0.0
 	 */
-	protected function sanitize_settings( $settings ) {
+	public function sanitize_settings( $settings ) {
 		return self::sanitize_params( $settings, $this->get_schema() );
 	}
 
@@ -588,7 +576,7 @@ abstract class Settings {
 	 * @return array Prepared settings.
 	 * @since 1.0.0
 	 */
-	protected function prepare_settings( $settings ) {
+	public function prepare_settings( $settings ) {
 		return self::prepare_settings_walker( $settings, $this->get_schema() );
 	}
 
@@ -600,7 +588,7 @@ abstract class Settings {
 	 * @return array Prepared settings.
 	 * @since 1.0.0
 	 */
-	protected function prepare_settings_for_database( $settings ) {
+	public function prepare_settings_for_database( $settings ) {
 		return self::prepare_settings_walker( $settings, $this->get_schema(), $this->get_settings() );
 	}
 }
