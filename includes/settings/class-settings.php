@@ -62,7 +62,6 @@ abstract class Settings {
 	 * Creates or returns an instance of this class.
 	 *
 	 * @return Settings A single instance of this class.
-	 * @throws Exception If plugin not correctly initialized.
 	 * @since 1.0.0
 	 */
 	final public static function get_instance() {
