@@ -183,18 +183,23 @@ class Block_Settings extends Settings {
 	}
 
 	/**
-	 * Sort settings.
+	 * Sort blocks.
 	 *
-	 * @param array $settings Array of settings.
+	 * @param array $blocks Array of blocks.
 	 *
-	 * @return array Sorted array of settings.
+	 * @return array Sorted array of blocks.
 	 * @since 1.0.0
 	 */
-	protected static function sort_settings( $settings ) {
+	protected static function sort_blocks( $blocks ) {
 		// Sort settings by categories and names (core categories and blocks first).
 		usort(
-			$settings,
+			$blocks,
 			function( $a, $b ) {
+				$name_order = array(
+					'core/',
+					'core-embed/',
+				);
+
 				$category_order = array(
 					'common',
 					'formatting',
@@ -203,23 +208,35 @@ class Block_Settings extends Settings {
 					'embed',
 				);
 
+				$name_a = array_search(
+					substr( $a['name'], 0, strpos( $a['name'], '/' ) + 1 ),
+					$name_order,
+					true
+				);
+				$name_b = array_search(
+					substr( $b['name'], 0, strpos( $b['name'], '/' ) + 1 ),
+					$name_order,
+					true
+				);
+
 				$cat_a = array_search( $a['category'], $category_order, true );
 				$cat_b = array_search( $b['category'], $category_order, true );
 
-				$core_a = strpos( $a['name'], 'core/' );
-				$core_b = strpos( $b['name'], 'core/' );
-
-				if ( false !== $cat_a && false !== $cat_b && $cat_a !== $cat_b ) {
-					return $cat_a - $cat_b;
-				} elseif ( false !== $cat_a && false === $cat_b ) {
-					return -1;
-				} elseif ( false === $cat_a && false !== $cat_b ) {
-					return 1;
-				} else {
-					if ( 0 === $core_a && false === $core_b ) {
-						return - 1;
-					} elseif ( false === $core_a && 0 === $core_b ) {
+				if ( $cat_a !== $cat_b ) {
+					if ( false === $cat_a ) {
 						return 1;
+					} elseif ( false === $cat_b ) {
+						return -1;
+					} else {
+						return strcmp( $cat_a, $cat_b );
+					}
+				} elseif ( $name_a !== $name_b ) {
+					if ( false === $name_a ) {
+						return 1;
+					} elseif ( false === $name_b ) {
+						return -1;
+					} else {
+						return $name_a - $name_b;
 					}
 				}
 
@@ -227,7 +244,7 @@ class Block_Settings extends Settings {
 			}
 		);
 
-		return $settings;
+		return $blocks;
 	}
 
 	/**
@@ -252,7 +269,9 @@ class Block_Settings extends Settings {
 		$args = wp_parse_args( $args, $defaults );
 
 		$blocks = $this->get_settings();
-		$total  = count( $blocks );
+		$blocks = self::sort_blocks( $blocks );
+
+		$total = count( $blocks );
 
 		$max_pages = ceil( $total / (int) $args['per_page'] );
 
@@ -497,7 +516,7 @@ class Block_Settings extends Settings {
 		}
 
 		// Sort blocks.
-		$settings = self::sort_settings( $blocks );
+		$settings = self::sort_blocks( $blocks );
 
 		$updated = $this->update_db_value( $settings );
 
