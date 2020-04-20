@@ -54,7 +54,14 @@ class Global_Settings extends Settings {
 								'bmfbe'
 							),
 							'properties'  => array(
-								'value' => array( 'default' => false ),
+								'value' => array(
+									'type'  => array( 'boolean', 'array' ),
+									'default' => false,
+									'items' => array(
+										'type' => 'string',
+										'enum' => array( 'left', 'center', 'right', 'wide', 'full' ),
+									),
+								),
 							),
 						)
 					),
