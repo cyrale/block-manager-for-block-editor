@@ -522,9 +522,9 @@ abstract class Settings {
 
 		$value = null;
 
-		if ( ! isset( $schema['default'] ) && 'object' === $schema['type'] ) {
+		if ( ( ! isset( $schema['default'] ) || ! is_null( $settings ) ) && 'object' === $schema['type'] ) {
 			$value = self::prepare_settings_walker( $settings, $schema['properties'], $database_values );
-		} elseif ( ! isset( $schema['default'] ) && 'array' === $schema['type'] ) {
+		} elseif ( ( ! isset( $schema['default'] ) || ! is_null( $settings ) ) && 'array' === $schema['type'] ) {
 			$value = array();
 
 			foreach ( $settings as $index => $s ) {
