@@ -391,10 +391,8 @@ class Block_Settings_Controller extends Rest_Controller {
 			return $block;
 		}
 
+		$keep           = $request->get_param( 'keep' );
 		$prepared_block = $this->prepare_item_for_database( $request );
-
-		$keep = isset( $prepared_block['keep'] ) ? $prepared_block['keep'] : array();
-		unset( $prepared_block['keep'] );
 
 		$result = Block_Settings::get_instance()->update_block( $prepared_block, $keep );
 
