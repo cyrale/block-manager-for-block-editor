@@ -174,8 +174,9 @@ class Block_Settings_Controller extends Rest_Controller {
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$params = $request->get_params();
+		$schema = $this->get_item_schema();
 
-		return Block_Settings::get_instance()->prepare_settings_for_database( $params );
+		return Block_Settings::prepare_settings_walker( $params, $schema['properties'] );
 	}
 
 	/**
