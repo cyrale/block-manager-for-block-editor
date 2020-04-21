@@ -1,6 +1,7 @@
-const { isEqual, omit, pick } = lodash;
-const { apiFetch, blocks, url } = wp;
+const { cloneDeep, isEqual, omit, pick } = lodash;
+const { apiFetch, blocks, data, i18n, url } = wp;
 
+const { __, sprintf } = i18n;
 const { addQueryArgs } = url;
 
 const blockFields = [
@@ -14,6 +15,21 @@ const blockFields = [
 	'styles',
 	'variations',
 ];
+
+const noticeValues = {
+	newOnes: {
+		progress: 0,
+		total: 0,
+	},
+	updated: {
+		progress: 0,
+		total: 0,
+	},
+	deleted: {
+		progress: 0,
+		total: 0,
+	},
+};
 
 /**
  * Get registered blocks.
@@ -56,6 +72,10 @@ function getEditorBlocks() {
 				return block;
 			} )
 	);
+}
+
+function findElementByName( elements, name ) {
+	return elements.find( ( el ) => el.name === name );
 }
 
 function normalizeIcon( icon ) {
@@ -120,14 +140,11 @@ function updateProperty( properties, editorProperties, fields ) {
 		// Remove properties that are not in editor.
 		.filter(
 			( prop ) =>
-				undefined !==
-				editorProperties.find( ( p ) => p.name === prop.name )
+				undefined !== findElementByName( editorProperties, prop.name )
 		)
 		// Update value of properties.
 		.map( ( prop ) => {
-			const editorProp = editorProperties.find(
-				( p ) => p.name === prop.name
-			);
+			const editorProp = findElementByName( editorProperties, prop.name );
 
 			if ( undefined !== editorProp ) {
 				prop = Object.assign( {}, prop, pick( editorProp, fields ) );
@@ -139,6 +156,72 @@ function updateProperty( properties, editorProperties, fields ) {
 	properties = [ ...properties, ...diff( editorProperties, properties ) ];
 
 	return properties;
+}
+
+function removeUnnecessaryFields( block ) {
+	delete block.isActive;
+	if ( false === block.isDefault ) {
+		delete block.isDefault;
+	}
+
+	return block;
+}
+
+function refreshInfoNotice( message = '' ) {
+	const noticeStr = __( 'Detection in progress... %s', 'bmfbe' );
+	const noticeDetails = {
+		newOnes: '',
+		updated: '',
+		deleted: '',
+	};
+
+	const progress = Object.values( noticeValues ).reduce(
+		( acc, value ) => acc + value.progress,
+		0
+	);
+	const total = Object.values( noticeValues ).reduce(
+		( acc, value ) => acc + value.total,
+		0
+	);
+	const progressPercent = total === 0 ? 0 : 100 * ( progress / total );
+
+	if ( message === '' ) {
+		message = progressPercent.toFixed( 1 ) + '%';
+	}
+
+	if ( noticeValues.newOnes.total > 0 ) {
+		noticeDetails.newOnes = sprintf(
+			__( 'new %1$d/%2$d', 'bmfbe' ),
+			noticeValues.newOnes.progress,
+			noticeValues.newOnes.total
+		);
+	}
+
+	if ( noticeValues.updated.total > 0 ) {
+		noticeDetails.updated = sprintf(
+			__( 'updated %1$d/%2$d', 'bmfbe' ),
+			noticeValues.updated.progress,
+			noticeValues.updated.total
+		);
+	}
+
+	if ( noticeValues.deleted.total > 0 ) {
+		noticeDetails.deleted = sprintf(
+			__( 'deleted %1$d/%2$d', 'bmfbe' ),
+			noticeValues.deleted.progress,
+			noticeValues.deleted.total
+		);
+	}
+
+	const details = Object.values( noticeDetails )
+		.filter( ( str ) => str !== '' )
+		.join( ', ' );
+
+	data.dispatch( 'core/notices' ).createInfoNotice(
+		sprintf( noticeStr, message ) +
+			( details !== '' ? ' (' + details + ')' : '' ),
+		{ isDismissible: false, id: 'bmfbeDetectionMode' }
+	);
 }
 
 /**
@@ -171,6 +254,8 @@ function intersect( array1, array2 ) {
 
 // eslint-disable-next-line space-before-function-paren
 export default async () => {
+	refreshInfoNotice();
+
 	const registeredBlocks = await getRegisteredBlocks();
 
 	const editorBlocks = getEditorBlocks()
@@ -178,31 +263,65 @@ export default async () => {
 		.map( sanitizeStyles )
 		.map( sanitizeVariations );
 
-	// Extract new blocks.
+	// Detect new blocks.
 	const newBlocks = diff( editorBlocks, registeredBlocks );
 
-	// Send new blocks to API.
-	for ( let i = 0; i < newBlocks.length; i++ ) {
-		try {
-			await apiFetch( {
-				path: '/bmfbe/v1/blocks',
-				method: 'POST',
-				data: newBlocks[ i ],
-			} );
-
-			// TODO: update notifications.
-		} catch ( e ) {
-			// TODO: manage errors.
-		}
+	if ( newBlocks.length > 0 ) {
+		noticeValues.newOnes.total = newBlocks.length;
+		refreshInfoNotice();
 	}
 
 	// Extract blocks to update.
-	// TODO: test if updated block is equal to block in editor, to improve performance.
-	const updateBlocks = intersect( registeredBlocks, editorBlocks ).map(
-		( block ) => {
-			const editorBlock = editorBlocks.find(
-				( b ) => b.name === block.name
+	const updatedBlocks = intersect( registeredBlocks, editorBlocks )
+		.filter( ( block ) => {
+			const clonedBlock = cloneDeep( block );
+			const clonedEditorBlock = cloneDeep(
+				findElementByName( editorBlocks, block.name )
 			);
+
+			// Remove private unsupported supports.
+			const editorSupports = {};
+			Object.keys( clonedEditorBlock.supports ?? {} ).forEach(
+				( prop ) => {
+					if (
+						Object.keys( clonedBlock.supports ).includes( prop )
+					) {
+						editorSupports[ prop ] =
+							clonedEditorBlock.supports[ prop ];
+					}
+				}
+			);
+
+			clonedEditorBlock.supports = editorSupports;
+
+			// Remove supports not present in editor.
+			const supports = {};
+			Object.keys( clonedBlock.supports ).forEach( ( prop ) => {
+				if (
+					Object.keys( clonedEditorBlock.supports ).includes( prop )
+				) {
+					supports[ prop ] = pick( clonedBlock.supports[ prop ], [
+						'value',
+					] );
+				}
+			} );
+
+			clonedBlock.supports = supports;
+
+			// Remove unnecessary fields in styles.
+			clonedBlock.styles = clonedBlock.styles.map(
+				removeUnnecessaryFields
+			);
+
+			// Remove unnecessary fields in variations.
+			clonedBlock.variations = clonedBlock.variations.map(
+				removeUnnecessaryFields
+			);
+
+			return ! isEqual( clonedBlock, clonedEditorBlock );
+		} )
+		.map( ( block ) => {
+			const editorBlock = findElementByName( editorBlocks, block.name );
 			const updateBlock = Object.assign( {}, block, editorBlock );
 
 			// Supports.
@@ -240,26 +359,57 @@ export default async () => {
 			);
 
 			return updateBlock;
-		}
-	);
+		} );
 
-	// Send update to API.
-	for ( let i = 0; i < updateBlocks.length; i++ ) {
-		try {
-			await apiFetch( {
-				path: '/bmfbe/v1/blocks/' + updateBlocks[ i ].name,
-				method: 'PATCH',
-				data: omit( updateBlocks[ i ], 'name' ),
-			} );
-
-			// TODO: update notifications.
-		} catch ( e ) {
-			// TODO: manage errors.
-		}
+	if ( updatedBlocks.length > 0 ) {
+		noticeValues.updated.total = updatedBlocks.length;
+		refreshInfoNotice();
 	}
 
 	// Detect old blocks to delete.
 	const deletedBlocks = diff( registeredBlocks, editorBlocks );
+
+	if ( deletedBlocks.length > 0 ) {
+		noticeValues.deleted.total = deletedBlocks.length;
+		refreshInfoNotice();
+	}
+
+	// Send new blocks to API.
+	for ( let i = 0; i < newBlocks.length; i++ ) {
+		try {
+			await apiFetch( {
+				path: '/bmfbe/v1/blocks',
+				method: 'POST',
+				data: newBlocks[ i ],
+			} );
+		} catch ( e ) {
+			// TODO: manage errors.
+		}
+
+		noticeValues.newOnes.progress++;
+		refreshInfoNotice();
+	}
+
+	// Send update to API.
+	for ( let i = 0; i < updatedBlocks.length; i++ ) {
+		try {
+			await apiFetch( {
+				path: '/bmfbe/v1/blocks/' + updatedBlocks[ i ].name,
+				method: 'PATCH',
+				data: Object.assign( omit( updatedBlocks[ i ], 'name' ), {
+					keep: {
+						styles: false,
+						variations: false,
+					},
+				} ),
+			} );
+		} catch ( e ) {
+			// TODO: manage errors.
+		}
+
+		noticeValues.updated.progress++;
+		refreshInfoNotice();
+	}
 
 	// Send deletion to API.
 	for ( let i = 0; i < deletedBlocks.length; i++ ) {
@@ -268,14 +418,15 @@ export default async () => {
 				path: '/bmfbe/v1/blocks/' + deletedBlocks[ i ].name,
 				method: 'DELETE',
 			} );
-
-			// TODO: update notifications.
 		} catch ( e ) {
 			// TODO: manage errors.
 		}
+
+		noticeValues.deleted.progress++;
+		refreshInfoNotice();
 	}
 
-	// console.log( oldBlocks, newBlocks, updateBlocks );
+	refreshInfoNotice( __( 'Complete!', 'bmfbe' ) );
 
 	// Redirect user to settings page.
 	// window.location.href = bmfbeEditorGlobal.settingsPage;
