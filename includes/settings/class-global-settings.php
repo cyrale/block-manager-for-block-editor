@@ -55,9 +55,9 @@ class Global_Settings extends Settings {
 							),
 							'properties'  => array(
 								'value' => array(
-									'type'  => array( 'boolean', 'array' ),
+									'type'    => array( 'boolean', 'array' ),
 									'default' => false,
-									'items' => array(
+									'items'   => array(
 										'type' => 'string',
 										'enum' => array( 'left', 'center', 'right', 'wide', 'full' ),
 									),
