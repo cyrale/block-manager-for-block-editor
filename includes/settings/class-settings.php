@@ -500,7 +500,7 @@ abstract class Settings {
 	 * @return array|mixed|null Prepared settings.
 	 * @since 1.0.0
 	 */
-	protected static function prepare_settings_walker( $settings, $schema, $database_values = null ) {
+	public static function prepare_settings_walker( $settings, $schema, $database_values = null ) {
 		if ( ! isset( $schema['type'] ) ) {
 			$prepared_settings = array();
 
