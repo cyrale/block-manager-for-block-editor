@@ -11,9 +11,6 @@ wp.domReady( () => {
 	// 	}
 	// } );
 
-	// console.log(wp.blocks.getBlockTypes());
-	// console.log(bmfbeEditorGlobal);
-
 	if ( bmfbeEditorGlobal.detection ) {
 		detection();
 	} else {
