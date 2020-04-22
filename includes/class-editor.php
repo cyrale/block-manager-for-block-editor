@@ -54,7 +54,7 @@ class Editor implements WP_Plugin_Class {
 		wp_enqueue_script(
 			'bmfbe-editor',
 			$this->plugin->url . 'dist/editor.build.js',
-			array( 'wp-blocks', 'wp-dom-ready', 'wp-edit-post', 'wp-element', 'wp-i18n', 'lodash' ),
+			array( 'lodash', 'wp-api-fetch', 'wp-blocks', 'wp-dom-ready', 'wp-edit-post', 'wp-element', 'wp-i18n' ),
 			substr( sha1( filemtime( $this->plugin->path . 'dist/editor.build.js' ) ), 0, 8 ),
 			true
 		);
