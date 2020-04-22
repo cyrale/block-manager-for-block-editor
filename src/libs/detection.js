@@ -4,6 +4,11 @@ const { apiFetch, blocks, data, i18n, url } = wp;
 const { __, sprintf } = i18n;
 const { addQueryArgs } = url;
 
+/**
+ * List of saved fields for blocks.
+ * @type {string[]}
+ * @since 1.0.0
+ */
 const blockFields = [
 	'name',
 	'title',
@@ -16,6 +21,11 @@ const blockFields = [
 	'variations',
 ];
 
+/**
+ * Values to follow progress of detection.
+ * @type {{deleted: {total: number, progress: number}, newOnes: {total: number, progress: number}, updated: {total: number, progress: number}}}
+ * @since 1.0.0
+ */
 const noticeValues = {
 	newOnes: {
 		progress: 0,
@@ -35,6 +45,7 @@ const noticeValues = {
  * Get registered blocks.
  *
  * @return {Promise<Array>} List of registered blocks.
+ * @since 1.0.0
  */
 async function getRegisteredBlocks() {
 	let registeredBlocks = [];
@@ -56,6 +67,7 @@ async function getRegisteredBlocks() {
  * Get blocks used in editor.
  *
  * @return {Array} List of blocks used in editor.
+ * @since 1.0.0
  */
 function getEditorBlocks() {
 	return (
@@ -74,10 +86,27 @@ function getEditorBlocks() {
 	);
 }
 
+/**
+ * Find an object element with its name.
+ *
+ * @param {Array<{}>} elements List of elements.
+ * @param {string} name Name of the element to search for.
+ *
+ * @returns {{}|undefined} Searched element, undefined if not found.
+ * @since 1.0.0
+ */
 function findElementByName( elements, name ) {
 	return elements.find( ( el ) => el.name === name );
 }
 
+/**
+ * Convert SVG icon to string. If icon is already a string (dashicon), this string is kept.
+ *
+ * @param {{}} icon Icon object to convert.
+ *
+ * @returns {string} Converted icon.
+ * @since 1.0.0
+ */
 function normalizeIcon( icon ) {
 	if ( 'string' === typeof icon?.src ) {
 		return icon.src;
@@ -95,6 +124,14 @@ function normalizeIcon( icon ) {
 	return '';
 }
 
+/**
+ * Sanitize supports in block.
+ *
+ * @param {{}} block Block with supports to sanitized.
+ *
+ * @returns {{}} Block with sanitized supports.
+ * @since 1.0.0
+ */
 function sanitizeSupports( block ) {
 	const supports = block.supports ?? {};
 
@@ -109,6 +146,14 @@ function sanitizeSupports( block ) {
 	return block;
 }
 
+/**
+ * Sanitize styles in block.
+ *
+ * @param {{}} block Block with styles to sanitized.
+ *
+ * @returns {{}} Block with sanitized styles.
+ * @since 1.0.0
+ */
 function sanitizeStyles( block ) {
 	block.styles = ( block.styles ?? [] ).map( ( style ) =>
 		pick( style, [ 'name', 'label', 'isDefault', 'isActive' ] )
@@ -117,6 +162,14 @@ function sanitizeStyles( block ) {
 	return block;
 }
 
+/**
+ * Sanitize variations in block.
+ *
+ * @param {{}} block Block with variations to sanitized.
+ *
+ * @returns {{}} Block with sanitized variations.
+ * @since 1.0.0
+ */
 function sanitizeVariations( block ) {
 	block.variations = ( block.variations ?? [] ).map( ( variation ) => {
 		variation = pick( variation, [
@@ -135,6 +188,16 @@ function sanitizeVariations( block ) {
 	return block;
 }
 
+/**
+ * Update saved properties with values in editor.
+ *
+ * @param {Array<{}>} properties Properties to update.
+ * @param {Array<{}>} editorProperties properties from the editor.
+ * @param {string[]} fields List of fields to update for each property.
+ *
+ * @returns {Array<{}>} Updated properties.
+ * @since 1.0.0
+ */
 function updateProperty( properties, editorProperties, fields ) {
 	properties = properties
 		// Remove properties that are not in editor.
@@ -152,21 +215,37 @@ function updateProperty( properties, editorProperties, fields ) {
 
 			return prop;
 		} );
+
 	// Add new properties.
 	properties = [ ...properties, ...diff( editorProperties, properties ) ];
 
 	return properties;
 }
 
-function removeUnnecessaryFields( block ) {
-	delete block.isActive;
-	if ( false === block.isDefault ) {
-		delete block.isDefault;
+/**
+ * Remove unnecessary fields from properties to compare values between database and editor.
+ *
+ * @param {{}} prop Property with unnecessary fields to remove.
+ *
+ * @returns {{}} Property with less fields.
+ * @since 1.0.0
+ */
+function removeUnnecessaryFields( prop ) {
+	prop = omit( prop, [ 'isActive' ] );
+	if ( false === prop.isDefault ) {
+		prop = omit( prop, [ 'isDefault' ] );
 	}
 
-	return block;
+	return prop;
 }
 
+/**
+ * Display and refresh information to show progress to the user.
+ *
+ * @param {string} message Message to display instead of percentage.
+ *
+ * @since 1.0.0
+ */
 function refreshInfoNotice( message = '' ) {
 	const noticeStr = __( 'Detection in progress... %s', 'bmfbe' );
 	const noticeDetails = {
@@ -175,20 +254,22 @@ function refreshInfoNotice( message = '' ) {
 		deleted: '',
 	};
 
-	const progress = Object.values( noticeValues ).reduce(
-		( acc, value ) => acc + value.progress,
-		0
-	);
-	const total = Object.values( noticeValues ).reduce(
-		( acc, value ) => acc + value.total,
-		0
-	);
-	const progressPercent = total === 0 ? 0 : 100 * ( progress / total );
-
+	// Calculate progress in percent if message is empty.
 	if ( message === '' ) {
+		const progress = Object.values( noticeValues ).reduce(
+			( acc, value ) => acc + value.progress,
+			0
+		);
+		const total = Object.values( noticeValues ).reduce(
+			( acc, value ) => acc + value.total,
+			0
+		);
+		const progressPercent = total === 0 ? 0 : 100 * ( progress / total );
+
 		message = progressPercent.toFixed( 1 ) + '%';
 	}
 
+	// Progress of sending new blocks.
 	if ( noticeValues.newOnes.total > 0 ) {
 		noticeDetails.newOnes = sprintf(
 			__( 'new %1$d/%2$d', 'bmfbe' ),
@@ -197,6 +278,7 @@ function refreshInfoNotice( message = '' ) {
 		);
 	}
 
+	// Progress of sending updated blocks.
 	if ( noticeValues.updated.total > 0 ) {
 		noticeDetails.updated = sprintf(
 			__( 'updated %1$d/%2$d', 'bmfbe' ),
@@ -205,6 +287,7 @@ function refreshInfoNotice( message = '' ) {
 		);
 	}
 
+	// Progress of sending deleted blocks.
 	if ( noticeValues.deleted.total > 0 ) {
 		noticeDetails.deleted = sprintf(
 			__( 'deleted %1$d/%2$d', 'bmfbe' ),
@@ -213,10 +296,12 @@ function refreshInfoNotice( message = '' ) {
 		);
 	}
 
+	// Concatenate progress values to display them.
 	const details = Object.values( noticeDetails )
 		.filter( ( str ) => str !== '' )
 		.join( ', ' );
 
+	// Display and refresh progress message.
 	data.dispatch( 'core/notices' ).createInfoNotice(
 		sprintf( noticeStr, message ) +
 			( details !== '' ? ' (' + details + ')' : '' ),
@@ -229,7 +314,9 @@ function refreshInfoNotice( message = '' ) {
  *
  * @param {Array} array1 Source array.
  * @param {Array} array2 Values to exclude.
+ *
  * @return {Array} The new array of filtered values.
+ * @since 1.0.0
  */
 function diff( array1, array2 ) {
 	return array1.filter(
@@ -243,7 +330,9 @@ function diff( array1, array2 ) {
  *
  * @param {Array} array1 Source array.
  * @param {Array} array2 Values to include.
+ *
  * @return {Array} The new array of filtered values.
+ * @since 1.0.0
  */
 function intersect( array1, array2 ) {
 	return array1.filter(
@@ -256,8 +345,10 @@ function intersect( array1, array2 ) {
 export default async () => {
 	refreshInfoNotice();
 
+	// Get blocks from database.
 	const registeredBlocks = await getRegisteredBlocks();
 
+	// Get block from editor and sanitize values.
 	const editorBlocks = getEditorBlocks()
 		.map( sanitizeSupports )
 		.map( sanitizeStyles )
@@ -324,7 +415,7 @@ export default async () => {
 			const editorBlock = findElementByName( editorBlocks, block.name );
 			const updateBlock = Object.assign( {}, block, editorBlock );
 
-			// Supports.
+			// Update inactive supports.
 			const supports = {};
 			const editorSupports = editorBlock.supports ?? {};
 			Object.keys( editorSupports ).forEach( ( prop ) => {
@@ -340,7 +431,7 @@ export default async () => {
 
 			updateBlock.supports = supports;
 
-			// Styles.
+			// Update styles.
 			const styles = block.styles ?? [];
 			const editorStyles = editorBlock.styles ?? [];
 
@@ -348,7 +439,7 @@ export default async () => {
 				'label',
 			] );
 
-			// Variations.
+			// Update variations.
 			const variations = block.variations ?? [];
 			const editorVariations = editorBlock.variations ?? [];
 
@@ -429,5 +520,5 @@ export default async () => {
 	refreshInfoNotice( __( 'Complete!', 'bmfbe' ) );
 
 	// Redirect user to settings page.
-	// window.location.href = bmfbeEditorGlobal.settingsPage;
+	window.location.href = bmfbeEditorGlobal.settingsPage;
 };
