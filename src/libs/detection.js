@@ -1,26 +1,12 @@
+import { blockFields, getRegisteredBlocks } from './registered-blocks';
+
 const { cloneDeep, isEqual, omit, pick } = lodash;
-const { apiFetch, blocks, data, i18n, url } = wp;
-
-const { __, sprintf } = i18n;
-const { addQueryArgs } = url;
-
-/**
- * List of saved fields for blocks.
- *
- * @type {string[]}
- * @since 1.0.0
- */
-const blockFields = [
-	'name',
-	'title',
-	'description',
-	'category',
-	'icon',
-	'keywords',
-	'supports',
-	'styles',
-	'variations',
-];
+const {
+	apiFetch,
+	blocks,
+	data,
+	i18n: { __, sprintf },
+} = wp;
 
 /**
  * Values to follow progress of detection.
@@ -42,28 +28,6 @@ const noticeValues = {
 		total: 0,
 	},
 };
-
-/**
- * Get registered blocks.
- *
- * @return {Promise<Array>} List of registered blocks.
- * @since 1.0.0
- */
-async function getRegisteredBlocks() {
-	let registeredBlocks = [];
-
-	const res = await apiFetch( { path: '/bmfbe/v1/blocks', parse: false } );
-	const totalPages = Number( res.headers.get( 'x-wp-totalpages' ) );
-
-	for ( let page = 1; page <= Math.max( totalPages, 1 ); page++ ) {
-		const apiBlocks = await apiFetch( {
-			path: addQueryArgs( '/bmfbe/v1/blocks', { page } ),
-		} );
-		registeredBlocks = [ ...registeredBlocks, ...apiBlocks ];
-	}
-
-	return registeredBlocks.map( ( block ) => pick( block, blockFields ) );
-}
 
 /**
  * Get blocks used in editor.
@@ -343,7 +307,6 @@ function intersect( array1, array2 ) {
 	);
 }
 
-// eslint-disable-next-line space-before-function-paren
 export default async () => {
 	refreshInfoNotice();
 
