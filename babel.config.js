@@ -27,6 +27,7 @@ module.exports = {
 			require.resolve( '@babel/plugin-transform-react-jsx' ),
 			{
 				pragma: 'wp.element.createElement',
+				pragmaFrag: 'wp.element.Fragment',
 			},
 		],
 		// Async/Await awesomeness https://babeljs.io/docs/en/babel-plugin-syntax-async-functions/.
