@@ -6,6 +6,7 @@ const { addQueryArgs } = url;
 
 /**
  * List of saved fields for blocks.
+ *
  * @type {string[]}
  * @since 1.0.0
  */
@@ -23,6 +24,7 @@ const blockFields = [
 
 /**
  * Values to follow progress of detection.
+ *
  * @type {{deleted: {total: number, progress: number}, newOnes: {total: number, progress: number}, updated: {total: number, progress: number}}}
  * @since 1.0.0
  */
@@ -92,7 +94,7 @@ function getEditorBlocks() {
  * @param {Array<{}>} elements List of elements.
  * @param {string} name Name of the element to search for.
  *
- * @returns {{}|undefined} Searched element, undefined if not found.
+ * @return {{}|undefined} Searched element, undefined if not found.
  * @since 1.0.0
  */
 function findElementByName( elements, name ) {
@@ -104,7 +106,7 @@ function findElementByName( elements, name ) {
  *
  * @param {{}} icon Icon object to convert.
  *
- * @returns {string} Converted icon.
+ * @return {string} Converted icon.
  * @since 1.0.0
  */
 function normalizeIcon( icon ) {
@@ -129,7 +131,7 @@ function normalizeIcon( icon ) {
  *
  * @param {{}} block Block with supports to sanitized.
  *
- * @returns {{}} Block with sanitized supports.
+ * @return {{}} Block with sanitized supports.
  * @since 1.0.0
  */
 function sanitizeSupports( block ) {
@@ -151,7 +153,7 @@ function sanitizeSupports( block ) {
  *
  * @param {{}} block Block with styles to sanitized.
  *
- * @returns {{}} Block with sanitized styles.
+ * @return {{}} Block with sanitized styles.
  * @since 1.0.0
  */
 function sanitizeStyles( block ) {
@@ -167,7 +169,7 @@ function sanitizeStyles( block ) {
  *
  * @param {{}} block Block with variations to sanitized.
  *
- * @returns {{}} Block with sanitized variations.
+ * @return {{}} Block with sanitized variations.
  * @since 1.0.0
  */
 function sanitizeVariations( block ) {
@@ -195,7 +197,7 @@ function sanitizeVariations( block ) {
  * @param {Array<{}>} editorProperties properties from the editor.
  * @param {string[]} fields List of fields to update for each property.
  *
- * @returns {Array<{}>} Updated properties.
+ * @return {Array<{}>} Updated properties.
  * @since 1.0.0
  */
 function updateProperty( properties, editorProperties, fields ) {
@@ -227,7 +229,7 @@ function updateProperty( properties, editorProperties, fields ) {
  *
  * @param {{}} prop Property with unnecessary fields to remove.
  *
- * @returns {{}} Property with less fields.
+ * @return {{}} Property with less fields.
  * @since 1.0.0
  */
 function removeUnnecessaryFields( prop ) {
