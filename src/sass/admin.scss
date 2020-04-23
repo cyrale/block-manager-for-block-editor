@@ -1,1 +1,8 @@
-// Admin styles
+.bmfbe-block {
+  &__icon {
+	svg {
+	  max-width: 24px;
+	  height: auto;
+	}
+  }
+}
