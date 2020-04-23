@@ -55,10 +55,10 @@ function getEditorBlocks() {
 /**
  * Find an object element with its name.
  *
- * @param {Array<{}>} elements List of elements.
+ * @param {Object[]} elements List of elements.
  * @param {string} name Name of the element to search for.
  *
- * @return {{}|undefined} Searched element, undefined if not found.
+ * @return {Object|undefined} Searched element, undefined if not found.
  * @since 1.0.0
  */
 function findElementByName( elements, name ) {
@@ -68,7 +68,7 @@ function findElementByName( elements, name ) {
 /**
  * Convert SVG icon to string. If icon is already a string (dashicon), this string is kept.
  *
- * @param {{}} icon Icon object to convert.
+ * @param {Object} icon Icon object to convert.
  *
  * @return {string} Converted icon.
  * @since 1.0.0
@@ -93,9 +93,9 @@ function normalizeIcon( icon ) {
 /**
  * Sanitize supports in block.
  *
- * @param {{}} block Block with supports to sanitized.
+ * @param {Object} block Block with supports to sanitized.
  *
- * @return {{}} Block with sanitized supports.
+ * @return {Object} Block with sanitized supports.
  * @since 1.0.0
  */
 function sanitizeSupports( block ) {
@@ -115,9 +115,9 @@ function sanitizeSupports( block ) {
 /**
  * Sanitize styles in block.
  *
- * @param {{}} block Block with styles to sanitized.
+ * @param {Object} block Block with styles to sanitized.
  *
- * @return {{}} Block with sanitized styles.
+ * @return {Object} Block with sanitized styles.
  * @since 1.0.0
  */
 function sanitizeStyles( block ) {
@@ -131,9 +131,9 @@ function sanitizeStyles( block ) {
 /**
  * Sanitize variations in block.
  *
- * @param {{}} block Block with variations to sanitized.
+ * @param {Object} block Block with variations to sanitized.
  *
- * @return {{}} Block with sanitized variations.
+ * @return {Object} Block with sanitized variations.
  * @since 1.0.0
  */
 function sanitizeVariations( block ) {
@@ -191,9 +191,9 @@ function updateProperty( properties, editorProperties, fields ) {
 /**
  * Remove unnecessary fields from properties to compare values between database and editor.
  *
- * @param {{}} prop Property with unnecessary fields to remove.
+ * @param {Object} prop Property with unnecessary fields to remove.
  *
- * @return {{}} Property with less fields.
+ * @return {Object} Property with less fields.
  * @since 1.0.0
  */
 function removeUnnecessaryFields( prop ) {

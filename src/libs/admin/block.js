@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import {
 	Accordion,
 	AccordionItem,
@@ -6,6 +7,7 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
+import { getBlock } from '../registered-blocks';
 import BlockAccess from './block-access';
 import BlockDescription from './block-description';
 import BlockIcon from './block-icon';
@@ -37,27 +39,43 @@ const panels = {
 	},
 };
 
-const Block = ( props ) => (
-	<div className="bmfbe-block">
-		<BlockIcon icon={ props.icon } />
-		<BlockDescription
-			{ ...pick( props, [ 'title', 'name', 'description' ] ) }
-		/>
-		<Accordion allowMultipleExpanded={ true } allowZeroExpanded={ true }>
-			{ Object.entries( panels ).map(
-				( [ key, { label, Component } ] ) => (
-					<AccordionItem key={ key }>
-						<AccordionItemHeading>
-							<AccordionItemButton>{ label }</AccordionItemButton>
-						</AccordionItemHeading>
-						<AccordionItemPanel>
-							<Component { ...{ [ key ]: props[ key ] } } />
-						</AccordionItemPanel>
-					</AccordionItem>
-				)
-			) }
-		</Accordion>
-	</div>
-);
+const Block = ( props ) => {
+	const [ block, setBlock ] = useState( {} );
+	useEffect( () => {
+		const fetchBlock = async () => {
+			setBlock( await getBlock( props.name ) );
+		};
+
+		fetchBlock();
+	}, [] );
+
+	return (
+		<div className="bmfbe-block">
+			<BlockIcon icon={ block.icon } />
+			<BlockDescription
+				{ ...pick( block, [ 'title', 'name', 'description' ] ) }
+			/>
+			<Accordion
+				allowMultipleExpanded={ true }
+				allowZeroExpanded={ true }
+			>
+				{ Object.entries( panels ).map(
+					( [ key, { label, Component } ] ) => (
+						<AccordionItem key={ key }>
+							<AccordionItemHeading>
+								<AccordionItemButton>
+									{ label }
+								</AccordionItemButton>
+							</AccordionItemHeading>
+							<AccordionItemPanel>
+								<Component { ...{ [ key ]: block[ key ] } } />
+							</AccordionItemPanel>
+						</AccordionItem>
+					)
+				) }
+			</Accordion>
+		</div>
+	);
+};
 
 export default Block;
