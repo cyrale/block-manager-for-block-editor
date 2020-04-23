@@ -40,10 +40,13 @@ const panels = {
 };
 
 const Block = ( props ) => {
+	const [ isLoading, setIsLoading ] = useState( true );
+
 	const [ block, setBlock ] = useState( {} );
 	useEffect( () => {
 		const fetchBlock = async () => {
 			setBlock( await getBlock( props.name ) );
+			setIsLoading( false );
 		};
 
 		fetchBlock();
@@ -51,29 +54,37 @@ const Block = ( props ) => {
 
 	return (
 		<div className="bmfbe-block">
-			<BlockIcon icon={ block.icon } />
-			<BlockDescription
-				{ ...pick( block, [ 'title', 'name', 'description' ] ) }
-			/>
-			<Accordion
-				allowMultipleExpanded={ true }
-				allowZeroExpanded={ true }
-			>
-				{ Object.entries( panels ).map(
-					( [ key, { label, Component } ] ) => (
-						<AccordionItem key={ key }>
-							<AccordionItemHeading>
-								<AccordionItemButton>
-									{ label }
-								</AccordionItemButton>
-							</AccordionItemHeading>
-							<AccordionItemPanel>
-								<Component { ...{ [ key ]: block[ key ] } } />
-							</AccordionItemPanel>
-						</AccordionItem>
+			{
+				( isLoading )
+					? ( <div>Loading...</div> )
+					: (
+						<>
+							<BlockIcon icon={ block.icon } />
+							<BlockDescription
+								{ ...pick( block, [ 'title', 'name', 'description' ] ) }
+							/>
+							<Accordion
+								allowMultipleExpanded={ true }
+								allowZeroExpanded={ true }
+							>
+							{ Object.entries( panels ).map(
+								( [ key, { label, Component } ] ) => (
+									<AccordionItem key={ key }>
+										<AccordionItemHeading>
+											<AccordionItemButton>
+												{ label }
+											</AccordionItemButton>
+										</AccordionItemHeading>
+										<AccordionItemPanel>
+											<Component { ...{ [ key ]: block[ key ] } } />
+										</AccordionItemPanel>
+									</AccordionItem>
+								)
+							) }
+							</Accordion>
+						</>
 					)
-				) }
-			</Accordion>
+			}
 		</div>
 	);
 };
