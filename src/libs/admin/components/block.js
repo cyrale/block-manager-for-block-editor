@@ -80,7 +80,9 @@ const Block = ( props ) => {
 										</AccordionItemButton>
 									</AccordionItemHeading>
 									<AccordionItemPanel>
-										<Component { ...block[ key ] } />
+										<Component
+											{ ...{ [ key ]: block[ key ] } }
+										/>
 									</AccordionItemPanel>
 								</AccordionItem>
 							) ) }
