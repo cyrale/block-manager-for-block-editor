@@ -75,9 +75,7 @@ const Block = ( props ) => {
 										</AccordionItemButton>
 									</AccordionItemHeading>
 									<AccordionItemPanel>
-										<Component
-											{ ...{ [ key ]: block[ key ] } }
-										/>
+										<Component { ...block[ key ] } />
 									</AccordionItemPanel>
 								</AccordionItem>
 							)
