@@ -1,4 +1,4 @@
-const BlockDescription = ( props ) => (
+const Description = ( props ) => (
 	<div className="bmfbe-block__description">
 		<h3>{ props.title }</h3>
 		<p>
@@ -8,4 +8,4 @@ const BlockDescription = ( props ) => (
 	</div>
 );
 
-export default BlockDescription;
+export default Description;

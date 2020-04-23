@@ -7,7 +7,7 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import { getPagedRegisteredBlocks } from '../registered-blocks';
+import { getPagedRegisteredBlocks } from '../../registered-blocks';
 import Block from './block';
 
 const {

@@ -7,13 +7,13 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import { getBlock } from '../registered-blocks';
-import BlockAccess from './block-access';
-import BlockDescription from './block-description';
-import BlockIcon from './block-icon';
-import BlockStyles from './block-styles';
-import BlockSupports from './block-supports';
-import BlockVariations from './block-variations';
+import { getBlock } from '../../registered-blocks';
+import Access from './block/access';
+import Description from './block/description';
+import Icon from './block/icon';
+import Styles from './block/styles';
+import Supports from './block/supports';
+import Variations from './block/variations';
 
 const { pick } = lodash;
 const {
@@ -23,19 +23,19 @@ const {
 const panels = {
 	supports: {
 		label: __( 'Supports', 'bmfbe' ),
-		Component: BlockSupports,
+		Component: Supports,
 	},
 	styles: {
 		label: __( 'Styles', 'bmfbe' ),
-		Component: BlockStyles,
+		Component: Styles,
 	},
 	variations: {
 		label: __( 'Variations', 'bmfbe' ),
-		Component: BlockVariations,
+		Component: Variations,
 	},
 	access: {
 		label: __( 'Access', 'bmfbe' ),
-		Component: BlockAccess,
+		Component: Access,
 	},
 };
 
@@ -58,8 +58,8 @@ const Block = ( props ) => {
 				<div>Loading...</div>
 			) : (
 				<>
-					<BlockIcon icon={ block.icon } />
-					<BlockDescription
+					<Icon icon={ block.icon } />
+					<Description
 						{ ...pick( block, [ 'title', 'name', 'description' ] ) }
 					/>
 					<Accordion

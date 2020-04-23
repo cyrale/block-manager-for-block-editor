@@ -1,4 +1,4 @@
-const BlockIcon = ( props ) => {
+const Icon = ( props ) => {
 	if ( 'string' === typeof props.icon && '' !== props.icon ) {
 		if ( /^<svg (.*)<\/svg>$/i.test( props.icon ) ) {
 			return (
@@ -19,4 +19,4 @@ const BlockIcon = ( props ) => {
 	return <></>;
 };
 
-export default BlockIcon;
+export default Icon;

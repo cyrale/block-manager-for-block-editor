@@ -1,6 +1,6 @@
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import Blocks from './blocks';
-import Settings from './settings';
+import Blocks from './components/blocks';
+import Settings from './components/settings';
 
 const { i18n } = wp;
 const { __ } = i18n;
