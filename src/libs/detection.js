@@ -77,7 +77,7 @@ function normalizeIcon( icon ) {
 	if ( 'string' === typeof icon?.src ) {
 		return icon.src;
 	} else if (
-		'object' === icon?.src &&
+		'object' === typeof icon?.src &&
 		'function' === typeof icon?.src.type &&
 		'SVG' === icon?.src.type.name
 	) {
