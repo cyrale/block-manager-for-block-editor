@@ -66,8 +66,13 @@ const Block = ( props ) => {
 						allowMultipleExpanded={ true }
 						allowZeroExpanded={ true }
 					>
-						{ Object.entries( panels ).map(
-							( [ key, { label, Component } ] ) => (
+						{ Object.entries( panels )
+							.filter(
+								( [ key ] ) =>
+									! Array.isArray( block[ key ] ) ||
+									block[ key ].length > 0
+							)
+							.map( ( [ key, { label, Component } ] ) => (
 								<AccordionItem key={ key }>
 									<AccordionItemHeading>
 										<AccordionItemButton>
@@ -78,8 +83,7 @@ const Block = ( props ) => {
 										<Component { ...block[ key ] } />
 									</AccordionItemPanel>
 								</AccordionItem>
-							)
-						) }
+							) ) }
 					</Accordion>
 				</>
 			) }
