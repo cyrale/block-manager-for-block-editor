@@ -1,27 +1,17 @@
-import { useState } from 'react';
-
-const Support = ( props ) => {
-	let [ isActive, setIsActive ] = useState( props.isActive );
-	let [ value, setValue ] = useState( props.value );
-
+const SupportItem = ( { disabled, isActive, name, onChange, value } ) => {
 	const handleIsActiveChange = () => {
-		isActive = ! isActive;
-		setIsActive( isActive );
-		triggerOnChange();
+		onChange( {
+			isActive: ! isActive,
+			value,
+		} );
 	};
 
 	const handleValueChange = () => {
-		value = ! value;
-		setValue( value );
-		triggerOnChange();
-	};
-
-	const triggerOnChange = () => {
-		props.onChange( {
+		onChange( {
 			isActive,
-			value
+			value: ! value,
 		} );
-	}
+	};
 
 	return (
 		<div className="bmfbe-block__support">
@@ -29,44 +19,37 @@ const Support = ( props ) => {
 				type="checkbox"
 				checked={ isActive }
 				onChange={ handleIsActiveChange }
-				disabled={ props.disabled }
+				disabled={ disabled }
 			/>
-			{ props.name }
+			{ name }
 			<input
 				type="checkbox"
 				checked={ value }
 				onChange={ handleValueChange }
-				disabled={ props.disabled || ! isActive }
+				disabled={ disabled || ! isActive }
 			/>
 		</div>
 	);
 };
 
-const Supports = ( props ) => {
-	const [ supports, setSupports ] = useState( props.supports );
-
+const Supports = ( { disabled, onChange, settings } ) => {
 	const handleOnChange = ( name, value ) => {
-		supports[ name ] = value;
-		setSupports( supports );
-
-		triggerOnChange();
+		settings[ name ] = value;
+		onChange( settings );
 	};
-
-	const triggerOnChange = () => {
-		props.onChange( supports );
-	}
 
 	return (
 		<div className="bmfbe-block__supports">
-			{ Object.entries( supports ).map( ( [ name, args ] ) => (
-				<Support
+			{ Object.entries( settings ).map( ( [ name, args ] ) => (
+				<SupportItem
 					key={ name }
 					onChange={ ( value ) => handleOnChange( name, value ) }
-					{ ...Object.assign( args, { name, disabled: props.disabled } ) }
+					disabled={ disabled }
+					{ ...{ ...args, ...{ name } } }
 				/>
 			) ) }
 		</div>
 	);
-}
+};
 
 export default Supports;

@@ -11,9 +11,8 @@ import { getBlock } from '../../../registered-blocks';
 import Access from './access';
 import Description from './description';
 import Icon from './icon';
-import Styles from './styles';
 import Supports from './supports';
-import Variations from './variations';
+import { LabeledSettingsList, TitledSettingsList } from './settings-list';
 
 const { pick } = lodash;
 const {
@@ -27,11 +26,11 @@ const panels = {
 	},
 	styles: {
 		label: __( 'Styles', 'bmfbe' ),
-		Component: Styles,
+		Component: TitledSettingsList,
 	},
 	variations: {
 		label: __( 'Variations', 'bmfbe' ),
-		Component: Variations,
+		Component: LabeledSettingsList,
 	},
 	access: {
 		label: __( 'Access', 'bmfbe' ),
@@ -81,7 +80,9 @@ const Block = ( props ) => {
 									block[ key ].length > 0
 							)
 							.map( ( [ key, { label, Component } ] ) => (
-								<AccordionItem key={ `${ block.name }/${ key }` }>
+								<AccordionItem
+									key={ `${ block.name }/${ key }` }
+								>
 									{ 'supports' === key && (
 										<input
 											type="checkbox"
@@ -96,10 +97,14 @@ const Block = ( props ) => {
 									</AccordionItemHeading>
 									<AccordionItemPanel>
 										<Component
-											onChange={ ( value ) => handleOnSettingsChange( key, value ) }
-
+											onChange={ ( value ) =>
+												handleOnSettingsChange(
+													key,
+													value
+												)
+											}
 											{ ...{
-												[ key ]: block[ key ],
+												settings: block[ key ],
 												disabled:
 													'supports' === key &&
 													! block.supportsOverride,
