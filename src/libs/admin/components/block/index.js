@@ -52,10 +52,12 @@ const Block = ( props ) => {
 		fetchBlock();
 	}, [] );
 
-	const [ supportsOverride, setSupportsOverride ] = useState( false );
-
 	const handleSupportsOverride = () => {
-		setSupportsOverride( ! supportsOverride );
+		setBlock( { ...block, supportsOverride: ! block.supportsOverride } );
+	};
+
+	const handleOnSettingsChange = ( name, settings ) => {
+		setBlock( { ...block, [ name ]: settings } );
 	};
 
 	return (
@@ -79,11 +81,11 @@ const Block = ( props ) => {
 									block[ key ].length > 0
 							)
 							.map( ( [ key, { label, Component } ] ) => (
-								<AccordionItem key={ key }>
+								<AccordionItem key={ `${ block.name }/${ key }` }>
 									{ 'supports' === key && (
 										<input
 											type="checkbox"
-											checked={ supportsOverride }
+											checked={ block.supportsOverride }
 											onChange={ handleSupportsOverride }
 										/>
 									) }
@@ -94,11 +96,13 @@ const Block = ( props ) => {
 									</AccordionItemHeading>
 									<AccordionItemPanel>
 										<Component
+											onChange={ ( value ) => handleOnSettingsChange( key, value ) }
+
 											{ ...{
 												[ key ]: block[ key ],
 												disabled:
 													'supports' === key &&
-													! supportsOverride,
+													! block.supportsOverride,
 											} }
 										/>
 									</AccordionItemPanel>
