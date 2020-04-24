@@ -18,22 +18,26 @@ const Support = ( props ) => {
 				type="checkbox"
 				checked={ isActive }
 				onChange={ handleIsActiveChange }
+				disabled={ props.disabled }
 			/>
 			{ props.name }
 			<input
 				type="checkbox"
 				checked={ value }
 				onChange={ handleValueChange }
-				disabled={ ! isActive }
+				disabled={ props.disabled || ! isActive }
 			/>
 		</div>
 	);
 };
 
-const Supports = ( { supports } ) => (
+const Supports = ( { supports, disabled } ) => (
 	<div className="bmfbe-block__supports">
 		{ Object.entries( supports ).map( ( [ name, args ] ) => (
-			<Support key={ name } { ...Object.assign( args, { name } ) } />
+			<Support
+				key={ name }
+				{ ...Object.assign( args, { name, disabled } ) }
+			/>
 		) ) }
 	</div>
 );

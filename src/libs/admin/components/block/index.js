@@ -7,13 +7,13 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import { getBlock } from '../../registered-blocks';
-import Access from './block/access';
-import Description from './block/description';
-import Icon from './block/icon';
-import Styles from './block/styles';
-import Supports from './block/supports';
-import Variations from './block/variations';
+import { getBlock } from '../../../registered-blocks';
+import Access from './access';
+import Description from './description';
+import Icon from './icon';
+import Styles from './styles';
+import Supports from './supports';
+import Variations from './variations';
 
 const { pick } = lodash;
 const {
@@ -52,6 +52,12 @@ const Block = ( props ) => {
 		fetchBlock();
 	}, [] );
 
+	const [ supportsOverride, setSupportsOverride ] = useState( false );
+
+	const handleSupportsOverride = () => {
+		setSupportsOverride( ! supportsOverride );
+	};
+
 	return (
 		<div className="bmfbe-block">
 			{ isLoading ? (
@@ -74,6 +80,13 @@ const Block = ( props ) => {
 							)
 							.map( ( [ key, { label, Component } ] ) => (
 								<AccordionItem key={ key }>
+									{ 'supports' === key && (
+										<input
+											type="checkbox"
+											checked={ supportsOverride }
+											onChange={ handleSupportsOverride }
+										/>
+									) }
 									<AccordionItemHeading>
 										<AccordionItemButton>
 											{ label }
@@ -81,7 +94,12 @@ const Block = ( props ) => {
 									</AccordionItemHeading>
 									<AccordionItemPanel>
 										<Component
-											{ ...{ [ key ]: block[ key ] } }
+											{ ...{
+												[ key ]: block[ key ],
+												disabled:
+													'supports' === key &&
+													! supportsOverride,
+											} }
 										/>
 									</AccordionItemPanel>
 								</AccordionItem>
