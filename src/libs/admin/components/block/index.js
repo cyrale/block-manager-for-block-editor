@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import {
 	Accordion,
 	AccordionItem,
@@ -7,7 +7,7 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import { getBlock } from '../../../registered-blocks';
+import { blockFields } from '../../../registered-blocks';
 import Access from './access';
 import Description from './description';
 import Icon from './icon';
@@ -39,47 +39,39 @@ const panels = {
 };
 
 const Block = ( props ) => {
-	const [ isLoading, setIsLoading ] = useState( true );
-
-	const [ block, setBlock ] = useState( {} );
-	useEffect( () => {
-		const fetchBlock = async () => {
-			setBlock( await getBlock( props.name ) );
-			setIsLoading( false );
-		};
-
-		fetchBlock();
-	}, [] );
+	const block = pick( props, blockFields );
+	const { onChange } = props;
 
 	const handleSupportsOverride = () => {
-		setBlock( { ...block, supportsOverride: ! block.supportsOverride } );
+		onChange( {
+			...block,
+			supportsOverride: ! block.supportsOverride,
+		} );
 	};
 
 	const handleOnSettingsChange = ( name, settings ) => {
-		setBlock( { ...block, [ name ]: settings } );
+		onChange( { ...block, [ name ]: settings } );
 	};
 
-	return (
-		<div className="bmfbe-block">
-			{ isLoading ? (
-				<div>Loading...</div>
-			) : (
-				<>
-					<Icon icon={ block.icon } />
-					<Description
-						{ ...pick( block, [ 'title', 'name', 'description' ] ) }
-					/>
-					<Accordion
-						allowMultipleExpanded={ true }
-						allowZeroExpanded={ true }
-					>
-						{ Object.entries( panels )
-							.filter(
-								( [ key ] ) =>
-									! Array.isArray( block[ key ] ) ||
-									block[ key ].length > 0
-							)
-							.map( ( [ key, { label, Component } ] ) => (
+	return useMemo(
+		() => (
+			<div className="bmfbe-block">
+				<Icon icon={ block.icon } />
+				<Description
+					{ ...pick( block, [ 'title', 'name', 'description' ] ) }
+				/>
+				<Accordion
+					allowMultipleExpanded={ true }
+					allowZeroExpanded={ true }
+				>
+					{ Object.entries( panels )
+						.filter(
+							( [ key ] ) =>
+								! Array.isArray( block[ key ] ) ||
+								block[ key ].length > 0
+						)
+						.map( ( [ key, { label, Component } ] ) => {
+							return (
 								<AccordionItem
 									key={ `${ block.name }/${ key }` }
 								>
@@ -112,11 +104,12 @@ const Block = ( props ) => {
 										/>
 									</AccordionItemPanel>
 								</AccordionItem>
-							) ) }
-					</Accordion>
-				</>
-			) }
-		</div>
+							);
+						} ) }
+				</Accordion>
+			</div>
+		),
+		Object.values( block )
 	);
 };
 

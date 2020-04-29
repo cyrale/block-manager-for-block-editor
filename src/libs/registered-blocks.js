@@ -17,6 +17,7 @@ export const blockFields = [
 	'category',
 	'icon',
 	'keywords',
+	'supportsOverride',
 	'supports',
 	'styles',
 	'variations',
