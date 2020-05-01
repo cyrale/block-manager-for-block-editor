@@ -1,9 +1,9 @@
 import './sass/admin.scss';
 
-import App from './libs/admin/app';
+import Admin from './libs/admin/admin';
 
 const container = document.getElementById( 'bmfbeSettings' );
 
 if ( null !== container ) {
-	ReactDOM.render( <App />, container );
+	ReactDOM.render( <Admin />, container );
 }

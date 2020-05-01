@@ -7,11 +7,11 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import { blockFields } from '../../../registered-blocks';
 import Access from './access';
 import Description from './description';
 import Icon from './icon';
 import Supports from './supports';
+import useBlocks from '../../use-blocks';
 import { LabeledSettingsList, TitledSettingsList } from './settings-list';
 
 const { pick } = lodash;
@@ -38,20 +38,14 @@ const panels = {
 	},
 };
 
-const Block = ( props ) => {
-	const block = pick( props, blockFields );
-	const { onChange } = props;
+const Block = ( { name } ) => {
+	const { getBlock, updateBlock } = useBlocks();
+	const block = getBlock( name );
 
-	const handleSupportsOverride = () => {
-		onChange( {
-			...block,
-			supportsOverride: ! block.supportsOverride,
-		} );
-	};
-
-	const handleOnSettingsChange = ( name, settings ) => {
-		onChange( { ...block, [ name ]: settings } );
-	};
+	const handleSupportsOverride = () =>
+		updateBlock( { ...block, supportsOverride: ! block.supportsOverride } );
+	const handleOnSettingsChange = ( key, value ) =>
+		updateBlock( { ...block, [ key ]: value } );
 
 	return useMemo(
 		() => (
@@ -109,7 +103,7 @@ const Block = ( props ) => {
 				</Accordion>
 			</div>
 		),
-		Object.values( block )
+		[ block ]
 	);
 };
 
