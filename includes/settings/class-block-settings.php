@@ -188,6 +188,56 @@ class Block_Settings extends Settings {
 	}
 
 	/**
+	 * Get option where settings were stored from database.
+	 *
+	 * @return mixed Value stored in database.
+	 * @since 1.0.0
+	 */
+	protected function get_db_value() {
+		$list   = parent::get_db_value();
+		$blocks = array();
+
+		foreach ( $list as $name ) {
+			$block = get_option( 'bmfbe_block_' . $name, null );
+
+			if ( ! is_null( $block ) ) {
+				$blocks[] = $block;
+			}
+		}
+
+		return self::sort_blocks( $blocks );
+	}
+
+	/**
+	 * Update option where settings were stored in database.
+	 *
+	 * @param array $settings Updated value of settings.
+	 *
+	 * @return bool True if settings was updated, False otherwise.
+	 * @since 1.0.0
+	 */
+	protected function update_db_value( $settings ) {
+		$db_settings = $this->get_db_value();
+
+		// Test if settings have to be updated.
+		if ( $settings === $db_settings
+			|| maybe_serialize( $settings ) === maybe_serialize( $db_settings ) ) {
+			return true;
+		}
+
+		$list = array();
+
+		foreach ( $settings as $block ) {
+			$list[] = $block['name'];
+			update_option( 'bmfbe_block_' . $block['name'], $block, false );
+		}
+
+		update_option( $this->prefix_option_name . $this->option_name, $list, false );
+
+		return true;
+	}
+
+	/**
 	 * Sort blocks.
 	 *
 	 * @param array $blocks Array of blocks.
