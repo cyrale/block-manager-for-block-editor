@@ -48,7 +48,10 @@ const Blocks = () => {
 									( block ) => block.category === category
 								)
 								.map( ( block ) => (
-									<Block key={ block.name } { ...block } />
+									<Block
+										key={ block.name }
+										name={ block.name }
+									/>
 								) ) }
 						</AccordionItemPanel>
 					</AccordionItem>
