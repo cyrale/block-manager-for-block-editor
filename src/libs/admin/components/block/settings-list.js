@@ -1,7 +1,7 @@
 import { LabeledSettingsItem, TitledSettingsItem } from './settings-item';
 
 const SettingsList = ( { nameKey, onChange, settings } ) => {
-	const handleOnChange = ( name, value ) => {
+	function handleOnChange( name, value ) {
 		const currentSettings = settings.map( ( s ) => {
 			if ( s.name === name ) {
 				s = { ...s, ...value };
@@ -13,7 +13,7 @@ const SettingsList = ( { nameKey, onChange, settings } ) => {
 		} );
 
 		onChange( currentSettings );
-	};
+	}
 
 	return (
 		<div className="bmfbe-block__settings-list">

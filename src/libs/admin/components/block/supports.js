@@ -1,17 +1,17 @@
 const SupportItem = ( { disabled, isActive, name, onChange, value } ) => {
-	const handleIsActiveChange = () => {
+	function handleIsActiveChange() {
 		onChange( {
 			isActive: ! isActive,
 			value,
 		} );
-	};
+	}
 
-	const handleValueChange = () => {
+	function handleValueChange() {
 		onChange( {
 			isActive,
 			value: ! value,
 		} );
-	};
+	}
 
 	return (
 		<div className="bmfbe-block__support">
@@ -33,10 +33,10 @@ const SupportItem = ( { disabled, isActive, name, onChange, value } ) => {
 };
 
 const Supports = ( { disabled, onChange, settings } ) => {
-	const handleOnChange = ( name, value ) => {
+	function handleOnChange( name, value ) {
 		settings[ name ] = value;
 		onChange( settings );
-	};
+	}
 
 	return (
 		<div className="bmfbe-block__supports">

@@ -7,19 +7,19 @@ export const TitledSettingsItem = ( {
 	onChange,
 	title,
 } ) => {
-	const handleIsActiveChange = () => {
+	function handleIsActiveChange() {
 		onChange( {
 			isActive: ! isActive,
 			isDefault,
 		} );
-	};
+	}
 
-	const handleIsDefaultChange = () => {
+	function handleIsDefaultChange() {
 		onChange( {
 			isActive,
 			isDefault: ! isDefault,
 		} );
-	};
+	}
 
 	return (
 		<div className="bmfbe-block__settings-item">

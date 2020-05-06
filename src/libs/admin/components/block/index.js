@@ -43,10 +43,13 @@ const Block = ( { name } ) => {
 	const block = getBlock( name );
 	const savingStatus = getSavingStatus( name );
 
-	const handleSupportsOverride = () =>
+	function handleSupportsOverride() {
 		updateBlock( { ...block, supportsOverride: ! block.supportsOverride } );
-	const handleOnSettingsChange = ( key, value ) =>
+	}
+
+	function handleOnSettingsChange( key, value ) {
 		updateBlock( { ...block, [ key ]: value } );
+	}
 
 	return useMemo(
 		() => (

@@ -156,7 +156,7 @@ const BlocksProvider = ( props ) => {
 			.forEach( delaySendingBlockToAPI );
 	}, [ state.savingQueues ] );
 
-	const delayForBlock = ( name, ms ) => {
+	function delayForBlock( name, ms ) {
 		const timeoutID = state.savingTimeouts[ name ];
 
 		if ( Number.isInteger( timeoutID ) ) {
@@ -181,14 +181,14 @@ const BlocksProvider = ( props ) => {
 				},
 			} ) );
 		} );
-	};
+	}
 
-	const delaySendingBlockToAPI = async ( name ) => {
+	async function delaySendingBlockToAPI( name ) {
 		await delayForBlock( name, 2000 );
 		sendBlockToAPI( name );
-	};
+	}
 
-	const sendBlockToAPI = ( name ) => {
+	function sendBlockToAPI( name ) {
 		const savingQueue = state.savingQueues[ name ];
 
 		savingQueue[ 0 ].isSaving = true;
@@ -222,7 +222,7 @@ const BlocksProvider = ( props ) => {
 				},
 			} ) );
 		} );
-	};
+	}
 
 	return (
 		<BlocksContext.Provider value={ [ state, setState ] }>
