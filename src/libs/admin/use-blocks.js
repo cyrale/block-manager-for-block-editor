@@ -5,24 +5,30 @@ import { BlocksContext } from './blocks-context';
 const useBlocks = () => {
 	const [ state, setState ] = useContext( BlocksContext );
 
-	function getBlocksList() {
+	const getBlocksList = () => {
 		return Object.values( state.blocks );
-	}
+	};
 
-	function getBlock( name ) {
+	const getBlock = ( name ) => {
 		return state.blocks[ name ];
-	}
+	};
 
-	function updateBlock( block ) {
-		setState( ( prevState ) => {
-			prevState.blocks = { ...prevState.blocks, [ block.name ]: block };
-			return { ...prevState };
-		} );
-	}
+	const getSavingStatus = ( name ) => {
+		const savingQueue = state.savingQueues[ name ] ?? [];
+		return savingQueue.length > 0 && savingQueue[ 0 ].isSaving;
+	};
+
+	const updateBlock = ( block ) => {
+		setState( ( prevState ) => ( {
+			...prevState,
+			blocks: { ...prevState.blocks, [ block.name ]: block },
+		} ) );
+	};
 
 	return {
 		getBlocksList,
 		getBlock,
+		getSavingStatus,
 		updateBlock,
 	};
 };

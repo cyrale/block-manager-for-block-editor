@@ -39,8 +39,9 @@ const panels = {
 };
 
 const Block = ( { name } ) => {
-	const { getBlock, updateBlock } = useBlocks();
+	const { getBlock, getSavingStatus, updateBlock } = useBlocks();
 	const block = getBlock( name );
+	const savingStatus = getSavingStatus( name );
 
 	const handleSupportsOverride = () =>
 		updateBlock( { ...block, supportsOverride: ! block.supportsOverride } );
@@ -52,7 +53,10 @@ const Block = ( { name } ) => {
 			<div className="bmfbe-block">
 				<Icon icon={ block.icon } />
 				<Description
-					{ ...pick( block, [ 'title', 'name', 'description' ] ) }
+					{ ...{
+						...pick( block, [ 'title', 'name', 'description' ] ),
+						savingStatus,
+					} }
 				/>
 				<Accordion
 					allowMultipleExpanded={ true }
@@ -103,7 +107,7 @@ const Block = ( { name } ) => {
 				</Accordion>
 			</div>
 		),
-		[ block ]
+		[ block, savingStatus ]
 	);
 };
 
