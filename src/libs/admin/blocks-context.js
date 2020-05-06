@@ -1,6 +1,6 @@
 import { cloneDeep, isEmpty, isEqual, omit, pick } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { blockFields, getPagedRegisteredBlocks } from '../registered-blocks';
+import { blockFields, getPagedRegisteredBlocks, updateBlock } from '../registered-blocks';
 
 const initialState = {
 	isLoaded: false,
@@ -188,7 +188,7 @@ const BlocksProvider = ( props ) => {
 		sendBlockToAPI( name );
 	}
 
-	function sendBlockToAPI( name ) {
+	async function sendBlockToAPI( name ) {
 		const savingQueue = state.savingQueues[ name ];
 
 		savingQueue[ 0 ].isSaving = true;
@@ -198,30 +198,25 @@ const BlocksProvider = ( props ) => {
 			savingQueues: { ...prevState.savingQueues, [ name ]: savingQueue },
 		} ) );
 
-		// TODO: replace Promise with API fetch.
-		new Promise( ( resolve ) => {
-			setTimeout( resolve, 5000 );
-		} ).then( () => {
-			const newBlock = cloneDeep(
-				pick( savingQueue.shift(), blockFields )
-			);
+		const newBlock = await updateBlock( pick( savingQueue[ 0 ], blockFields ) );
 
-			if ( savingQueue.length > 0 ) {
-				sendBlockToAPI( name );
-			}
+		savingQueue.pop();
 
-			setState( ( prevState ) => ( {
-				...prevState,
-				initialBlocks: {
-					...prevState.initialBlocks,
-					[ name ]: newBlock,
-				},
-				savingQueues: {
-					...prevState.savingQueues,
-					[ name ]: savingQueue,
-				},
-			} ) );
-		} );
+		if ( savingQueue.length > 0 ) {
+			await sendBlockToAPI( name );
+		}
+
+		setState( ( prevState ) => ( {
+			...prevState,
+			initialBlocks: {
+				...prevState.initialBlocks,
+				[ name ]: newBlock,
+			},
+			savingQueues: {
+				...prevState.savingQueues,
+				[ name ]: savingQueue,
+			},
+		} ) );
 	}
 
 	return (

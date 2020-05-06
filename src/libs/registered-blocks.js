@@ -1,4 +1,4 @@
-const { omit } = lodash;
+const { omit, pick } = lodash;
 const {
 	apiFetch,
 	url: { addQueryArgs },
@@ -91,5 +91,13 @@ export function getBlock( name ) {
 	return apiFetch( {
 		path: `/bmfbe/v1/blocks/${ name }`,
 		method: 'GET',
+	} );
+}
+
+export function updateBlock( block ) {
+	return apiFetch( {
+		path: `/bmfbe/v1/blocks/${ block.name }`,
+		method: 'PATCH',
+		data: pick( block, blockFields ),
 	} );
 }
