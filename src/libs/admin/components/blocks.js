@@ -9,10 +9,6 @@ import {
 import Block from './block';
 import useBlocks from '../use-blocks';
 
-const {
-	i18n: { __ },
-} = wp;
-
 const Blocks = () => {
 	const { getBlocksList } = useBlocks();
 
@@ -29,36 +25,26 @@ const Blocks = () => {
 	}
 
 	return (
-		<>
-			<Accordion
-				allowMultipleExpanded={ true }
-				allowZeroExpanded={ true }
-				preExpanded={ [ categories[ 0 ] ] }
-			>
-				{ categories.map( ( category ) => (
-					<AccordionItem key={ category } uuid={ category }>
-						<AccordionItemHeading>
-							<AccordionItemButton>
-								{ category }
-							</AccordionItemButton>
-						</AccordionItemHeading>
-						<AccordionItemPanel>
-							{ getBlocksList()
-								.filter(
-									( block ) => block.category === category
-								)
-								.map( ( block ) => (
-									<Block
-										key={ block.name }
-										name={ block.name }
-									/>
-								) ) }
-						</AccordionItemPanel>
-					</AccordionItem>
-				) ) }
-			</Accordion>
-			<button>{ __( 'Save', 'bmfbe' ) }</button>
-		</>
+		<Accordion
+			allowMultipleExpanded={ true }
+			allowZeroExpanded={ true }
+			preExpanded={ [ categories[ 0 ] ] }
+		>
+			{ categories.map( ( category ) => (
+				<AccordionItem key={ category } uuid={ category }>
+					<AccordionItemHeading>
+						<AccordionItemButton>{ category }</AccordionItemButton>
+					</AccordionItemHeading>
+					<AccordionItemPanel>
+						{ getBlocksList()
+							.filter( ( block ) => block.category === category )
+							.map( ( block ) => (
+								<Block key={ block.name } name={ block.name } />
+							) ) }
+					</AccordionItemPanel>
+				</AccordionItem>
+			) ) }
+		</Accordion>
 	);
 };
 

@@ -1,6 +1,10 @@
 import { cloneDeep, isEmpty, isEqual, omit, pick } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import { blockFields, getPagedRegisteredBlocks, updateBlock } from '../registered-blocks';
+import {
+	blockFields,
+	getPagedRegisteredBlocks,
+	updateBlock,
+} from '../registered-blocks';
 
 const initialState = {
 	isLoaded: false,
@@ -198,7 +202,9 @@ const BlocksProvider = ( props ) => {
 			savingQueues: { ...prevState.savingQueues, [ name ]: savingQueue },
 		} ) );
 
-		const newBlock = await updateBlock( pick( savingQueue[ 0 ], blockFields ) );
+		const newBlock = await updateBlock(
+			pick( savingQueue[ 0 ], blockFields )
+		);
 
 		savingQueue.pop();
 
