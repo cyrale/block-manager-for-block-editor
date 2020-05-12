@@ -45,32 +45,32 @@ class Block_Settings extends Settings {
 			'type'        => 'array',
 			'default'     => array(),
 			'items'       => array(
-				'name'             => array(
+				'name'              => array(
 					'description'       => __( 'Unique name for the block.', 'bmfbe' ),
 					'type'              => 'string',
 					'required'          => true,
 					'validate_callback' => array( $this, 'validate_name' ),
 				),
-				'title'            => array(
+				'title'             => array(
 					'description' => __( 'The display title for the block.', 'bmfbe' ),
 					'type'        => 'string',
 					'required'    => true,
 				),
-				'description'      => array(
+				'description'       => array(
 					'description' => __( 'A short description for the block.', 'bmfbe' ),
 					'type'        => 'string',
 					'required'    => true,
 				),
-				'category'         => array(
+				'category'          => array(
 					'description' => __( 'Category to help users browse and discover blocks.', 'bmfbe' ),
 					'type'        => 'string',
 					'required'    => true,
 				),
-				'icon'             => array(
+				'icon'              => array(
 					'description' => __( 'Icon to make block easier to identify.', 'bmfbe' ),
 					'type'        => 'string',
 				),
-				'keywords'         => array(
+				'keywords'          => array(
 					'description' => __( 'Aliases that help users discover block while searching.', 'bmfbe' ),
 					'type'        => 'array',
 					'default'     => array(),
@@ -78,13 +78,13 @@ class Block_Settings extends Settings {
 						'type' => 'string',
 					),
 				),
-				'supportsOverride' => array(
-					'description' => __( 'Indicate to override global supports.', 'bmfbe' ),
+				'supports_override' => array(
+					'description' => __( 'Override global supports?', 'bmfbe' ),
 					'type'        => 'boolean',
 					'default'     => false,
 				),
-				'supports'         => $supports,
-				'styles'           => array(
+				'supports'          => $supports,
+				'styles'            => array(
 					'description' => __( 'Block styles can be used to provide alternative styles to block.', 'bmfbe' ),
 					'type'        => 'array',
 					'default'     => array(),
@@ -115,7 +115,7 @@ class Block_Settings extends Settings {
 						),
 					),
 				),
-				'variations'       => array(
+				'variations'        => array(
 					'description' => __(
 						'Block’s style variation can be used to provide alternative styles to block.',
 						'bmfbe'

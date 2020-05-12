@@ -42,6 +42,11 @@ class Global_Settings extends Settings {
 
 		// Initialize available options like arguments in Rest API.
 		$this->schema = array(
+			'supports_override'          => array(
+				'description' => __( 'Override supports?', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
 			'supports'                   => array(
 				'description'       => __( 'Global block supports.', 'bmfbe' ),
 				'type'              => 'object',
