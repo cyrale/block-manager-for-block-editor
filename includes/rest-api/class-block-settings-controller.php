@@ -1,6 +1,6 @@
 <?php
 /**
- * Block Manager for WordPress Block Editor (Gutenberg): Settings for blocks.
+ * Block Manager for WordPress Block Editor (Gutenberg): SettingsPanel for blocks.
  *
  * @since 1.0.0
  * @package BMFBE\Rest_API
@@ -16,7 +16,7 @@ use WP_REST_Response;
 use WP_REST_Server;
 
 /**
- * Block Manager for WordPress Block Editor (Gutenberg): Settings for blocks.
+ * Block Manager for WordPress Block Editor (Gutenberg): SettingsPanel for blocks.
  *
  * @since 1.0.0
  * @package BMFBE\Rest_API

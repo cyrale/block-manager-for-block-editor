@@ -31,17 +31,16 @@ export const blockFields = [
  * @return {Promise<Array>} Registered blocks.
  * @since 1.0.0
  */
-export async function getRegisteredBlocks( data = {} ) {
+export async function getBlocks( data = {} ) {
 	let registeredBlocks = [];
 
 	let page = 1;
 	let totalPages = 1;
 
 	while ( page <= totalPages ) {
-		const res = await getPagedRegisteredBlocks(
-			Object.assign( {}, data, { page } ),
-			{ parse: false }
-		);
+		const res = await getPagedBlocks( Object.assign( {}, data, { page } ), {
+			parse: false,
+		} );
 
 		if ( res.status !== 200 ) {
 			break;
@@ -70,7 +69,7 @@ export async function getRegisteredBlocks( data = {} ) {
  * @return {*} Response from the API.
  * @since 1.0.0
  */
-export function getPagedRegisteredBlocks( data = {}, options = {} ) {
+export function getPagedBlocks( data = {}, options = {} ) {
 	options = Object.assign( {}, omit( options, [ 'path', 'method' ] ), {
 		path: addQueryArgs( '/bmfbe/v1/blocks', data ),
 		method: 'GET',

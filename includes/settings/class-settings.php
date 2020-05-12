@@ -3,7 +3,7 @@
  * Block Manager for WordPress Block Editor (Gutenberg): Manage settings.
  *
  * @since 1.0.0
- * @package BMFBE\Settings
+ * @package BMFBE\SettingsPanel
  */
 
 namespace BMFBE\Settings;
@@ -15,7 +15,7 @@ use WP_Error;
  * Block Manager for WordPress Block Editor (Gutenberg): Manage settings.
  *
  * @since 1.0.0
- * @package BMFBE\Settings
+ * @package BMFBE\SettingsPanel
  */
 abstract class Settings {
 	/**
@@ -493,7 +493,7 @@ abstract class Settings {
 	/**
 	 * Walk through settings to prepare them.
 	 *
-	 * @param array      $settings        Settings to prepare.
+	 * @param array      $settings        SettingsPanel to prepare.
 	 * @param array      $schema          Schema of current settings.
 	 * @param array|null $database_values Values stored in database.
 	 *
@@ -547,7 +547,7 @@ abstract class Settings {
 	/**
 	 * Validate settings.
 	 *
-	 * @param array $settings Settings to validate.
+	 * @param array $settings SettingsPanel to validate.
 	 *
 	 * @return array|WP_Error Validated settings, WP_Error otherwise.
 	 * @since 1.0.0
@@ -559,7 +559,7 @@ abstract class Settings {
 	/**
 	 * Sanitize settings.
 	 *
-	 * @param array $settings Settings to sanitize.
+	 * @param array $settings SettingsPanel to sanitize.
 	 *
 	 * @return array Sanitized settings.
 	 * @since 1.0.0
@@ -571,7 +571,7 @@ abstract class Settings {
 	/**
 	 * Prepare settings after loading them.
 	 *
-	 * @param array $settings Settings to prepare.
+	 * @param array $settings SettingsPanel to prepare.
 	 *
 	 * @return array Prepared settings.
 	 * @since 1.0.0
@@ -583,7 +583,7 @@ abstract class Settings {
 	/**
 	 * Prepare settings before updating them in database.
 	 *
-	 * @param array $settings Settings to prepare.
+	 * @param array $settings SettingsPanel to prepare.
 	 *
 	 * @return array Prepared settings.
 	 * @since 1.0.0

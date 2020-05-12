@@ -1,4 +1,4 @@
-import { blockFields, getRegisteredBlocks } from './registered-blocks';
+import { blockFields, getBlocks } from './api-blocks';
 
 const { cloneDeep, isEqual, omit, pick } = lodash;
 const {
@@ -311,7 +311,7 @@ export default async () => {
 	refreshInfoNotice();
 
 	// Get blocks from database.
-	const registeredBlocks = await getRegisteredBlocks();
+	const registeredBlocks = await getBlocks();
 
 	// Get block from editor and sanitize values.
 	const editorBlocks = getEditorBlocks()

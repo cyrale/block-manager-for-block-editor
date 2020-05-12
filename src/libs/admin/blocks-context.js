@@ -1,10 +1,6 @@
 import { cloneDeep, isEmpty, isEqual, omit, pick } from 'lodash';
 import React, { useEffect, useState } from 'react';
-import {
-	blockFields,
-	getPagedRegisteredBlocks,
-	updateBlock,
-} from '../registered-blocks';
+import { blockFields, getPagedBlocks, updateBlock } from '../api-blocks';
 
 const initialState = {
 	isLoaded: false,
@@ -31,7 +27,7 @@ const BlocksProvider = ( props ) => {
 
 			// Loop over pages.
 			while ( currentPage <= currentTotalPages ) {
-				const res = await getPagedRegisteredBlocks(
+				const res = await getPagedBlocks(
 					{
 						per_page: 100,
 						page: currentPage,

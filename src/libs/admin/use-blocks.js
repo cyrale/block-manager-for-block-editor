@@ -5,7 +5,7 @@ import { BlocksContext } from './blocks-context';
 const useBlocks = () => {
 	const [ state, setState ] = useContext( BlocksContext );
 
-	function getBlocksList() {
+	function getBlocks() {
 		return Object.values( state.blocks );
 	}
 
@@ -26,7 +26,7 @@ const useBlocks = () => {
 	}
 
 	return {
-		getBlocksList,
+		getBlocks,
 		getBlock,
 		getSavingStatus,
 		updateBlock,

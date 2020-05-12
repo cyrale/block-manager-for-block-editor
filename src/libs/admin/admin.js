@@ -1,7 +1,6 @@
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import Blocks from './components/blocks';
-import Settings from './components/settings';
-import { BlocksProvider } from './blocks-context';
+import BlocksPanel from './components/blocks-panel';
+import SettingsPanel from './components/settings-panel';
 
 const {
 	i18n: { __ },
@@ -14,12 +13,10 @@ const Admin = () => (
 			<Tab>{ __( 'Settings', 'bmfbe' ) }</Tab>
 		</TabList>
 		<TabPanel>
-			<BlocksProvider>
-				<Blocks />
-			</BlocksProvider>
+			<BlocksPanel />
 		</TabPanel>
 		<TabPanel>
-			<Settings />
+			<SettingsPanel />
 		</TabPanel>
 	</Tabs>
 );

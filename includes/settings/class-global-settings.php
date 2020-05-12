@@ -3,7 +3,7 @@
  * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
  *
  * @since 1.0.0
- * @package BMFBE\Settings
+ * @package BMFBE\SettingsPanel
  */
 
 namespace BMFBE\Settings;
@@ -12,7 +12,7 @@ namespace BMFBE\Settings;
  * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
  *
  * @since 1.0.0
- * @package BMFBE\Settings
+ * @package BMFBE\SettingsPanel
  */
 class Global_Settings extends Settings {
 	/**
