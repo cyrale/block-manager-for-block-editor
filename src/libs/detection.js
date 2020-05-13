@@ -213,7 +213,8 @@ function removeUnnecessaryFields( prop ) {
  * @since 1.0.0
  */
 function refreshInfoNotice( message = '' ) {
-	const noticeStr = __( 'Detection in progress... %s', 'bmfbe' );
+	// translators: %s: Percentage of progression.
+	const noticeStr = __( 'Detection in progress… %s', 'bmfbe' );
 	const noticeDetails = {
 		newOnes: '',
 		updated: '',
@@ -238,6 +239,7 @@ function refreshInfoNotice( message = '' ) {
 	// Progress of sending new blocks.
 	if ( noticeValues.newOnes.total > 0 ) {
 		noticeDetails.newOnes = sprintf(
+			// translators: %1$d: count of new blocks, %2$d: total of new blocks.
 			__( 'new %1$d/%2$d', 'bmfbe' ),
 			noticeValues.newOnes.progress,
 			noticeValues.newOnes.total
@@ -247,6 +249,7 @@ function refreshInfoNotice( message = '' ) {
 	// Progress of sending updated blocks.
 	if ( noticeValues.updated.total > 0 ) {
 		noticeDetails.updated = sprintf(
+			// translators: %1$d: count of updated blocks, %2$d: total of updated blocks.
 			__( 'updated %1$d/%2$d', 'bmfbe' ),
 			noticeValues.updated.progress,
 			noticeValues.updated.total
@@ -256,6 +259,7 @@ function refreshInfoNotice( message = '' ) {
 	// Progress of sending deleted blocks.
 	if ( noticeValues.deleted.total > 0 ) {
 		noticeDetails.deleted = sprintf(
+			// translators: %1$d: count of deleted blocks, %2$d: total of deleted blocks.
 			__( 'deleted %1$d/%2$d', 'bmfbe' ),
 			noticeValues.deleted.progress,
 			noticeValues.deleted.total
