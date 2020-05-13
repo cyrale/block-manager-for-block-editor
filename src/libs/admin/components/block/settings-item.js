@@ -43,7 +43,7 @@ export const TitledSettingsItem = ( {
 export const LabeledSettingsItem = ( props ) => {
 	const convertedProps = {
 		...omit( props, [ 'label' ] ),
-		...{ title: props.label },
+		title: props.label,
 	};
 
 	return <TitledSettingsItem { ...convertedProps } />;

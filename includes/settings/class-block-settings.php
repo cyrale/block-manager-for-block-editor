@@ -436,7 +436,7 @@ class Block_Settings extends Settings {
 			return $valid_check;
 		}
 
-		// Supports.
+		// Index.
 		$supports = $db_block['supports'];
 		if ( ! empty( $block['supports'] ) && is_array( $block['supports'] ) ) {
 			$supports = array_replace_recursive( $supports, $block['supports'] );

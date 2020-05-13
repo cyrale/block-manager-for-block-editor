@@ -1,5 +1,3 @@
-const Settings = () => {
-	return <div className="bmfbe-settings">Settings</div>;
-};
+import Settings from './settings';
 
 export default Settings;
