@@ -15,7 +15,7 @@ const resolvePlugin = relativePath => path.resolve( pluginDir, relativePath );
 module.exports = {
 	dotenv: resolvePlugin( '.env' ),
 	pluginSrc: resolvePlugin( 'src' ), // Plugin src folder path.
-	pluginAdminJs: resolvePlugin( 'src/admin.js' ),
+	pluginAdminJs: resolvePlugin( 'src/admin.jsx' ),
 	pluginEditorJs: resolvePlugin( 'src/editor.js' ),
 	pluginFrontJs: resolvePlugin( 'src/front.js' ),
 	pluginDist: resolvePlugin( './dist' ),
@@ -27,7 +27,7 @@ const resolveOwn = relativePath => path.resolve( __dirname, '..', relativePath )
 module.exports = {
 	dotenv: resolvePlugin( '.env' ),
 	pluginSrc: resolvePlugin( 'src' ),
-	pluginAdminJs: resolvePlugin( 'src/admin.js' ),
+	pluginAdminJs: resolvePlugin( 'src/admin.jsx' ),
 	pluginEditorJs: resolvePlugin( 'src/editor.js' ),
 	pluginFrontJs: resolvePlugin( 'src/front.js' ),
 	pluginDist: resolvePlugin( './dist' ),

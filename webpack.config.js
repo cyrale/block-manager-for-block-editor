@@ -46,6 +46,9 @@ module.exports = ( env, options ) => {
 			path: paths.pluginDist,
 			filename: '[name].js', // [name] = './app.build' as defined above.
 		},
+		resolve: {
+			extensions: [ '.js', '.jsx' ],
+		},
 		mode,
 		optimization,
 		// You may want 'eval' instead if you prefer to see the compiled output in DevTools.
@@ -53,7 +56,7 @@ module.exports = ( env, options ) => {
 		module: {
 			rules: [
 				{
-					test: /\.js$/,
+					test: /\.jsx?$/,
 					exclude: /(node_modules|bower_components)/,
 					use: {
 						loader: 'babel-loader',
