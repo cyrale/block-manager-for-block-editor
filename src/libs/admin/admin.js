@@ -2,10 +2,10 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import BlocksPanel from './components/blocks-panel';
 import SettingsPanel from './components/settings-panel';
-import { BlocksProvider } from "./blocks-context";
-import { SettingsProvider } from "./settings-context";
-import useBlocks from "./use-blocks";
-import useSettings from "./use-settings";
+import { BlocksProvider } from './blocks-context';
+import { SettingsProvider } from './settings-context';
+import useBlocks from './use-blocks';
+import useSettings from './use-settings';
 
 const {
 	i18n: { __ },
@@ -30,10 +30,14 @@ const Admin = () => {
 				<Tabs forceRenderTabPanel={ true }>
 					<TabList>
 						<Tab>
-							<TabTitle useHook={ useBlocks }>{ __( 'Blocks', 'bmfbe' ) }</TabTitle>
+							<TabTitle useHook={ useBlocks }>
+								{ __( 'Blocks', 'bmfbe' ) }
+							</TabTitle>
 						</Tab>
 						<Tab>
-							<TabTitle useHook={ useSettings }>{ __( 'Settings', 'bmfbe' ) }</TabTitle>
+							<TabTitle useHook={ useSettings }>
+								{ __( 'Settings', 'bmfbe' ) }
+							</TabTitle>
 						</Tab>
 					</TabList>
 					<TabPanel>
@@ -46,6 +50,6 @@ const Admin = () => {
 			</BlocksProvider>
 		</SettingsProvider>
 	);
-}
+};
 
 export default Admin;

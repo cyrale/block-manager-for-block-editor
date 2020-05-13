@@ -1,4 +1,4 @@
-import { cloneDeep, isEmpty, isEqual, omit, pick } from 'lodash';
+import { cloneDeep, isEmpty, isEqual, omit } from 'lodash';
 import React, { useEffect, useState } from 'react';
 
 import { getSettings, updateSettings } from '../api-settings';
@@ -84,7 +84,10 @@ const SettingsProvider = ( props ) => {
 	// Treat modifications with delay.
 	useEffect( () => {
 		// Delay treatment of enqueued modifications.
-		if ( state.savingQueue.length > 0 && ! state.savingQueue[ 0 ].isSaving ) {
+		if (
+			state.savingQueue.length > 0 &&
+			! state.savingQueue[ 0 ].isSaving
+		) {
 			delaySendingSettingsToAPI();
 		}
 	}, [ state.savingQueue ] );
