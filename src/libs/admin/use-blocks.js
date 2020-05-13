@@ -24,12 +24,9 @@ const useBlocks = () => {
 		}
 
 		return Object.values( state.savingQueues ).reduce(
-			( inProgress, savingQueue ) => {
-				return (
-					inProgress ||
-					( savingQueue.length > 0 && savingQueue[ 0 ].isSaving )
-				);
-			},
+			( inProgress, savingQueue ) =>
+				inProgress ||
+				( savingQueue.length > 0 && savingQueue[ 0 ].isSaving ),
 			false
 		);
 	}
