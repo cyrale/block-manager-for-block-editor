@@ -156,6 +156,11 @@ const BlocksProvider = ( props ) => {
 			.forEach( delaySendingBlockToAPI );
 	}, [ state.savingQueues ] );
 
+	async function delaySendingBlockToAPI( name ) {
+		await delayForBlock( name, 2000 );
+		return sendBlockToAPI( name );
+	}
+
 	function delayForBlock( name, ms ) {
 		const timeoutID = state.savingTimeouts[ name ];
 
@@ -181,11 +186,6 @@ const BlocksProvider = ( props ) => {
 				},
 			} ) );
 		} );
-	}
-
-	async function delaySendingBlockToAPI( name ) {
-		await delayForBlock( name, 2000 );
-		sendBlockToAPI( name );
 	}
 
 	async function sendBlockToAPI( name ) {
