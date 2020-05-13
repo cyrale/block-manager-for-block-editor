@@ -97,6 +97,15 @@ const BlocksProvider = ( props ) => {
 					// Replace first modification during waiting time.
 					savingQueue[ 0 ] = savingBlock;
 				} else if (
+					( savingQueue.length === 2 &&
+						isEqual( firstBlock, block ) ) ||
+					( savingQueue.length === 1 &&
+						! savingQueue[ 0 ].isSaving &&
+						isEqual( block, state.initialBlocks[ block.name ] ) )
+				) {
+					// Remove modification if finally there is no modification.
+					savingQueue.pop();
+				} else if (
 					( savingQueue.length === 0 &&
 						! isEqual(
 							block,
@@ -107,15 +116,6 @@ const BlocksProvider = ( props ) => {
 				) {
 					// Enqueue modification.
 					savingQueue.push( savingBlock );
-				} else if (
-					( savingQueue.length === 2 &&
-						isEqual( firstBlock, block ) ) ||
-					( savingQueue.length === 1 &&
-						! savingQueue[ 0 ].isSaving &&
-						isEqual( block, state.initialBlocks[ block.name ] ) )
-				) {
-					// Remove modification if finally there is no modification.
-					savingQueue.pop();
 				} else if ( savingQueue.length === 2 ) {
 					// Replace second modification in queue.
 					savingQueue[ 1 ] = savingBlock;
