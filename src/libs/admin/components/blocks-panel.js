@@ -8,13 +8,12 @@ import {
 
 import Block from './block';
 import useBlocks from '../use-blocks';
-import { BlocksProvider } from '../blocks-context';
 
-const Blocks = () => {
+const BlocksPanel = () => {
 	const { getBlocks } = useBlocks();
 
 	const categories = getBlocks().reduce( ( acc, { category } ) => {
-		if ( ! acc.includes( category ) ) {
+		if ( !acc.includes( category ) ) {
 			acc.push( category );
 		}
 
@@ -28,7 +27,7 @@ const Blocks = () => {
 			<Accordion
 				allowMultipleExpanded={ true }
 				allowZeroExpanded={ true }
-				preExpanded={ [ categories[ 0 ] ] }
+				preExpanded={ [ categories[0] ] }
 			>
 				{ categories.map( ( category ) => (
 					<AccordionItem key={ category } uuid={ category }>
@@ -56,11 +55,5 @@ const Blocks = () => {
 
 	return <div className="bmfbe-blocks">{ accordionChild }</div>;
 };
-
-const BlocksPanel = () => (
-	<BlocksProvider>
-		<Blocks />
-	</BlocksProvider>
-);
 
 export default BlocksPanel;

@@ -39,9 +39,9 @@ const panels = {
 };
 
 const Block = ( { name } ) => {
-	const { getBlock, getSavingStatus, updateBlock } = useBlocks();
+	const { getBlock, saveInProgress, updateBlock } = useBlocks();
 	const block = getBlock( name );
-	const savingStatus = getSavingStatus( name );
+	const savingStatus = saveInProgress( name );
 
 	function handleSupportsOverride() {
 		updateBlock( {

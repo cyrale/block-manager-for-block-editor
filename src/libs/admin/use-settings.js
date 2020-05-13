@@ -9,6 +9,14 @@ const useSettings = () => {
 		return state.settings;
 	}
 
+	function loadInProgress() {
+		return ! state.isLoaded;
+	}
+
+	function saveInProgress() {
+		return state.savingQueue.length > 0 && state.savingQueue[ 0 ].isSaving;
+	}
+
 	function updateSettings( settings ) {
 		setState( ( prevState ) => ( {
 			...prevState,
@@ -18,6 +26,8 @@ const useSettings = () => {
 
 	return {
 		getSettings,
+		loadInProgress,
+		saveInProgress,
 		updateSettings,
 	};
 };
