@@ -117,7 +117,7 @@ const BlocksProvider = ( props ) => {
 					// Remove modification if finally there is no modification.
 					savingQueue.pop();
 				} else if ( savingQueue.length === 2 ) {
-					// Replace seconf modification in queue.
+					// Replace second modification in queue.
 					savingQueue[ 1 ] = savingBlock;
 				}
 
