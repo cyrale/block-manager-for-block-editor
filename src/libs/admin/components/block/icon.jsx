@@ -1,22 +1,20 @@
-const Icon = ( props ) => {
-	if ( 'string' === typeof props.icon && '' !== props.icon ) {
-		if ( /^<svg (.*)<\/svg>$/i.test( props.icon ) ) {
+export default function Icon( { icon } ) {
+	if ( 'string' === typeof icon && '' !== icon ) {
+		if ( /^<svg (.*)<\/svg>$/i.test( icon ) ) {
 			return (
 				<div
 					className="bmfbe-block__icon"
-					dangerouslySetInnerHTML={ { __html: props.icon } }
+					dangerouslySetInnerHTML={ { __html: icon } }
 				/>
 			);
 		}
 
 		return (
 			<div className="bmfbe-block__icon">
-				<span className={ `dashicons dashicons-${ props.icon }` } />
+				<span className={ `dashicons dashicons-${ icon }` } />
 			</div>
 		);
 	}
 
-	return <></>;
-};
-
-export default Icon;
+	return <div className="bmfbe-block__icon" />;
+}

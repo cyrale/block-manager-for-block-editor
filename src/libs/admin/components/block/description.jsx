@@ -1,13 +1,18 @@
-const Description = ( props ) => (
-	<div className="bmfbe-block__description">
-		<h3>
-			{ props.title } { props.savingStatus ? 'Saving...' : '' }
-		</h3>
-		<p>
-			<i>{ props.name }</i>
-		</p>
-		<p>{ props.description }</p>
-	</div>
-);
-
-export default Description;
+export default function Description( {
+	description,
+	name,
+	saveInProgress,
+	title,
+} ) {
+	return (
+		<div className="bmfbe-block__description">
+			<h3>
+				{ title } { saveInProgress ? 'Saving...' : '' }
+			</h3>
+			<p>
+				<i>{ name }</i>
+			</p>
+			<p>{ description }</p>
+		</div>
+	);
+}

@@ -1,9 +1,9 @@
 import Settings from './settings';
 
-const SettingsPanel = () => (
-	<div className="bmfbe-settings">
-		<Settings />
-	</div>
-);
-
-export default SettingsPanel;
+export default function SettingsPanel() {
+	return (
+		<div className="bmfbe-settings">
+			<Settings />
+		</div>
+	);
+}

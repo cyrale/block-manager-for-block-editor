@@ -11,7 +11,7 @@ const {
 	i18n: { __ },
 } = wp;
 
-const TabTitle = ( { children, useHook } ) => {
+function TabTitle( { children, useHook } ) {
 	const { loadInProgress, saveInProgress } = useHook();
 
 	return (
@@ -21,9 +21,9 @@ const TabTitle = ( { children, useHook } ) => {
 			{ saveInProgress() && 'Saving...' }
 		</>
 	);
-};
+}
 
-const Admin = () => {
+function Admin() {
 	return (
 		<SettingsProvider>
 			<BlocksProvider>
@@ -50,6 +50,6 @@ const Admin = () => {
 			</BlocksProvider>
 		</SettingsProvider>
 	);
-};
+}
 
 export default Admin;

@@ -14,7 +14,7 @@ const initialState = {
 
 const BlocksContext = React.createContext( [ initialState, () => {} ] );
 
-const BlocksProvider = ( props ) => {
+function BlocksProvider( props ) {
 	const [ state, setState ] = useState( initialState );
 
 	// Get blocks from API.
@@ -140,9 +140,12 @@ const BlocksProvider = ( props ) => {
 		savingBlockNames
 			.filter( ( name ) => state.savingQueues[ name ].length === 0 )
 			.forEach( ( name ) => {
+				clearTimeout( state.savingTimeouts[ name ] );
+
 				setState( ( prevState ) => ( {
 					...prevState,
 					savingQueues: omit( prevState.savingQueues, [ name ] ),
+					savingTimeouts: omit( prevState.savingTimeouts, [ name ] ),
 				} ) );
 			} );
 
@@ -226,6 +229,6 @@ const BlocksProvider = ( props ) => {
 			{ props.children }
 		</BlocksContext.Provider>
 	);
-};
+}
 
 export { BlocksContext, BlocksProvider };

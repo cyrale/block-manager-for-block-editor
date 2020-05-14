@@ -8,11 +8,13 @@ import {
 } from 'react-accessible-accordion';
 
 import useBlocks from '../../use-blocks';
-import Supports from '../supports';
+import Supports from '../settings/supports';
+import Toggle from '../settings/toggle';
 import Access from './access';
 import Description from './description';
 import Icon from './icon';
-import { LabeledSettingsList, TitledSettingsList } from './settings-list';
+import Styles from './styles';
+import Variations from './variations';
 
 const { pick } = lodash;
 const {
@@ -26,11 +28,11 @@ const panels = {
 	},
 	styles: {
 		label: __( 'Styles', 'bmfbe' ),
-		Component: LabeledSettingsList,
+		Component: Styles,
 	},
 	variations: {
 		label: __( 'Variations', 'bmfbe' ),
-		Component: TitledSettingsList,
+		Component: Variations,
 	},
 	access: {
 		label: __( 'Access', 'bmfbe' ),
@@ -38,10 +40,10 @@ const panels = {
 	},
 };
 
-const Block = ( { name } ) => {
+export default function Block( { name } ) {
 	const { getBlock, saveInProgress, updateBlock } = useBlocks();
 	const block = getBlock( name );
-	const savingStatus = saveInProgress( name );
+	const inProgress = saveInProgress( name );
 
 	function handleSupportsOverride() {
 		updateBlock( {
@@ -59,10 +61,8 @@ const Block = ( { name } ) => {
 			<div className="bmfbe-block">
 				<Icon icon={ block.icon } />
 				<Description
-					{ ...{
-						...pick( block, [ 'title', 'name', 'description' ] ),
-						savingStatus,
-					} }
+					saveInProgress={ inProgress }
+					{ ...pick( block, [ 'title', 'name', 'description' ] ) }
 				/>
 				<Accordion
 					allowMultipleExpanded={ true }
@@ -80,9 +80,8 @@ const Block = ( { name } ) => {
 									key={ `${ block.name }/${ key }` }
 								>
 									{ 'supports' === key && (
-										<input
-											type="checkbox"
-											checked={ block.supports_override }
+										<Toggle
+											value={ block.supports_override }
 											onChange={ handleSupportsOverride }
 										/>
 									) }
@@ -93,18 +92,17 @@ const Block = ( { name } ) => {
 									</AccordionItemHeading>
 									<AccordionItemPanel>
 										<Component
+											value={ block[ key ] }
+											disabled={
+												'supports' === key &&
+												! block.supports_override
+											}
 											onChange={ ( value ) =>
 												handleOnSettingsChange(
 													key,
 													value
 												)
 											}
-											{ ...{
-												settings: block[ key ],
-												disabled:
-													'supports' === key &&
-													! block.supports_override,
-											} }
 										/>
 									</AccordionItemPanel>
 								</AccordionItem>
@@ -113,8 +111,6 @@ const Block = ( { name } ) => {
 				</Accordion>
 			</div>
 		),
-		[ block, savingStatus ]
+		[ block, inProgress ]
 	);
-};
-
-export default Block;
+}

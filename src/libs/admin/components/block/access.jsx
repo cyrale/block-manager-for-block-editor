@@ -1,3 +1,3 @@
-const Access = () => <div className="bmfbe-block__access">access</div>;
-
-export default Access;
+export default function Access() {
+	return <div className="bmfbe-block__access">access</div>;
+}

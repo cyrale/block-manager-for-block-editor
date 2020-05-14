@@ -13,7 +13,7 @@ const initialState = {
 
 const SettingsContext = React.createContext( [ initialState, () => {} ] );
 
-const SettingsProvider = ( props ) => {
+function SettingsProvider( props ) {
 	const [ state, setState ] = useState( initialState );
 
 	// Get settings from API.
@@ -83,6 +83,11 @@ const SettingsProvider = ( props ) => {
 
 	// Treat modifications with delay.
 	useEffect( () => {
+		// Reset delayed treatment.
+		if ( state.savingQueue.length === 0 ) {
+			clearTimeout( state.savingTimeout );
+		}
+
 		// Delay treatment of enqueued modifications.
 		if (
 			state.savingQueue.length > 0 &&
@@ -154,6 +159,6 @@ const SettingsProvider = ( props ) => {
 			{ props.children }
 		</SettingsContext.Provider>
 	);
-};
+}
 
 export { SettingsContext, SettingsProvider };
