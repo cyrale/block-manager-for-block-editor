@@ -1,6 +1,8 @@
-import { useContext } from 'react';
-
 import { SettingsContext } from './settings-context';
+
+const {
+	element: { useContext },
+} = wp;
 
 const useSettings = () => {
 	const [ state, setState ] = useContext( SettingsContext );

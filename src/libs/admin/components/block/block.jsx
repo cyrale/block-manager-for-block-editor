@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import {
 	Accordion,
 	AccordionItem,
@@ -18,6 +17,7 @@ import Variations from './variations';
 
 const { pick } = lodash;
 const {
+	element: { useMemo },
 	i18n: { __ },
 } = wp;
 

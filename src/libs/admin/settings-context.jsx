@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-
 import { getSettings, updateSettings } from '../api-settings';
 
 const { cloneDeep, isEmpty, isEqual, omit } = lodash;
+const {
+	element: { createContext, useEffect, useState },
+} = wp;
 
 const initialState = {
 	isLoaded: false,
@@ -12,7 +13,7 @@ const initialState = {
 	savingTimeout: undefined,
 };
 
-const SettingsContext = React.createContext( [ initialState, () => {} ] );
+const SettingsContext = createContext( [ initialState, () => {} ] );
 
 function SettingsProvider( props ) {
 	const [ state, setState ] = useState( initialState );

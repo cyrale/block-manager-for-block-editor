@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
 import shortid from 'shortid';
 
 const {
+	element: { useEffect, useState },
 	url: { cleanForSlug },
 } = wp;
 

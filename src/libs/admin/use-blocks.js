@@ -1,6 +1,8 @@
-import { useContext } from 'react';
-
 import { BlocksContext } from './blocks-context';
+
+const {
+	element: { useContext },
+} = wp;
 
 const useBlocks = () => {
 	const [ state, setState ] = useContext( BlocksContext );

@@ -23,11 +23,9 @@
 	"globals": {
 		"window": true,
 		"document": true,
-	  	"React": true,
-	  	"ReactDOM": true,
+		"lodash": true,
 		"wp": true,
 		"wpApiSettings": true,
-		"lodash": true,
 		"bmfbeEditorGlobal":  true
 	},
 	"plugins": [

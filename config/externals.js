@@ -7,7 +7,8 @@
  *
  * @return {string} Camel-cased string.
  */
-const camelCaseDash = string => string.replace( /-([a-z])/g, ( match, letter ) => letter.toUpperCase() );
+const camelCaseDash = ( string ) =>
+	string.replace( /-([a-z])/g, ( match, letter ) => letter.toUpperCase() );
 
 /**
  * Define externals to load components through the wp global.
@@ -34,10 +35,10 @@ const externals = [
 	{
 		wp: 'wp',
 		react: 'React', // React itself is there in Gutenberg.
-		jquery: 'jQuery', // import $ from 'jquery'; // Use jQuery from WP after enqueuing it.
 		'react-dom': 'ReactDOM',
 		lodash: 'lodash', // Lodash is there in Gutenberg.
-		bmfbeGlobal: 'bmfbeGlobal', // import globals from 'bmfbeGlobal'; // Localized data.
+		jquery: 'jQuery', // import $ from 'jquery'; // Use jQuery from WP after enqueuing it.
+		bmfbeEditorGlobal: 'bmfbeEditorGlobal', // import globals from 'bmfbeEditorGlobal'; // Localized data.
 	}
 );
 

@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-
 import { blockFields, getPagedBlocks, updateBlock } from '../api-blocks';
 
 const { cloneDeep, isEmpty, isEqual, omit, pick } = lodash;
+const {
+	element: { createContext, useEffect, useState },
+} = wp;
 
 const initialState = {
 	isLoaded: false,
@@ -14,7 +15,7 @@ const initialState = {
 	savingTimeouts: {},
 };
 
-const BlocksContext = React.createContext( [ initialState, () => {} ] );
+const BlocksContext = createContext( [ initialState, () => {} ] );
 
 function BlocksProvider( props ) {
 	const [ state, setState ] = useState( initialState );
