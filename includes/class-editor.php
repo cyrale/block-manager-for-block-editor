@@ -9,6 +9,8 @@
 namespace BMFBE;
 
 use BMFBE\Interfaces\WP_Plugin_Class;
+use BMFBE\Settings\Block_Settings;
+use BMFBE\Settings\Global_Settings;
 
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Editor.
@@ -51,6 +53,39 @@ class Editor implements WP_Plugin_Class {
 	 * Enqueue scripts and styles.
 	 */
 	public function enqueue_block_editor_assets() {
+		$settings = Global_Settings::get_instance()->get_settings();
+		$blocks   = array_map(
+			function ( $block ) {
+				return array(
+					'name'              => $block['name'],
+					'supports_override' => $block['supports_override'],
+					'supports'          => $block['supports'],
+					'styles'            => $block['styles'],
+					'variations'        => $block['variations'],
+					// 'access'            => $block['access'],
+				);
+			},
+			Block_Settings::get_instance()->get_settings()
+		);
+
+		if ( $settings['supports_override'] ) {
+			$blocks = array_map(
+				function ( $block ) {
+					if ( $block['supports_override'] ) {
+						  return $block;
+					}
+
+					$settings = Global_Settings::get_instance()->get_settings();
+
+					$block['supports_override'] = true;
+					$block['supports']          = $settings['supports'];
+
+					return $block;
+				},
+				$blocks
+			);
+		}
+
 		wp_enqueue_script(
 			'bmfbe-editor',
 			$this->plugin->url . 'dist/editor.build.js',
@@ -64,6 +99,8 @@ class Editor implements WP_Plugin_Class {
 			array(
 				'detection'    => ! empty( $_GET['detection'] ),
 				'settingsPage' => add_query_arg( array( 'page' => 'bmfbe-settings' ), admin_url( 'admin.php' ) ),
+				'settings'     => $settings,
+				'blocks'       => $blocks,
 			)
 		);
 
@@ -79,7 +116,7 @@ class Editor implements WP_Plugin_Class {
 	 * Customize editor settings.
 	 */
 	public function editor_settings() {
-		$settings = $this->plugin->global_settings->get_settings();
+		$settings = Global_Settings::get_instance()->get_settings();
 
 		if ( isset( $settings['disable_color_palettes'] ) && true === $settings['disable_color_palettes'] ) {
 			add_theme_support( 'editor-color-palette', array() );
