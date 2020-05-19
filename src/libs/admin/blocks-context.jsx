@@ -1,6 +1,8 @@
-import { cloneDeep, isEmpty, isEqual, omit, pick } from 'lodash';
 import React, { useEffect, useState } from 'react';
+
 import { blockFields, getPagedBlocks, updateBlock } from '../api-blocks';
+
+const { cloneDeep, isEmpty, isEqual, omit, pick } = lodash;
 
 const initialState = {
 	isLoaded: false,

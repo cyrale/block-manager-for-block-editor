@@ -1,7 +1,8 @@
-import { cloneDeep, isEmpty, isEqual, omit } from 'lodash';
 import React, { useEffect, useState } from 'react';
 
 import { getSettings, updateSettings } from '../api-settings';
+
+const { cloneDeep, isEmpty, isEqual, omit } = lodash;
 
 const initialState = {
 	isLoaded: false,
