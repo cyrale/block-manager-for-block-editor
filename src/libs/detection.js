@@ -1,6 +1,6 @@
 import { blockFields, getBlocks } from './api-blocks';
 
-const { cloneDeep, isEqual, omit, pick } = lodash;
+const { assign, cloneDeep, isEqual, omit, pick } = lodash;
 const {
 	apiFetch,
 	blocks,
@@ -176,7 +176,7 @@ function updateProperty( properties, editorProperties, fields ) {
 			const editorProp = findElementByName( editorProperties, prop.name );
 
 			if ( undefined !== editorProp ) {
-				prop = Object.assign( {}, prop, pick( editorProp, fields ) );
+				prop = assign( {}, prop, pick( editorProp, fields ) );
 			}
 
 			return prop;
@@ -311,7 +311,7 @@ function intersect( array1, array2 ) {
 	);
 }
 
-export default async () => {
+export default async function detection() {
 	refreshInfoNotice();
 
 	// Get blocks from database.
@@ -382,7 +382,7 @@ export default async () => {
 		} )
 		.map( ( block ) => {
 			const editorBlock = findElementByName( editorBlocks, block.name );
-			const updateBlock = Object.assign( {}, block, editorBlock );
+			const updateBlock = assign( {}, block, editorBlock );
 
 			// Update inactive supports.
 			const supports = {};
@@ -456,7 +456,7 @@ export default async () => {
 			await apiFetch( {
 				path: '/bmfbe/v1/blocks/' + updatedBlocks[ i ].name,
 				method: 'PATCH',
-				data: Object.assign( omit( updatedBlocks[ i ], 'name' ), {
+				data: assign( omit( updatedBlocks[ i ], 'name' ), {
 					keep: {
 						styles: false,
 						variations: false,
@@ -490,4 +490,4 @@ export default async () => {
 
 	// Redirect user to settings page.
 	window.location.href = bmfbeEditorGlobal.settingsPage;
-};
+}
