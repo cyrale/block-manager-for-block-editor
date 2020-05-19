@@ -4,7 +4,7 @@ const {
 	element: { useContext },
 } = wp;
 
-const useSettings = () => {
+function useSettings() {
 	const [ state, setState ] = useContext( SettingsContext );
 
 	function getSettings() {
@@ -32,6 +32,6 @@ const useSettings = () => {
 		saveInProgress,
 		updateSettings,
 	};
-};
+}
 
 export default useSettings;

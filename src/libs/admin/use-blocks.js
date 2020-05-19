@@ -4,7 +4,7 @@ const {
 	element: { useContext },
 } = wp;
 
-const useBlocks = () => {
+function useBlocks() {
 	const [ state, setState ] = useContext( BlocksContext );
 
 	function getBlocks() {
@@ -47,6 +47,6 @@ const useBlocks = () => {
 		saveInProgress,
 		updateBlock,
 	};
-};
+}
 
 export default useBlocks;

@@ -5,7 +5,7 @@ const {
 	url: { cleanForSlug },
 } = wp;
 
-const useShortID = ( prefix ) => {
+function useShortID( prefix ) {
 	const [ shortID, setShortID ] = useState( '' );
 
 	useEffect( () => {
@@ -15,6 +15,6 @@ const useShortID = ( prefix ) => {
 	}, [] );
 
 	return cleanForSlug( prefix ) + '-' + shortID;
-};
+}
 
 export default useShortID;
