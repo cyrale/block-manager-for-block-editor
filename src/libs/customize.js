@@ -1,10 +1,27 @@
 const { assign } = lodash;
-const { blocks, data, domReady, hooks } = wp;
-
-const editorBlocks = bmfbeEditorGlobal.blocks || [];
+const { hooks } = wp;
 
 function searchBlock( name ) {
-	return editorBlocks.find( ( block ) => block.name === name );
+	return ( bmfbeEditorGlobal.blocks || [] ).find(
+		( block ) => block.name === name
+	);
+}
+
+function overrideVariations( editorVariations, blockVariations ) {
+	return [ ...editorVariations ]
+		.filter(
+			( variation ) =>
+				!! blockVariations.find(
+					( v ) => v.name === variation.name && v.isActive
+				)
+		)
+		.map( ( variation ) =>
+			assign( {}, variation, {
+				isDefault: !! blockVariations.find(
+					( v ) => v.name === variation.name && v.isDefault
+				),
+			} )
+		);
 }
 
 export default function customize() {
@@ -15,46 +32,46 @@ export default function customize() {
 	// 	}
 	// } );
 
-	// Customize supports.
 	hooks.addFilter(
 		'blocks.registerBlockType',
 		'bmfbe/supports/customize',
 		( settings, name ) => {
 			const block = searchBlock( name );
 
-			if ( undefined === block || ! block.supports_override ) {
+			if ( undefined === block ) {
 				return settings;
 			}
 
-			const supports = {};
-			Object.entries( block.supports ).forEach(
-				( [ supportsName, supportsValue ] ) => {
-					if ( supportsValue.isActive ) {
-						supports[ supportsName ] = supportsValue.value;
+			// Customize supports.
+			const overriddenSupports = {};
+			if ( ! block.supports_override ) {
+				Object.entries( block.supports ).forEach(
+					( [ supportsName, supportsValue ] ) => {
+						if ( supportsValue.isActive ) {
+							overriddenSupports[ supportsName ] =
+								supportsValue.value;
+						}
 					}
-				}
+				);
+			}
+
+			// Customize styles.
+			const overriddenStyles = overrideVariations(
+				settings.styles || [],
+				block.styles
+			);
+
+			// Customize variations.
+			const overriddenVariations = overrideVariations(
+				settings.variations || [],
+				block.variations
 			);
 
 			return assign( {}, settings, {
-				supports: assign( {}, settings.supports, supports ),
+				style: overriddenStyles,
+				supports: assign( {}, settings.supports, overriddenSupports ),
+				variations: overriddenVariations,
 			} );
 		}
 	);
-
-	domReady( () => {
-		// Customize styles.
-		editorBlocks.forEach( ( block ) => {
-			block.styles.forEach( ( style ) => {
-				if ( ! style.isActive ) {
-					// Deactivate styles.
-					blocks.unregisterBlockStyle( block.name, style.name );
-				} else if ( style.isDefault ) {
-					// Set default style.
-					data.dispatch(
-						'core/edit-post'
-					).updatePreferredStyleVariations( block.name, style.name );
-				}
-			} );
-		} );
-	} );
 }
