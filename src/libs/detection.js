@@ -5,6 +5,7 @@ const {
 	apiFetch,
 	blocks,
 	data,
+	element: { render },
 	i18n: { __, sprintf },
 } = wp;
 
@@ -82,7 +83,7 @@ function normalizeIcon( icon ) {
 		'SVG' === icon?.src.type.name
 	) {
 		const shadow = document.createElement( 'div' );
-		ReactDOM.render( icon?.src, shadow );
+		render( icon?.src, shadow );
 
 		return shadow.getElementsByTagName( 'svg' )[ 0 ].outerHTML;
 	}
