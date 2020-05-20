@@ -1,5 +1,5 @@
 const { assign } = lodash;
-const { blocks, hooks } = wp;
+const { blocks, data, domReady, hooks } = wp;
 
 const editorBlocks = bmfbeEditorGlobal.blocks || [];
 
@@ -40,4 +40,21 @@ export default function customize() {
 			} );
 		}
 	);
+
+	domReady( () => {
+		// Customize styles.
+		editorBlocks.forEach( ( block ) => {
+			block.styles.forEach( ( style ) => {
+				if ( ! style.isActive ) {
+					// Deactivate styles.
+					blocks.unregisterBlockStyle( block.name, style.name );
+				} else if ( style.isDefault ) {
+					// Set default style.
+					data.dispatch(
+						'core/edit-post'
+					).updatePreferredStyleVariations( block.name, style.name );
+				}
+			} );
+		} );
+	} );
 }
