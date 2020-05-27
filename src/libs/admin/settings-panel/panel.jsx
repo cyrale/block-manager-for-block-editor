@@ -1,10 +1,14 @@
-import useSettings from '../../use-settings';
-import Supports from './supports';
-import Toggle from './toggle';
+import Supports from '../components/supports';
+import Toggle from '../components/toggle';
+import Row from './row';
+import useDelayedChanges from '../use-delayed-changes';
+
+import { SETTINGS_STORE } from './store/constants';
 
 const {
+	data: { useDispatch, useSelect },
+	element: { useEffect },
 	i18n: { __ },
-	url: { cleanForSlug },
 } = wp;
 
 const supportedSettings = {
@@ -41,18 +45,37 @@ const supportedSettings = {
 	},
 };
 
-export default function Settings() {
-	const { getSettings, updateSettings } = useSettings();
-	const settings = getSettings();
+export default function Panel() {
+	const { settings, getSettings } = useSelect(
+		( select ) => ( {
+			settings: select( SETTINGS_STORE ).getSettings(),
+			getSettings: select( SETTINGS_STORE ).getSettings,
+		} ),
+		[]
+	);
+
+	const { saveSettings, updateSettings } = useDispatch( SETTINGS_STORE );
+
+	const { enqueueChanges, setInitialData } = useDelayedChanges(
+		async ( data ) => {
+			saveSettings( data );
+		}
+	);
+
+	useEffect( () => {
+		setInitialData( settings );
+	}, [ settings ] );
 
 	function handleOnChange( key, value ) {
-		updateSettings( { [ key ]: value } );
+		updateSettings( key, value );
+
+		const newSettings = getSettings();
+		enqueueChanges( newSettings );
 	}
 
 	return (
-		<>
-			{ Object.keys( supportedSettings ).map( ( key ) => {
-				const field = supportedSettings[ key ];
+		<div className="bmfbe-settings-panel">
+			{ Object.entries( supportedSettings ).map( ( [ key, field ] ) => {
 				const Component = field.Component ?? Toggle;
 
 				const props = {
@@ -66,17 +89,11 @@ export default function Settings() {
 				}
 
 				return (
-					<div
-						key={ key }
-						className={
-							'bmfbe-settings__row bmfbe-settings__row--' +
-							cleanForSlug( key )
-						}
-					>
+					<Row key={ key } name={ key }>
 						<Component { ...props } />
-					</div>
+					</Row>
 				);
 			} ) }
-		</>
+		</div>
 	);
 }

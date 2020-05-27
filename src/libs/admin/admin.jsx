@@ -1,11 +1,9 @@
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import BlocksPanel from './components/blocks-panel';
-import SettingsPanel from './components/settings-panel';
+import SettingsPanel, { TabTitle as SettingsTabTitle } from './settings-panel';
 import { BlocksProvider } from './blocks-context';
-import { SettingsProvider } from './settings-context';
 import useBlocks from './use-blocks';
-import useSettings from './use-settings';
 
 const {
 	i18n: { __ },
@@ -25,30 +23,28 @@ function TabTitle( { children, useHook } ) {
 
 function Admin() {
 	return (
-		<SettingsProvider>
-			<BlocksProvider>
-				<Tabs forceRenderTabPanel={ true }>
-					<TabList>
-						<Tab>
-							<TabTitle useHook={ useBlocks }>
-								{ __( 'Blocks', 'bmfbe' ) }
-							</TabTitle>
-						</Tab>
-						<Tab>
-							<TabTitle useHook={ useSettings }>
-								{ __( 'Settings', 'bmfbe' ) }
-							</TabTitle>
-						</Tab>
-					</TabList>
-					<TabPanel>
-						<BlocksPanel />
-					</TabPanel>
-					<TabPanel>
-						<SettingsPanel />
-					</TabPanel>
-				</Tabs>
-			</BlocksProvider>
-		</SettingsProvider>
+		<BlocksProvider>
+			<Tabs forceRenderTabPanel={ true }>
+				<TabList>
+					<Tab>
+						<TabTitle useHook={ useBlocks }>
+							{ __( 'Blocks', 'bmfbe' ) }
+						</TabTitle>
+					</Tab>
+					<Tab>
+						<SettingsTabTitle>
+							{ __( 'Settings', 'bmfbe' ) }
+						</SettingsTabTitle>
+					</Tab>
+				</TabList>
+				<TabPanel>
+					<BlocksPanel />
+				</TabPanel>
+				<TabPanel>
+					<SettingsPanel />
+				</TabPanel>
+			</Tabs>
+		</BlocksProvider>
 	);
 }
 

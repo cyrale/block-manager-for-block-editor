@@ -3,7 +3,7 @@
  * Block Manager for WordPress Block Editor (Gutenberg): Block settings.
  *
  * @since 1.0.0
- * @package BMFBE\SettingsPanel
+ * @package BMFBE\Settings
  */
 
 namespace BMFBE\Settings;
@@ -14,7 +14,7 @@ use WP_Error;
  * Block Manager for WordPress Block Editor (Gutenberg): Block settings.
  *
  * @since 1.0.0
- * @package BMFBE\SettingsPanel
+ * @package BMFBE\Settings
  */
 class Block_Settings extends Settings {
 	/**

@@ -7,8 +7,8 @@ import {
 } from 'react-accessible-accordion';
 
 import useBlocks from '../../use-blocks';
-import Supports from '../settings/supports';
-import Toggle from '../settings/toggle';
+import Supports from '../supports';
+import Toggle from '../toggle';
 import Access from './access';
 import Description from './description';
 import Icon from './icon';

@@ -54,7 +54,7 @@ class Admin implements WP_Plugin_Class {
 		wp_enqueue_script(
 			'bmfbe-admin',
 			$this->plugin->url . 'dist/admin.build.js',
-			array( 'lodash', 'react', 'react-dom', 'wp-api-fetch', 'wp-element', 'wp-i18n' ),
+			array( 'lodash', 'wp-api-fetch', 'wp-data', 'wp-element', 'wp-i18n' ),
 			substr( sha1( filemtime( $this->plugin->path . 'dist/admin.build.js' ) ), 0, 8 ),
 			true
 		);

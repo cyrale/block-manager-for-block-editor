@@ -125,7 +125,7 @@ final class Plugin {
 	protected $front;
 
 	/**
-	 * Instance of BMFBE\SettingsPanel\Global_Settings: global settings of plugin.
+	 * Instance of BMFBE\Settings\Global_Settings: global settings of plugin.
 	 *
 	 * @var Global_Settings
 	 * @since 1.0.0
@@ -133,7 +133,7 @@ final class Plugin {
 	protected $global_settings;
 
 	/**
-	 * Instance of BMFBE\SettingsPanel\Block_Settings: block settings.
+	 * Instance of BMFBE\Settings\Block_Settings: block settings.
 	 *
 	 * @var Block_Settings
 	 * @since 1.0.0
