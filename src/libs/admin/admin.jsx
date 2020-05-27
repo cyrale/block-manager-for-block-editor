@@ -1,7 +1,10 @@
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import BlocksPanel from './components/blocks-panel';
-import SettingsPanel, { TabTitle as SettingsTabTitle } from './settings-panel';
+import {
+	default as SettingsPanel,
+	TabTitle as SettingsTabTitle,
+} from './settings-panel';
 import { BlocksProvider } from './blocks-context';
 import useBlocks from './use-blocks';
 
