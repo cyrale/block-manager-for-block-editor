@@ -1,7 +1,6 @@
 import { default as Panel } from './panel';
-import TabTitle from './tab-title';
 
 export { storeConfig } from './store';
+export { default as TabTitle } from './tab-title';
 
-export { TabTitle };
 export default Panel;
