@@ -1,4 +1,4 @@
-const { omit, pick } = lodash;
+const { omit } = lodash;
 const {
 	apiFetch,
 	url: { addQueryArgs },
@@ -76,27 +76,4 @@ export function getPagedBlocks( data = {}, options = {} ) {
 	} );
 
 	return apiFetch( options );
-}
-
-/**
- * Get a block.
- *
- * @param {string} name Name of the block.
- *
- * @return {*} Response from the API.
- * @since 1.0.0
- */
-export function getBlock( name ) {
-	return apiFetch( {
-		path: `/bmfbe/v1/blocks/${ name }`,
-		method: 'GET',
-	} );
-}
-
-export function updateBlock( block ) {
-	return apiFetch( {
-		path: `/bmfbe/v1/blocks/${ block.name }`,
-		method: 'PATCH',
-		data: pick( block, blockFields ),
-	} );
 }
