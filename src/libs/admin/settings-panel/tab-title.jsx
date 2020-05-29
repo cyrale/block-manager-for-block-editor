@@ -1,4 +1,5 @@
-import { SETTINGS_STORE, STATUS_PENDING } from './store/constants';
+import GenericTabTitle from '../components/tab-title';
+import { SETTINGS_PANEL_STORE } from './store/constants';
 
 const {
 	data: { useSelect },
@@ -7,18 +8,16 @@ const {
 function TabTitle( { children } ) {
 	const { loadingStatus, savingStatus } = useSelect(
 		( select ) => ( {
-			loadingStatus: select( SETTINGS_STORE ).loadingStatus(),
-			savingStatus: select( SETTINGS_STORE ).savingStatus(),
+			loadingStatus: select( SETTINGS_PANEL_STORE ).loadingStatus(),
+			savingStatus: select( SETTINGS_PANEL_STORE ).savingStatus(),
 		} ),
 		[]
 	);
 
 	return (
-		<>
+		<GenericTabTitle loadingStatus={ loadingStatus } savingStatus={ savingStatus }>
 			{ children }
-			{ loadingStatus === STATUS_PENDING && 'Loading...' }
-			{ savingStatus === STATUS_PENDING && 'Saving...' }
-		</>
+		</GenericTabTitle>
 	);
 }
 

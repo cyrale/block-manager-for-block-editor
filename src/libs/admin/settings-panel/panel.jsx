@@ -1,65 +1,71 @@
 import Supports from '../components/supports';
 import Toggle from '../components/toggle';
-import Row from './row';
 import useDelayedChanges from '../use-delayed-changes';
+import Row from './row';
+import { SETTINGS_PANEL_STORE } from './store/constants';
 
-import { SETTINGS_STORE } from './store/constants';
 
 const {
-	data: { useDispatch, useSelect },
+	data: { select: wpSelect, useDispatch, useSelect },
 	element: { useEffect },
 	i18n: { __ },
 } = wp;
 
-const supportedSettings = {
-	supports_override: {
+const supportedSettings = [
+	{
+		name: 'supports_override',
 		label: __( 'Override supports?', 'bmfbe' ),
 	},
-	supports: {
+	 {
+		name: 'supports',
 		label: __( 'Supports', 'bmfbe' ),
 		Component: Supports,
 	},
-	disable_custom_colors: {
+	 {
+		name: 'disable_custom_colors',
 		label: __( 'Disable custom colors?', 'bmfbe' ),
 	},
-	disable_color_palettes: {
+	 {
+		name: 'disable_color_palettes',
 		label: __( 'Disable color palettes?', 'bmfbe' ),
 	},
-	disable_custom_gradients: {
+	 {
+		name: 'disable_custom_gradients',
 		label: __( 'Disable custom gradients?', 'bmfbe' ),
 	},
-	disable_gradient_presets: {
+	 {
+		name: 'disable_gradient_presets',
 		label: __( 'Disable gradient presets?', 'bmfbe' ),
 	},
-	disable_custom_font_sizes: {
+	 {
+		name: 'disable_custom_font_sizes',
 		label: __( 'Disable custom font sizes?', 'bmfbe' ),
 	},
-	disable_font_sizes: {
+	 {
+		name: 'disable_font_sizes',
 		label: __( 'Disable font sizes?', 'bmfbe' ),
 	},
-	limit_access_by_post_type: {
+	 {
+		name: 'limit_access_by_post_type',
 		label: __( 'Limit access by post type?', 'bmfbe' ),
 	},
-	limit_access_by_user_group: {
+	 {
+		name: 'limit_access_by_user_group',
 		label: __( 'Limit access by user group?', 'bmfbe' ),
 	},
-};
+];
 
 export default function Panel() {
-	const { settings, getSettings } = useSelect(
-		( select ) => ( {
-			settings: select( SETTINGS_STORE ).getSettings(),
-			getSettings: select( SETTINGS_STORE ).getSettings,
-		} ),
+	const settings = useSelect(
+		( select ) => select( SETTINGS_PANEL_STORE ).getSettings(),
 		[]
 	);
 
-	const { saveSettings, updateSettings } = useDispatch( SETTINGS_STORE );
-
+	const { saveSettings, updateSettings } = useDispatch(
+		SETTINGS_PANEL_STORE
+	);
 	const { enqueueChanges, setInitialData } = useDelayedChanges(
-		async ( data ) => {
-			saveSettings( data );
-		}
+		saveSettings
 	);
 
 	useEffect( () => {
@@ -69,27 +75,27 @@ export default function Panel() {
 	function handleOnChange( key, value ) {
 		updateSettings( key, value );
 
-		const newSettings = getSettings();
+		const newSettings = wpSelect( SETTINGS_PANEL_STORE ).getSettings();
 		enqueueChanges( newSettings );
 	}
 
 	return (
 		<div className="bmfbe-settings-panel">
-			{ Object.entries( supportedSettings ).map( ( [ key, field ] ) => {
+			{ supportedSettings.map( ( field ) => {
 				const Component = field.Component ?? Toggle;
 
 				const props = {
 					label: field.label,
-					onChange: ( value ) => handleOnChange( key, value ),
-					value: settings[ key ],
+					onChange: ( value ) => handleOnChange( field.name, value ),
+					value: settings[ field.name ],
 				};
 
-				if ( 'supports' === key ) {
+				if ( 'supports' === field.name ) {
 					props.disabled = false === settings.supports_override;
 				}
 
 				return (
-					<Row key={ key } name={ key }>
+					<Row key={ field.name } name={ field.name }>
 						<Component { ...props } />
 					</Row>
 				);
