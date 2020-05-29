@@ -1,4 +1,4 @@
-import GenericTabTitle from '../components/tab-title';
+import GenericTabTitle from '../tab-title';
 import { BLOCKS_PANEL_STORE } from './store/constants';
 
 const {

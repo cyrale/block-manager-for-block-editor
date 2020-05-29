@@ -6,9 +6,9 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import Supports from '../components/supports';
-import Toggle from '../components/toggle';
-import useDelayedChanges from '../use-delayed-changes';
+import Supports from '../supports';
+import Toggle from '../toggle';
+import useDelayedChanges from '../../hooks/use-delayed-changes';
 import Access from './access';
 import Description from './description';
 import Icon from './icon';

@@ -1,6 +1,6 @@
-import Supports from '../components/supports';
-import Toggle from '../components/toggle';
-import useDelayedChanges from '../use-delayed-changes';
+import Supports from '../supports';
+import Toggle from '../toggle';
+import useDelayedChanges from '../../hooks/use-delayed-changes';
 import Row from './row';
 import { SETTINGS_PANEL_STORE } from './store/constants';
 

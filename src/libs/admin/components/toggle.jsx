@@ -1,4 +1,4 @@
-import useShortID from '../use-short-id';
+import useShortID from '../hooks/use-short-id';
 
 export default function Toggle( {
 	children,

@@ -1,4 +1,4 @@
-import Toggle from '../components/toggle';
+import Toggle from '../toggle';
 
 const {
 	i18n: { __ },
