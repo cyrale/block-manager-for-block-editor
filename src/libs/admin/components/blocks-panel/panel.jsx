@@ -24,7 +24,7 @@ export default function Panel() {
 
 	return (
 		<div className="bmfbe-blocks-panel">
-			{ categories.length === 0 ? (
+			{ 0 === categories.length ? (
 				<></>
 			) : (
 				<Accordion

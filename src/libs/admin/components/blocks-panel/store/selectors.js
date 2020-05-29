@@ -10,17 +10,10 @@ export function getBlock( state, name ) {
 	return state.blocks[ name ].value;
 }
 
-export function loadingStatus( state ) {
-	return state.loadingStatus;
-}
-
-export function savingStatus( state, name = '' ) {
+export function getStatus( state, name = '' ) {
 	if ( '' === name ) {
-		return Object.values( state.blocks ).reduce(
-			( saving, block ) => saving || block.savingStatus,
-			false
-		);
+		return state.status;
 	}
 
-	return state.blocks[ name ].savingStatus;
+	return state.blocks[ name ].status;
 }

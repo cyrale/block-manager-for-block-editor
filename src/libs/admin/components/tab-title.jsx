@@ -1,11 +1,11 @@
-import { STATUS_PENDING } from '../store/constants';
+import { STATUS_LOADING, STATUS_SAVING } from '../store/constants';
 
-function TabTitle( { children, loadingStatus, savingStatus } ) {
+function TabTitle( { children, status } ) {
 	return (
 		<>
 			{ children }
-			{ loadingStatus === STATUS_PENDING && 'Loading...' }
-			{ savingStatus === STATUS_PENDING && 'Saving...' }
+			{ STATUS_LOADING === status && 'Loading...' }
+			{ STATUS_SAVING === status && 'Saving...' }
 		</>
 	);
 }

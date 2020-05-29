@@ -1,4 +1,4 @@
-const { cloneDeep, isEqual } = lodash;
+const { cloneDeep, isEqual, merge } = lodash;
 const {
 	element: { useRef },
 } = wp;
@@ -18,29 +18,28 @@ function useDelayedChanges( changesCallback ) {
 		const firstData = queue.current.length > 0 ? queue.current[ 0 ] : null;
 
 		if (
-			queue.current.length === 1 &&
+			1 === queue.current.length &&
 			! isStarted.current &&
 			! isEqual( savingData, initialData.current )
 		) {
 			// Replace first modification during waiting time.
 			queue.current = [ savingData ];
 		} else if (
-			( queue.current.length === 2 &&
-				isEqual( savingData, firstData ) ) ||
-			( queue.current.length === 1 &&
+			( 1 === queue.current.length &&
 				! isStarted.current &&
-				isEqual( savingData, initialData.current ) )
+				isEqual( savingData, initialData.current ) ) ||
+			( 2 === queue.current.length && isEqual( savingData, firstData ) )
 		) {
 			// Remove modification if finally there is no modification.
 			queue.current = queue.current.slice( 0, 1 );
 		} else if (
-			( queue.current.length === 0 &&
+			( 0 === queue.current.length &&
 				! isEqual( savingData, initialData.current ) ) ||
-			( queue.current.length === 1 && ! isEqual( savingData, firstData ) )
+			( 1 === queue.current.length && ! isEqual( savingData, firstData ) )
 		) {
 			// Enqueue modification.
 			queue.current = [ ...queue.current, ...[ savingData ] ];
-		} else if ( queue.current.length === 2 ) {
+		} else if ( 2 === queue.current.length ) {
 			// Replace second modification in queue.
 			queue.current = [
 				...queue.current.slice( 0, 1 ),
@@ -55,7 +54,7 @@ function useDelayedChanges( changesCallback ) {
 
 	// Treat modifications with delay.
 	function maybeLaunchCallbackWithDelay() {
-		if ( queue.current.length === 0 ) {
+		if ( 0 === queue.current.length ) {
 			// Reset delayed treatment.
 			clearTimeout( timeoutID.current );
 			isStarted.current = false;

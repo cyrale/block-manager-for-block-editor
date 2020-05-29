@@ -9,4 +9,10 @@ const {
 	data: { registerStore },
 } = wp;
 
-registerStore( SETTINGS_PANEL_STORE, { reducer, actions, controls, resolvers, selectors } );
+registerStore( SETTINGS_PANEL_STORE, {
+	reducer,
+	actions,
+	controls,
+	resolvers,
+	selectors,
+} );

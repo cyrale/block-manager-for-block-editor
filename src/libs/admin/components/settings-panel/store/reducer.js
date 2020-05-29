@@ -1,17 +1,16 @@
-import { STATUS_FINISHED, STATUS_PENDING } from './constants';
+import { STATUS_PENDING, STATUS_LOADING, STATUS_SAVING } from './constants';
 
-const DEFAULT_SETTINGS_STATE = {
-	loadingStatus: STATUS_PENDING,
-	savingStatus: STATUS_FINISHED,
+const DEFAULT_STATE = {
+	status: STATUS_LOADING,
 	value: {},
 };
 
-export function reducer( state = DEFAULT_SETTINGS_STATE, action ) {
+export function reducer( state = DEFAULT_STATE, action ) {
 	switch ( action.type ) {
-		case 'SET_SETTINGS':
+		case 'INIT_SETTINGS':
 			return {
 				...state,
-				loadingStatus: STATUS_FINISHED,
+				status: STATUS_PENDING,
 				value: action.settings,
 			};
 
@@ -28,10 +27,10 @@ export function reducer( state = DEFAULT_SETTINGS_STATE, action ) {
 		case 'SAVE_SETTINGS_FINISH':
 			return {
 				...state,
-				savingStatus:
-					action.type !== 'SAVE_SETTINGS_FINISH'
-						? STATUS_PENDING
-						: STATUS_FINISHED,
+				status:
+					action.type !== 'SAVE_SETTINGS_START'
+						? STATUS_SAVING
+						: STATUS_PENDING,
 			};
 	}
 

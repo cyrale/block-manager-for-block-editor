@@ -6,19 +6,12 @@ const {
 } = wp;
 
 function TabTitle( { children } ) {
-	const { loadingStatus, savingStatus } = useSelect(
-		( select ) => ( {
-			loadingStatus: select( SETTINGS_PANEL_STORE ).loadingStatus(),
-			savingStatus: select( SETTINGS_PANEL_STORE ).savingStatus(),
-		} ),
+	const status = useSelect(
+		( select ) => select( SETTINGS_PANEL_STORE ).getStatus(),
 		[]
 	);
 
-	return (
-		<GenericTabTitle loadingStatus={ loadingStatus } savingStatus={ savingStatus }>
-			{ children }
-		</GenericTabTitle>
-	);
+	return <GenericTabTitle status={ status }>{ children }</GenericTabTitle>;
 }
 
 export default TabTitle;

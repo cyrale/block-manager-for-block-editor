@@ -1,9 +1,9 @@
 import { apiFetch } from './controls';
 import { SETTINGS_API_PATH } from './constants';
 
-export function setSettings( settings ) {
+export function initSettings( settings ) {
 	return {
-		type: 'SET_SETTINGS',
+		type: 'INIT_SETTINGS',
 		settings,
 	};
 }

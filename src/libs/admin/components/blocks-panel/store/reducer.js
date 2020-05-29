@@ -1,9 +1,9 @@
-import { STATUS_FINISHED, STATUS_PENDING } from './constants';
+import { STATUS_LOADING, STATUS_PENDING, STATUS_SAVING } from './constants';
 
 const { merge, omit } = lodash;
 
 const DEFAULT_BLOCKS_STATE = {
-	loadingStatus: STATUS_PENDING,
+	status: STATUS_LOADING,
 	blocks: {},
 	list: [],
 	categories: [],
@@ -15,7 +15,7 @@ export function reducer( state = DEFAULT_BLOCKS_STATE, action ) {
 			const blocksObject = {};
 			action.blocks.forEach( ( block ) => {
 				blocksObject[ block.name ] = {
-					savingStatus: STATUS_FINISHED,
+					status: STATUS_PENDING,
 					value: omit( block, [ '_links' ] ),
 				};
 			} );
@@ -40,7 +40,7 @@ export function reducer( state = DEFAULT_BLOCKS_STATE, action ) {
 
 			return {
 				...state,
-				loadingStatus: STATUS_FINISHED,
+				status: STATUS_PENDING,
 				blocks,
 				list,
 				categories,
@@ -57,16 +57,28 @@ export function reducer( state = DEFAULT_BLOCKS_STATE, action ) {
 
 		case 'SAVE_BLOCK_START':
 		case 'SAVE_BLOCK_FINISH':
+			const globalSavingStatus = Object.values( state.blocks ).reduce(
+				( savingStatus, block ) =>
+					savingStatus ||
+					( STATUS_SAVING === block.status &&
+						block.value.name !== action.block.name ),
+				false
+			);
+
 			return {
 				...state,
+				status:
+					'SAVE_BLOCK_START' === action.type || globalSavingStatus
+						? STATUS_SAVING
+						: STATUS_PENDING,
 				blocks: {
 					...state.blocks,
 					[ action.block.name ]: {
 						...state.blocks[ action.block.name ],
-						savingStatus:
-							action.type !== 'SAVE_BLOCK_FINISH'
-								? STATUS_PENDING
-								: STATUS_FINISHED,
+						status:
+							'SAVE_BLOCK_START' === action.type
+								? STATUS_SAVING
+								: STATUS_PENDING,
 					},
 				},
 			};
