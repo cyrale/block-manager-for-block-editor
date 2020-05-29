@@ -1,4 +1,7 @@
-import { BLOCKS_PANEL_STORE, STATUS_SAVING } from '../../stores/blocks/constants';
+import {
+	BLOCKS_PANEL_STORE,
+	STATUS_SAVING,
+} from '../../stores/blocks/constants';
 
 const {
 	data: { useSelect },

@@ -232,7 +232,7 @@ function refreshInfoNotice( message = '' ) {
 			( acc, value ) => acc + value.total,
 			0
 		);
-		const progressPercent = total === 0 ? 0 : 100 * ( progress / total );
+		const progressPercent = 0 === total ? 0 : 100 * ( progress / total );
 
 		message = progressPercent.toFixed( 1 ) + '%';
 	}
