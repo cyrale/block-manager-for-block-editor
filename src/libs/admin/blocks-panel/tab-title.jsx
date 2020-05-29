@@ -1,11 +1,11 @@
-import TabTitle from '../components/tab-title';
+import GenericTabTitle from '../components/tab-title';
 import { BLOCKS_PANEL_STORE } from './store/constants';
 
 const {
 	data: { useSelect },
 } = wp;
 
-function Tab( { children } ) {
+function TabTitle( { children } ) {
 	const { loadingStatus, savingStatus } = useSelect(
 		( select ) => ( {
 			loadingStatus: select( BLOCKS_PANEL_STORE ).loadingStatus(),
@@ -15,10 +15,10 @@ function Tab( { children } ) {
 	);
 
 	return (
-		<TabTitle loadingStatus={ loadingStatus } savingStatus={ savingStatus }>
+		<GenericTabTitle loadingStatus={ loadingStatus } savingStatus={ savingStatus }>
 			{ children }
-		</TabTitle>
+		</GenericTabTitle>
 	);
 }
 
-export default Tab;
+export default TabTitle;
