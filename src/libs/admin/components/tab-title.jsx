@@ -1,4 +1,4 @@
-import { STATUS_LOADING, STATUS_SAVING } from '../store/constants';
+import { STATUS_LOADING, STATUS_SAVING } from '../stores/constants';
 
 function TabTitle( { children, status } ) {
 	return (

@@ -1,5 +1,5 @@
 import GenericTabTitle from '../tab-title';
-import { BLOCKS_PANEL_STORE } from './store/constants';
+import { BLOCKS_PANEL_STORE } from '../../stores/blocks/constants';
 
 const {
 	data: { useSelect },

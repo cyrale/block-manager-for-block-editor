@@ -6,7 +6,7 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import { BLOCKS_PANEL_STORE } from './store/constants';
+import { BLOCKS_PANEL_STORE } from '../../stores/blocks/constants';
 import Block from './block';
 
 const {

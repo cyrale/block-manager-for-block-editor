@@ -13,7 +13,7 @@ import Access from './access';
 import Description from './description';
 import Icon from './icon';
 import Styles from './styles';
-import { BLOCKS_PANEL_STORE } from './store/constants';
+import { BLOCKS_PANEL_STORE } from '../../stores/blocks/constants';
 import Variations from './variations';
 
 const { pick } = lodash;

@@ -2,7 +2,7 @@ import Supports from '../supports';
 import Toggle from '../toggle';
 import useDelayedChanges from '../../hooks/use-delayed-changes';
 import Row from './row';
-import { SETTINGS_PANEL_STORE } from './store/constants';
+import { SETTINGS_PANEL_STORE } from '../../stores/settings/constants';
 
 const {
 	data: { select: wpSelect, useDispatch, useSelect },

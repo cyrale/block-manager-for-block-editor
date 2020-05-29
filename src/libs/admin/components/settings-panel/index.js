@@ -1,5 +1,5 @@
 import Panel from './panel';
-import './store';
+import '../../stores/settings';
 
 export { default as TabTitle } from './tab-title';
 
