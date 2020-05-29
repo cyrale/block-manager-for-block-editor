@@ -86,6 +86,7 @@ function useDelayedChanges( changesCallback ) {
 	async function runChangesCallback() {
 		await changesCallback( queue.current[ 0 ] );
 
+		initialData.current = merge( initialData.current, queue.current[ 0 ] );
 		queue.current = queue.current.slice( 1 );
 
 		maybeLaunchCallbackWithDelay();
