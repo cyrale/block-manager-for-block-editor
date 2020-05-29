@@ -1,27 +1,29 @@
 import {
 	Accordion,
 	AccordionItem,
-	AccordionItemHeading,
 	AccordionItemButton,
+	AccordionItemHeading,
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
+import { BLOCKS_PANEL_STORE } from './store/constants';
 import Block from './block';
-import useBlocks from '../use-blocks';
 
-export default function BlocksPanel() {
-	const { getBlocks } = useBlocks();
+const {
+	data: { useSelect },
+} = wp;
 
-	const categories = getBlocks().reduce( ( acc, { category } ) => {
-		if ( ! acc.includes( category ) ) {
-			acc.push( category );
-		}
-
-		return acc;
-	}, [] );
+export default function Panel() {
+	const { blocks, categories } = useSelect(
+		( select ) => ( {
+			blocks: select( BLOCKS_PANEL_STORE ).getBlocks(),
+			categories: select( BLOCKS_PANEL_STORE ).getCategories(),
+		} ),
+		[]
+	);
 
 	return (
-		<div className="bmfbe-blocks">
+		<div className="bmfbe-blocks-panel">
 			{ categories.length === 0 ? (
 				<></>
 			) : (
@@ -38,14 +40,14 @@ export default function BlocksPanel() {
 								</AccordionItemButton>
 							</AccordionItemHeading>
 							<AccordionItemPanel>
-								{ getBlocks()
+								{ blocks
 									.filter(
 										( block ) => block.category === category
 									)
 									.map( ( block ) => (
 										<Block
 											key={ block.name }
-											name={ block.name }
+											{ ...block }
 										/>
 									) ) }
 							</AccordionItemPanel>
