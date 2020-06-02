@@ -72,7 +72,7 @@ class Editor implements WP_Plugin_Class {
 			$blocks = array_map(
 				function ( $block ) {
 					if ( $block['supports_override'] ) {
-						  return $block;
+						return $block;
 					}
 
 					$settings = Global_Settings::get_instance()->get_settings();
