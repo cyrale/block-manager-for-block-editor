@@ -13,5 +13,6 @@ export function* getBlocks() {
 	const blocks = yield actions.fetchFromAPI(
 		addQueryArgs( BLOCKS_API_PATH, { per_page: -1 } )
 	);
+
 	return actions.initBlocks( blocks );
 }
