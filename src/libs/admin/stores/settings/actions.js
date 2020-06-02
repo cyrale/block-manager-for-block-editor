@@ -1,6 +1,8 @@
 import { apiFetch } from './controls';
 import { SETTINGS_API_PATH } from './constants';
 
+export { fetchFromAPI } from '../actions';
+
 export function initSettings( settings ) {
 	return {
 		type: 'INIT_SETTINGS',
@@ -43,15 +45,5 @@ export function loadingStatus() {
 export function savingStatus() {
 	return {
 		type: 'SAVING_STATUS',
-	};
-}
-
-export function fetchFromAPI( path ) {
-	return {
-		type: 'API_FETCH',
-		request: {
-			path,
-			method: 'GET',
-		},
 	};
 }

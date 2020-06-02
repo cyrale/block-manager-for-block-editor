@@ -1,6 +1,7 @@
-import { apiFetch } from '../settings/controls';
-export { fetchFromAPI } from '../actions';
+import { apiFetch } from '../controls';
 import { BLOCKS_API_PATH } from './constants';
+
+export { fetchFromAPI } from '../actions';
 
 export function initBlocks( blocks ) {
 	return {
