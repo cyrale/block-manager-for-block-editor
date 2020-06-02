@@ -2,7 +2,7 @@ import Supports from '../supports';
 import Toggle from '../toggle';
 import useDelayedChanges from '../../hooks/use-delayed-changes';
 import Row from './row';
-import { SETTINGS_PANEL_STORE } from '../../stores/settings/constants';
+import { SETTINGS_STORE } from '../../stores/settings/constants';
 
 const {
 	data: { select: wpSelect, useDispatch, useSelect },
@@ -56,13 +56,11 @@ const supportedSettings = [
 
 export default function Panel() {
 	const settings = useSelect(
-		( select ) => select( SETTINGS_PANEL_STORE ).getSettings(),
+		( select ) => select( SETTINGS_STORE ).getSettings(),
 		[]
 	);
 
-	const { saveSettings, updateSettings } = useDispatch(
-		SETTINGS_PANEL_STORE
-	);
+	const { saveSettings, updateSettings } = useDispatch( SETTINGS_STORE );
 	const { enqueueChanges, setInitialData } = useDelayedChanges(
 		saveSettings
 	);
@@ -74,7 +72,7 @@ export default function Panel() {
 	function handleOnChange( key, value ) {
 		updateSettings( key, value );
 
-		const newSettings = wpSelect( SETTINGS_PANEL_STORE ).getSettings();
+		const newSettings = wpSelect( SETTINGS_STORE ).getSettings();
 		enqueueChanges( newSettings );
 	}
 

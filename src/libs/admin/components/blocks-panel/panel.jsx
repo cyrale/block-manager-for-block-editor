@@ -6,7 +6,7 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import { BLOCKS_PANEL_STORE } from '../../stores/blocks/constants';
+import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import Block from './block';
 
 const {
@@ -16,8 +16,8 @@ const {
 export default function Panel() {
 	const { blocks, categories } = useSelect(
 		( select ) => ( {
-			blocks: select( BLOCKS_PANEL_STORE ).getBlocks(),
-			categories: select( BLOCKS_PANEL_STORE ).getCategories(),
+			blocks: select( BLOCKS_STORE ).getBlocks(),
+			categories: select( BLOCKS_STORE ).getCategories(),
 		} ),
 		[]
 	);

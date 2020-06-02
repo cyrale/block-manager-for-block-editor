@@ -1,7 +1,4 @@
-import {
-	BLOCKS_PANEL_STORE,
-	STATUS_SAVING,
-} from '../../stores/blocks/constants';
+import { BLOCKS_STORE, STATUS_SAVING } from '../../stores/blocks/constants';
 
 const {
 	data: { useSelect },
@@ -9,7 +6,7 @@ const {
 
 export default function Description( { description, name, title } ) {
 	const status = useSelect(
-		( select ) => select( BLOCKS_PANEL_STORE ).getStatus( name ),
+		( select ) => select( BLOCKS_STORE ).getStatus( name ),
 		[]
 	);
 

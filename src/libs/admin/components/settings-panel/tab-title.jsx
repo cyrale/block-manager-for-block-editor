@@ -1,5 +1,5 @@
 import GenericTabTitle from '../tab-title';
-import { SETTINGS_PANEL_STORE } from '../../stores/settings/constants';
+import { SETTINGS_STORE } from '../../stores/settings/constants';
 
 const {
 	data: { useSelect },
@@ -7,7 +7,7 @@ const {
 
 function TabTitle( { children } ) {
 	const status = useSelect(
-		( select ) => select( SETTINGS_PANEL_STORE ).getStatus(),
+		( select ) => select( SETTINGS_STORE ).getStatus(),
 		[]
 	);
 

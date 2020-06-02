@@ -13,7 +13,7 @@ import Access from './access';
 import Description from './description';
 import Icon from './icon';
 import Styles from './styles';
-import { BLOCKS_PANEL_STORE } from '../../stores/blocks/constants';
+import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import Variations from './variations';
 
 const { pick } = lodash;
@@ -53,11 +53,11 @@ const changingFields = [
 
 export default function Block( { name: blockName } ) {
 	const block = useSelect(
-		( select ) => select( BLOCKS_PANEL_STORE ).getBlock( blockName ),
+		( select ) => select( BLOCKS_STORE ).getBlock( blockName ),
 		[]
 	);
 
-	const { saveBlock, updateBlock } = useDispatch( BLOCKS_PANEL_STORE );
+	const { saveBlock, updateBlock } = useDispatch( BLOCKS_STORE );
 	const { enqueueChanges, setInitialData } = useDelayedChanges( saveBlock );
 
 	useEffect( () => {
@@ -69,7 +69,7 @@ export default function Block( { name: blockName } ) {
 			[ key ]: value,
 		} );
 
-		const newBlock = wpSelect( BLOCKS_PANEL_STORE ).getBlock( blockName );
+		const newBlock = wpSelect( BLOCKS_STORE ).getBlock( blockName );
 		enqueueChanges( pick( newBlock, changingFields ) );
 	}
 
