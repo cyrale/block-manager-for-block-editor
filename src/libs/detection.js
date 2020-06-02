@@ -1,12 +1,13 @@
-import { blockFields, getBlocks } from './api-blocks';
+import { BLOCKS_API_PATH } from './admin/stores/blocks/constants';
 
 const { assign, cloneDeep, isEqual, omit, pick } = lodash;
 const {
 	apiFetch,
 	blocks,
-	data,
+	data: { dispatch },
 	element: { render },
 	i18n: { __, sprintf },
+	url: { addQueryArgs },
 } = wp;
 
 /**
@@ -43,7 +44,20 @@ function getEditorBlocks() {
 			// Remove blocks not visible in inserter.
 			.filter( ( block ) => block.supports?.inserter !== false )
 			// Keep only necessary fields.
-			.map( ( block ) => pick( block, blockFields ) )
+			.map( ( block ) =>
+				pick( block, [
+					'name',
+					'title',
+					'description',
+					'category',
+					'icon',
+					'keywords',
+					'supports_override',
+					'supports',
+					'styles',
+					'variations',
+				] )
+			)
 			// Normalize icons.
 			.map( ( block ) => {
 				block.icon = normalizeIcon( block.icon );
@@ -273,7 +287,7 @@ function refreshInfoNotice( message = '' ) {
 		.join( ', ' );
 
 	// Display and refresh progress message.
-	data.dispatch( 'core/notices' ).createInfoNotice(
+	dispatch( 'core/notices' ).createInfoNotice(
 		sprintf( noticeStr, message ) +
 			( details !== '' ? ' (' + details + ')' : '' ),
 		{ isDismissible: false, id: 'bmfbeDetectionMode' }
@@ -316,7 +330,13 @@ export default async function detection() {
 	refreshInfoNotice();
 
 	// Get blocks from database.
-	const registeredBlocks = await getBlocks();
+	const apiBlocks = await apiFetch( {
+		path: addQueryArgs( BLOCKS_API_PATH, { per_page: -1 } ),
+		method: 'GET',
+	} );
+	const registeredBlocks = apiBlocks.map( ( block ) =>
+		omit( block, [ '_links' ] )
+	);
 
 	// Get block from editor and sanitize values.
 	const editorBlocks = getEditorBlocks()
@@ -439,7 +459,7 @@ export default async function detection() {
 	for ( let i = 0; i < newBlocks.length; i++ ) {
 		try {
 			await apiFetch( {
-				path: '/bmfbe/v1/blocks',
+				path: BLOCKS_API_PATH,
 				method: 'POST',
 				data: newBlocks[ i ],
 			} );
@@ -455,8 +475,8 @@ export default async function detection() {
 	for ( let i = 0; i < updatedBlocks.length; i++ ) {
 		try {
 			await apiFetch( {
-				path: '/bmfbe/v1/blocks/' + updatedBlocks[ i ].name,
-				method: 'PATCH',
+				path: `${ BLOCKS_API_PATH }/${ updatedBlocks[ i ].name }`,
+				method: 'PUT',
 				data: assign( omit( updatedBlocks[ i ], 'name' ), {
 					keep: {
 						styles: false,
@@ -476,7 +496,7 @@ export default async function detection() {
 	for ( let i = 0; i < deletedBlocks.length; i++ ) {
 		try {
 			await apiFetch( {
-				path: '/bmfbe/v1/blocks/' + deletedBlocks[ i ].name,
+				path: `${ BLOCKS_API_PATH }/${ deletedBlocks[ i ].name }`,
 				method: 'DELETE',
 			} );
 		} catch ( e ) {
@@ -490,5 +510,5 @@ export default async function detection() {
 	refreshInfoNotice( __( 'Complete!', 'bmfbe' ) );
 
 	// Redirect user to settings page.
-	window.location.href = bmfbeEditorGlobal.settingsPage;
+	// window.location.href = bmfbeEditorGlobal.settingsPage;
 }
