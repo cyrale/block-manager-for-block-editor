@@ -436,10 +436,14 @@ class Block_Settings extends Settings {
 			return $valid_check;
 		}
 
-		// Index.
+		// Supports.
 		$supports = $db_block['supports'];
 		if ( ! empty( $block['supports'] ) && is_array( $block['supports'] ) ) {
-			$supports = array_replace_recursive( $supports, $block['supports'] );
+			foreach ( $supports as $name => $s ) {
+				if ( ! $s['isActive'] || ! empty( $block['supports'][ $name ]['isActive'] ) ) {
+					$supports[ $name ] = array_merge( $s, $block['supports'][ $name ] );
+				}
+			}
 		}
 
 		// Styles.
