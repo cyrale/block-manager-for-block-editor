@@ -62,7 +62,7 @@ class Editor implements WP_Plugin_Class {
 					'supports'          => $block['supports'],
 					'styles'            => $block['styles'],
 					'variations'        => $block['variations'],
-					// 'access'            => $block['access'],
+					'access'            => $block['access'],
 				);
 			},
 			Block_Settings::get_instance()->get_settings()
