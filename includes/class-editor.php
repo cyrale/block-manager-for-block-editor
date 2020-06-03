@@ -97,7 +97,7 @@ class Editor implements WP_Plugin_Class {
 			'bmfbe-editor',
 			'bmfbeEditorGlobal',
 			array(
-				'detection'    => ! empty( $_GET['detection'] ),
+				'detect'       => ! empty( $_GET['detect'] ),
 				'settingsPage' => add_query_arg( array( 'page' => 'bmfbe-settings' ), admin_url( 'admin.php' ) ),
 				'settings'     => $settings,
 				'blocks'       => $blocks,

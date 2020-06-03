@@ -1,6 +1,6 @@
 import './sass/editor.scss';
 
-import detection from './libs/detection';
+import detect from './libs/detect';
 import customize from './libs/customize';
 
 if ( ! bmfbeEditorGlobal.detection ) {
@@ -9,6 +9,6 @@ if ( ! bmfbeEditorGlobal.detection ) {
 
 wp.domReady( () => {
 	if ( bmfbeEditorGlobal.detection ) {
-		detection();
+		detect();
 	}
 } );

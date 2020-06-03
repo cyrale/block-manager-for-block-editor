@@ -9,7 +9,7 @@ const {
 } = wp;
 
 /**
- * Values to follow progress of detection.
+ * Values to follow progress of detect.
  *
  * @type {{deleted: {total: number, progress: number}, newOnes: {total: number, progress: number}, updated: {total: number, progress: number}}}
  * @since 1.0.0
@@ -324,7 +324,7 @@ function intersect( array1, array2 ) {
 	);
 }
 
-export default async function detection() {
+export default async function detect() {
 	refreshInfoNotice();
 
 	// Get blocks from database.
