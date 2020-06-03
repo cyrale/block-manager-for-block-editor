@@ -1,7 +1,6 @@
-import { apiFetch } from './controls';
-import { SETTINGS_API_PATH } from './constants';
+import * as apiSettings from '../../api/settings';
 
-export { fetchFromAPI } from '../actions';
+export { fetchAllFromAPI } from '../actions';
 
 export function initSettings( settings ) {
 	return {
@@ -23,11 +22,7 @@ export function* saveSettings( settings ) {
 		type: 'SAVE_SETTINGS_START',
 	};
 
-	const savedSettings = yield apiFetch( {
-		path: SETTINGS_API_PATH,
-		method: 'PUT',
-		data: settings,
-	} );
+	const savedSettings = yield apiSettings.updateSettings( settings );
 
 	yield {
 		type: 'SAVE_SETTINGS_FINISH',

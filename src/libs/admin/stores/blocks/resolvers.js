@@ -10,7 +10,7 @@ export function* getCategories() {
 }
 
 export function* getBlocks() {
-	const blocks = yield actions.fetchFromAPI(
+	const blocks = yield actions.fetchAllFromAPI(
 		addQueryArgs( BLOCKS_API_PATH, { per_page: -1 } )
 	);
 

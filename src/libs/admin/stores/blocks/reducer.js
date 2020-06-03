@@ -1,22 +1,22 @@
 import { STATUS_LOADING, STATUS_PENDING, STATUS_SAVING } from './constants';
 
-const { merge, omit } = lodash;
+const { merge } = lodash;
 
-const DEFAULT_BLOCKS_STATE = {
+const DEFAULT_STATE = {
 	status: STATUS_LOADING,
 	blocks: {},
 	list: [],
 	categories: [],
 };
 
-export function reducer( state = DEFAULT_BLOCKS_STATE, action ) {
+export function reducer( state = DEFAULT_STATE, action ) {
 	switch ( action.type ) {
 		case 'INIT_BLOCKS':
 			const blocksObject = {};
 			action.blocks.forEach( ( block ) => {
 				blocksObject[ block.name ] = {
 					status: STATUS_PENDING,
-					value: omit( block, [ '_links' ] ),
+					value: block,
 				};
 			} );
 

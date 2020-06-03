@@ -1,1 +1,5 @@
-export { apiFetch, API_FETCH } from '../controls';
+import { allSettings } from '../../api/settings';
+
+export function API_FETCH_ALL() {
+	return allSettings();
+}

@@ -1,13 +1,11 @@
-import { BLOCKS_API_PATH } from './admin/stores/blocks/constants';
+import * as apiBlocks from './admin/api/blocks';
 
 const { assign, cloneDeep, isEqual, omit, pick } = lodash;
 const {
-	apiFetch,
 	blocks,
 	data: { dispatch },
 	element: { render },
 	i18n: { __, sprintf },
-	url: { addQueryArgs },
 } = wp;
 
 /**
@@ -330,13 +328,7 @@ export default async function detection() {
 	refreshInfoNotice();
 
 	// Get blocks from database.
-	const apiBlocks = await apiFetch( {
-		path: addQueryArgs( BLOCKS_API_PATH, { per_page: -1 } ),
-		method: 'GET',
-	} );
-	const registeredBlocks = apiBlocks.map( ( block ) =>
-		omit( block, [ '_links' ] )
-	);
+	const registeredBlocks = await apiBlocks.allBlocks();
 
 	// Get block from editor and sanitize values.
 	const editorBlocks = getEditorBlocks()
@@ -457,15 +449,7 @@ export default async function detection() {
 
 	// Send new blocks to API.
 	for ( let i = 0; i < newBlocks.length; i++ ) {
-		try {
-			await apiFetch( {
-				path: BLOCKS_API_PATH,
-				method: 'POST',
-				data: newBlocks[ i ],
-			} );
-		} catch ( e ) {
-			// TODO: manage errors.
-		}
+		await apiBlocks.createBlock( newBlocks[ i ] );
 
 		noticeValues.newOnes.progress++;
 		refreshInfoNotice();
@@ -473,20 +457,15 @@ export default async function detection() {
 
 	// Send update to API.
 	for ( let i = 0; i < updatedBlocks.length; i++ ) {
-		try {
-			await apiFetch( {
-				path: `${ BLOCKS_API_PATH }/${ updatedBlocks[ i ].name }`,
-				method: 'PUT',
-				data: assign( omit( updatedBlocks[ i ], 'name' ), {
-					keep: {
-						styles: false,
-						variations: false,
-					},
-				} ),
-			} );
-		} catch ( e ) {
-			// TODO: manage errors.
-		}
+		await apiBlocks.updateBlock( {
+			...updatedBlocks[ i ],
+			...{
+				keep: {
+					styles: false,
+					variations: false,
+				},
+			},
+		} );
 
 		noticeValues.updated.progress++;
 		refreshInfoNotice();
@@ -494,14 +473,7 @@ export default async function detection() {
 
 	// Send deletion to API.
 	for ( let i = 0; i < deletedBlocks.length; i++ ) {
-		try {
-			await apiFetch( {
-				path: `${ BLOCKS_API_PATH }/${ deletedBlocks[ i ].name }`,
-				method: 'DELETE',
-			} );
-		} catch ( e ) {
-			// TODO: manage errors.
-		}
+		await apiBlocks.deleteBlock( deletedBlocks[ i ].name );
 
 		noticeValues.deleted.progress++;
 		refreshInfoNotice();

@@ -1,7 +1,6 @@
-import { apiFetch } from '../controls';
-import { BLOCKS_API_PATH } from './constants';
+import * as apiBlocks from '../../api/blocks';
 
-export { fetchFromAPI } from '../actions';
+export { fetchAllFromAPI } from '../actions';
 
 export function initBlocks( blocks ) {
 	return {
@@ -24,11 +23,7 @@ export function* saveBlock( block ) {
 		block,
 	};
 
-	const savedBlock = yield apiFetch( {
-		path: `${ BLOCKS_API_PATH }/${ block.name }`,
-		method: 'PUT',
-		data: block,
-	} );
+	const savedBlock = yield apiBlocks.updateBlock( block );
 
 	yield {
 		type: 'SAVE_BLOCK_FINISH',
