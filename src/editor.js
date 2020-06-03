@@ -8,7 +8,7 @@ if ( ! bmfbeEditorGlobal.detection ) {
 }
 
 wp.domReady( () => {
-	if ( bmfbeEditorGlobal.detection ) {
+	if ( bmfbeEditorGlobal.detect ) {
 		detect();
 	}
 } );

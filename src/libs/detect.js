@@ -324,7 +324,7 @@ function intersect( array1, array2 ) {
 	);
 }
 
-export default async function detect() {
+async function detect() {
 	refreshInfoNotice();
 
 	// Get blocks from database.
@@ -484,3 +484,5 @@ export default async function detect() {
 	// Redirect user to settings page.
 	// window.location.href = bmfbeEditorGlobal.settingsPage;
 }
+
+export default detect;
