@@ -170,8 +170,9 @@ class Block_Settings extends Settings {
 	 */
 	public function validate_name( $value ) {
 		$schema = $this->get_schema();
+		$name   = isset( $schema['name'] ) ? $schema['name'] : null;
 
-		$valid_check = self::validate_value_from_schema( $value, $schema['name'], 'name' );
+		$valid_check = self::validate_value_from_schema( $value, $name, 'name' );
 
 		if ( true !== $valid_check ) {
 			return $valid_check;

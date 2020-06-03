@@ -245,14 +245,16 @@ abstract class Settings {
 
 		if ( ! isset( $schema['type'] ) ) {
 			foreach ( $schema as $p => $s ) {
+				$param = isset( $params[ $p ] ) ? $params[ $p ] : null;
+
 				$required_params = array_merge(
 					$required_params,
-					self::required_params_walker( $params[ $p ], $s, self::concat_properties( $property, $p ) )
+					self::required_params_walker( $param, $s, self::concat_properties( $property, $p ) )
 				);
 			}
 		}
 
-		if ( is_array( $schema['type'] ) ) {
+		if ( isset( $schema['type'] ) && is_array( $schema['type'] ) ) {
 			foreach ( $schema['type'] as $type ) {
 				$s         = $schema;
 				$s['type'] = $type;
@@ -268,7 +270,7 @@ abstract class Settings {
 
 		if ( isset( $schema['required'] ) && true === $schema['required'] && ( null === $params ) ) {
 			$required_params[] = $property;
-		} elseif ( 'array' === $schema['type'] ) {
+		} elseif ( isset( $schema['type'] ) && 'array' === $schema['type'] ) {
 			if ( ! is_null( $params ) ) {
 				$params = wp_parse_list( $params );
 			}
@@ -281,7 +283,7 @@ abstract class Settings {
 					);
 				}
 			}
-		} elseif ( 'object' === $schema['type'] && ! is_null( $params ) ) {
+		} elseif ( isset( $schema['type'] ) && 'object' === $schema['type'] && ! is_null( $params ) ) {
 			foreach ( $schema['properties'] as $p => $s ) {
 				$required_params = array_merge(
 					$required_params,
@@ -338,7 +340,7 @@ abstract class Settings {
 			}
 		}
 
-		if ( is_array( $schema['type'] ) ) {
+		if ( isset( $schema['type'] ) && is_array( $schema['type'] ) ) {
 			$valid_error = null;
 
 			foreach ( $schema['type'] as $type ) {
@@ -371,7 +373,7 @@ abstract class Settings {
 
 		if ( isset( $schema['validate_callback'] ) && is_callable( $schema['validate_callback'] ) ) {
 			$valid_check = call_user_func( $schema['validate_callback'], $params, null, $property );
-		} elseif ( 'array' === $schema['type'] ) {
+		} elseif ( isset( $schema['type'] ) && 'array' === $schema['type'] ) {
 			if ( ! is_null( $params ) ) {
 				$params = wp_parse_list( $params );
 			}
@@ -387,7 +389,7 @@ abstract class Settings {
 					return $valid_check;
 				}
 			}
-		} else {
+		} elseif ( isset( $schema['type'] ) ) {
 			$valid_check = self::validate_value_from_schema( $params, $schema, $property );
 
 			if ( false === $valid_check ) {
