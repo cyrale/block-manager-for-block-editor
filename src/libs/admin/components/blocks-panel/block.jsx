@@ -6,15 +6,16 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
+import useDelayedChanges from '../../hooks/use-delayed-changes';
+import { BLOCKS_STORE } from '../../stores/blocks/constants';
+import Access from '../access';
 import Supports from '../supports';
 import Toggle from '../toggle';
-import useDelayedChanges from '../../hooks/use-delayed-changes';
-import Access from './access';
 import Description from './description';
 import Icon from './icon';
 import Styles from './styles';
-import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import Variations from './variations';
+import { SETTINGS_STORE } from '../../stores/settings/constants';
 
 const { pick } = lodash;
 const {
@@ -52,6 +53,11 @@ const changingFields = [
 ];
 
 export default function Block( { name: blockName } ) {
+	const settings = useSelect(
+		( select ) => select( SETTINGS_STORE ).getSettings(),
+		[]
+	);
+
 	const block = useSelect(
 		( select ) => select( BLOCKS_STORE ).getBlock( blockName ),
 		[]
@@ -88,8 +94,13 @@ export default function Block( { name: blockName } ) {
 				{ panels
 					.filter(
 						( { name: panelName } ) =>
-							! Array.isArray( block[ panelName ] ) ||
-							block[ panelName ].length > 0
+							// Hide empty panels.
+							( ! Array.isArray( block[ panelName ] ) ||
+								block[ panelName ].length > 0 ) &&
+							// Hide access panels.
+							( 'access' !== panelName ||
+								settings.limit_access_by_post_type ||
+								settings.limit_access_by_user_group )
 					)
 					.map( ( { label, name: panelName, Component } ) => {
 						return (

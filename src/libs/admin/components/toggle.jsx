@@ -1,4 +1,5 @@
 import useShortID from '../hooks/use-short-id';
+import Checkbox from "./checkbox";
 
 export default function Toggle( {
 	children,
@@ -17,9 +18,8 @@ export default function Toggle( {
 	return (
 		<>
 			<label htmlFor={ id }>
-				<input
+				<Checkbox
 					id={ id }
-					type="checkbox"
 					checked={ !! value }
 					disabled={ !! disabled }
 					onChange={ () => onChange && onChange( ! value ) }
