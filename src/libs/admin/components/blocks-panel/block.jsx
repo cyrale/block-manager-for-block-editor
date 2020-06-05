@@ -109,7 +109,7 @@ export default function Block( { name: blockName } ) {
 							>
 								{ 'supports' === panelName && (
 									<Toggle
-										value={ block.supports_override }
+										checked={ block.supports_override }
 										onChange={ () =>
 											handleOnSettingsChange(
 												'supports_override',
@@ -130,10 +130,10 @@ export default function Block( { name: blockName } ) {
 											'supports' === panelName &&
 											! block.supports_override
 										}
-										onChange={ ( value ) =>
+										onChange={ ( checked ) =>
 											handleOnSettingsChange(
 												panelName,
-												value
+												checked
 											)
 										}
 									/>

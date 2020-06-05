@@ -82,9 +82,9 @@ export default function Panel() {
 				const Component = field.Component ?? Toggle;
 
 				const props = {
+					checked: settings[ field.name ],
 					label: field.label,
 					onChange: ( value ) => handleOnChange( field.name, value ),
-					value: settings[ field.name ],
 				};
 
 				if ( 'supports' === field.name ) {
