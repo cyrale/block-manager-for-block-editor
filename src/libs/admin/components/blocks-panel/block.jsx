@@ -6,17 +6,17 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import useDelayedChanges from '../../hooks/use-delayed-changes';
-import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import Access from '../access';
+import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import Checkbox from '../checkbox';
-import Supports from '../supports';
-import Toggle from '../toggle';
 import Description from './description';
 import Icon from './icon';
-import Styles from './styles';
-import Variations from './variations';
 import { SETTINGS_STORE } from '../../stores/settings/constants';
+import Styles from './styles';
+import Supports from '../supports';
+import Toggle from '../toggle';
+import Variations from './variations';
+import useDelayedChanges from '../../hooks/use-delayed-changes';
 
 const { mapValues, pick, uniq } = lodash;
 const {

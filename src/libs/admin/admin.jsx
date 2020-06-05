@@ -1,5 +1,3 @@
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-
 import {
 	default as BlocksPanel,
 	TabTitle as BlocksTab,
@@ -8,6 +6,7 @@ import {
 	default as SettingsPanel,
 	TabTitle as SettingsTab,
 } from './components/settings-panel';
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 
 const {
 	i18n: { __ },

@@ -218,6 +218,7 @@
 		"react/prop-types": "off",
 		"semi": "error",
 		"semi-spacing": "error",
+		"sort-imports": "warn",
 		"space-before-blocks": [
 			"error",
 			"always"

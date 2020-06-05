@@ -1,5 +1,5 @@
-import useShortID from '../hooks/use-short-id';
 import Checkbox from './checkbox';
+import useShortID from '../hooks/use-short-id';
 
 export default function Toggle( {
 	checked = false,
@@ -22,7 +22,9 @@ export default function Toggle( {
 					id={ id }
 					checked={ !! checked }
 					disabled={ !! disabled }
-					onChange={ ( e ) => onChange && onChange( e.target.checked ) }
+					onChange={ ( e ) =>
+						onChange && onChange( e.target.checked )
+					}
 				/>
 				{ label }
 			</label>

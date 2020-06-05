@@ -1,4 +1,4 @@
-import { STATUS_PENDING, STATUS_LOADING, STATUS_SAVING } from './constants';
+import { STATUS_LOADING, STATUS_PENDING, STATUS_SAVING } from './constants';
 
 const DEFAULT_STATE = {
 	status: STATUS_LOADING,

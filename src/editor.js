@@ -1,7 +1,7 @@
 import './sass/editor.scss';
 
-import detect from './libs/detect';
 import customize from './libs/customize';
+import detect from './libs/detect';
 
 if ( ! bmfbeEditorGlobal.detection ) {
 	customize();
