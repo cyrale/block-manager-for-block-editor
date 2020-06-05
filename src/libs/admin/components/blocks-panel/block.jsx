@@ -1,14 +1,15 @@
 import {
 	Accordion,
 	AccordionItem,
-	AccordionItemHeading,
 	AccordionItemButton,
+	AccordionItemHeading,
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
 import useDelayedChanges from '../../hooks/use-delayed-changes';
 import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import Access from '../access';
+import Checkbox from '../checkbox';
 import Supports from '../supports';
 import Toggle from '../toggle';
 import Description from './description';
@@ -17,7 +18,7 @@ import Styles from './styles';
 import Variations from './variations';
 import { SETTINGS_STORE } from '../../stores/settings/constants';
 
-const { pick } = lodash;
+const { mapValues, pick, uniq } = lodash;
 const {
 	data: { select: wpSelect, useDispatch, useSelect },
 	element: { useEffect },
@@ -66,21 +67,59 @@ export default function Block( { name: blockName } ) {
 	const { saveBlock, updateBlock } = useDispatch( BLOCKS_STORE );
 	const { enqueueChanges, setInitialData } = useDelayedChanges( saveBlock );
 
+	const uniqFlatValues = uniq(
+		Object.values(
+			mapValues( block.access, ( postTypeValues ) =>
+				Object.values( postTypeValues )
+			)
+		).reduce( ( acc, values ) => [ ...acc, ...values ], [] )
+	);
+
+	const displayGlobalActivation =
+		! settings.limit_access_by_post_type &&
+		! settings.limit_access_by_user_group;
+	const globalActivation = {
+		checked: 1 === uniqFlatValues.length,
+		indeterminate: 1 < uniqFlatValues.length,
+	};
+
 	useEffect( () => {
 		setInitialData( pick( block, changingFields ) );
 	}, [] );
 
-	async function handleOnSettingsChange( key, value ) {
-		await updateBlock( blockName, {
-			[ key ]: value,
-		} );
+	async function handleBlockChange( value ) {
+		await updateBlock( blockName, value );
 
 		const newBlock = wpSelect( BLOCKS_STORE ).getBlock( blockName );
 		enqueueChanges( pick( newBlock, changingFields ) );
 	}
 
+	function handleOnGlobalAccessChange( value ) {
+		const newAccess = mapValues( block.access, ( postTypeValues ) =>
+			mapValues( postTypeValues, () => value )
+		);
+
+		handleBlockChange( {
+			access: newAccess,
+		} );
+	}
+
+	async function handleOnSettingsChange( key, value ) {
+		handleBlockChange( {
+			[ key ]: value,
+		} );
+	}
+
 	return (
 		<div className="bmfbe-block">
+			{ displayGlobalActivation && (
+				<Checkbox
+					onChange={ ( e ) =>
+						handleOnGlobalAccessChange( e.target.checked )
+					}
+					{ ...globalActivation }
+				/>
+			) }
 			<Icon icon={ block.icon } />
 			<Description
 				name={ blockName }
@@ -99,8 +138,7 @@ export default function Block( { name: blockName } ) {
 								block[ panelName ].length > 0 ) &&
 							// Hide access panels.
 							( 'access' !== panelName ||
-								settings.limit_access_by_post_type ||
-								settings.limit_access_by_user_group )
+								! displayGlobalActivation )
 					)
 					.map( ( { label, name: panelName, Component } ) => {
 						return (

@@ -60,7 +60,7 @@ function splitToCheckAndIndeterminateValues( values ) {
 	);
 }
 
-export default function Access( { onChange, value } ) {
+function Access( { onChange, value } ) {
 	const settings = useSelect(
 		( select ) => select( SETTINGS_STORE ).getSettings(),
 		[]
@@ -158,3 +158,5 @@ export default function Access( { onChange, value } ) {
 		</div>
 	);
 }
+
+export default Access;
