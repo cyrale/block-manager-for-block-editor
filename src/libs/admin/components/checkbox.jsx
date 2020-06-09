@@ -22,6 +22,9 @@ function Checkbox( {
 			ref={ checkRef }
 			id={ id }
 			disabled={ disabled }
+			onClick={ ( e ) => {
+				e.stopPropagation();
+			} }
 			onChange={ onChange }
 		/>
 	);

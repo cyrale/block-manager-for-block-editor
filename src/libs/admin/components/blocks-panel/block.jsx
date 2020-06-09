@@ -10,6 +10,7 @@ import Access from '../access';
 import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import Checkbox from '../checkbox';
 import Description from './description';
+import FakeAccordion from '../fake-accordion';
 import Icon from './icon';
 import { SETTINGS_STORE } from '../../stores/settings/constants';
 import Styles from './styles';
@@ -43,7 +44,7 @@ const panels = [
 	},
 	{
 		name: 'access',
-		label: __( 'Access', 'bmfbe' ),
+		label: __( 'Enabled', 'bmfbe' ),
 		Component: Access,
 	},
 ];
@@ -79,7 +80,7 @@ export default function Block( { name: blockName } ) {
 		! settings.limit_access_by_post_type &&
 		! settings.limit_access_by_user_group;
 	const globalActivation = {
-		checked: 1 === uniqFlatValues.length,
+		checked: 1 === uniqFlatValues.length && uniqFlatValues[ 0 ],
 		indeterminate: 1 < uniqFlatValues.length,
 	};
 
@@ -112,19 +113,21 @@ export default function Block( { name: blockName } ) {
 
 	return (
 		<div className="bmfbe-block">
-			{ displayGlobalActivation && (
-				<Checkbox
-					onChange={ ( e ) =>
-						handleOnGlobalAccessChange( e.target.checked )
-					}
-					{ ...globalActivation }
-				/>
-			) }
 			<Icon icon={ block.icon } />
 			<Description
 				name={ blockName }
 				title={ block.title }
 				description={ block.description }
+			/>
+			<Toggle
+				label={ __( 'Override supports?', 'bmfbe' ) }
+				checked={ block.supports_override }
+				onChange={ () =>
+					handleOnSettingsChange(
+						'supports_override',
+						! block.supports_override
+					)
+				}
 			/>
 			<Accordion
 				allowMultipleExpanded={ true }
@@ -145,19 +148,18 @@ export default function Block( { name: blockName } ) {
 							<AccordionItem
 								key={ `${ blockName }/${ panelName }` }
 							>
-								{ 'supports' === panelName && (
-									<Toggle
-										checked={ block.supports_override }
-										onChange={ () =>
-											handleOnSettingsChange(
-												'supports_override',
-												! block.supports_override
-											)
-										}
-									/>
-								) }
 								<AccordionItemHeading>
 									<AccordionItemButton>
+										{ 'access' === panelName && (
+											<Checkbox
+												onChange={ ( e ) =>
+													handleOnGlobalAccessChange(
+														e.target.checked
+													)
+												}
+												{ ...globalActivation }
+											/>
+										) }
 										{ label }
 									</AccordionItemButton>
 								</AccordionItemHeading>
@@ -180,6 +182,17 @@ export default function Block( { name: blockName } ) {
 						);
 					} ) }
 			</Accordion>
+			{ displayGlobalActivation && (
+				<FakeAccordion>
+					<Checkbox
+						onChange={ ( e ) =>
+							handleOnGlobalAccessChange( e.target.checked )
+						}
+						{ ...globalActivation }
+					/>
+					{ __( 'Enabled', 'bmfbe' ) }
+				</FakeAccordion>
+			) }
 		</div>
 	);
 }

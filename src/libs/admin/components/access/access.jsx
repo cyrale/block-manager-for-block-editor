@@ -44,7 +44,10 @@ function mergeRowsValues( values ) {
 
 		return {
 			all: {
-				checked: 1 <= onlyValues.length && 1 === uniqValues.length,
+				checked:
+					1 <= onlyValues.length &&
+					1 === uniqValues.length &&
+					uniqValues[ 0 ],
 				indeterminate: 2 <= onlyValues.length && 1 < uniqValues.length,
 			},
 		};
