@@ -53,37 +53,46 @@ class Editor implements WP_Plugin_Class {
 	 * Enqueue scripts and styles.
 	 */
 	public function enqueue_block_editor_assets() {
-		$settings = Global_Settings::get_instance()->get_settings();
-		$blocks   = array_map(
-			function ( $block ) {
-				return array(
-					'name'              => $block['name'],
-					'supports_override' => $block['supports_override'],
-					'supports'          => $block['supports'],
-					'styles'            => $block['styles'],
-					'variations'        => $block['variations'],
-					'access'            => $block['access'],
-				);
-			},
-			Block_Settings::get_instance()->get_settings()
-		);
+		$post_type = get_post_type();
+		$wp_user   = wp_get_current_user();
 
-		if ( $settings['supports_override'] ) {
-			$blocks = array_map(
-				function ( $block ) {
-					if ( $block['supports_override'] ) {
-						return $block;
+		$settings = Global_Settings::get_instance()->get_settings();
+
+		$blocks = array();
+		foreach ( Block_Settings::get_instance()->get_settings() as $block ) {
+			$current_block = array(
+				'name'              => $block['name'],
+				'supports_override' => $block['supports_override'],
+				'supports'          => $block['supports'],
+				'styles'            => $block['styles'],
+				'variations'        => $block['variations'],
+			);
+
+			// Override supports with global settings.
+			if ( $settings['supports_override'] && ! $block['supports_override'] ) {
+				$current_block['supports_override'] = true;
+				$current_block['supports']          = $settings['supports'];
+			}
+
+			// Check if block is enabled.
+			$current_block['enabled'] = true;
+			if ( isset( $block['access'][ $post_type ] ) ) {
+				$block_not_tested = true;
+				$block_enabled    = false;
+
+				foreach ( $wp_user->roles as $user_role ) {
+					if ( ! isset( $block['access'][ $post_type ][ $user_role ] ) ) {
+						continue;
 					}
 
-					$settings = Global_Settings::get_instance()->get_settings();
+					$block_not_tested = false;
+					$block_enabled    = $block_enabled || $block['access'][ $post_type ][ $user_role ];
+				}
 
-					$block['supports_override'] = true;
-					$block['supports']          = $settings['supports'];
+				$current_block['enabled'] = $block_not_tested || $block_enabled;
+			}
 
-					return $block;
-				},
-				$blocks
-			);
+			$blocks[] = $current_block;
 		}
 
 		wp_enqueue_script(
