@@ -179,15 +179,17 @@ class Block_Settings_Controller extends Rest_Controller {
 		return Block_Settings::prepare_settings_walker( $params, $schema['properties'] );
 	}
 
+	// phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable -- parent compatibility
 	/**
 	 * Prepares a single block output for response.
 	 *
-	 * @param array $block Block object.
+	 * @param array           $block   Block object.
+	 * @param WP_REST_Request $request Request object.
 	 *
 	 * @return WP_REST_Response Response object.
 	 * @since 1.0.0
 	 */
-	public function prepare_item_for_response( $block ) {
+	public function prepare_item_for_response( $block, $request ) {
 		// Wrap the data in a response object.
 		$response = rest_ensure_response( $block );
 
@@ -196,6 +198,7 @@ class Block_Settings_Controller extends Rest_Controller {
 
 		return $response;
 	}
+	// phpcs:enable
 
 	/**
 	 * Prepares links for the request.
