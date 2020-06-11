@@ -182,13 +182,12 @@ class Block_Settings_Controller extends Rest_Controller {
 	/**
 	 * Prepares a single block output for response.
 	 *
-	 * @param array           $block   Block object.
-	 * @param WP_REST_Request $request Request object.
+	 * @param array $block Block object.
 	 *
 	 * @return WP_REST_Response Response object.
 	 * @since 1.0.0
 	 */
-	public function prepare_item_for_response( $block, $request ) {
+	public function prepare_item_for_response( $block ) {
 		// Wrap the data in a response object.
 		$response = rest_ensure_response( $block );
 
