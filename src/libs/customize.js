@@ -55,7 +55,6 @@ export default function customize() {
 			const block = searchBlock( name );
 
 			if (
-				undefined !== block &&
 				false === block?.enabled &&
 				! blocksInContent.includes( name )
 			) {
