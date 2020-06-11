@@ -1,4 +1,4 @@
-const { assign, merge, uniq } = lodash;
+const { merge, uniq } = lodash;
 const {
 	blocks,
 	data: { select },
@@ -21,7 +21,7 @@ function overrideVariations( editorVariations, blockVariations ) {
 				)
 		)
 		.map( ( variation ) =>
-			assign( {}, variation, {
+			merge( {}, variation, {
 				isDefault: !! blockVariations.find(
 					( v ) => v.name === variation.name && v.isDefault
 				),
@@ -108,9 +108,9 @@ export default function customize() {
 				block.variations
 			);
 
-			return assign( {}, settings, {
+			return merge( {}, settings, {
 				style: overriddenStyles,
-				supports: assign( {}, settings.supports, overriddenSupports ),
+				supports: merge( {}, settings.supports, overriddenSupports ),
 				variations: overriddenVariations,
 			} );
 		}
