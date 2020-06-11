@@ -1,5 +1,10 @@
-const { assign } = lodash;
-const { hooks } = wp;
+const { assign, merge, uniq } = lodash;
+const {
+	blocks,
+	data: { select },
+	domReady,
+	hooks,
+} = wp;
 
 function searchBlock( name ) {
 	return ( bmfbeEditorGlobal.blocks || [] ).find(
@@ -24,13 +29,40 @@ function overrideVariations( editorVariations, blockVariations ) {
 		);
 }
 
+function getBlocksInContent( clientId = '' ) {
+	const editorBlocks = select( 'core/block-editor' ).getBlocks( clientId );
+
+	let blockNames = editorBlocks
+		.filter( ( block ) => null !== block )
+		.map( ( { name } ) => name );
+
+	editorBlocks.forEach( ( { clientId: currentClientId } ) => {
+		blockNames = uniq( [
+			...blockNames,
+			...getBlocksInContent( currentClientId ),
+		] );
+	} );
+
+	return uniq( blockNames );
+}
+
 export default function customize() {
-	// Remove blocks
-	// blocks.getBlockTypes().forEach( ( blockType ) => {
-	// 	if ( blockType.name === 'core/paragraph' ) {
-	// 		wp.blocks.unregisterBlockType( blockType.name );
-	// 	}
-	// } );
+	domReady( () => {
+		const blocksInContent = getBlocksInContent();
+
+		// Remove disabled blocks.
+		blocks.getBlockTypes().forEach( ( { name } ) => {
+			const block = searchBlock( name );
+
+			if (
+				undefined !== block &&
+				false === block?.enabled &&
+				! blocksInContent.includes( name )
+			) {
+				blocks.unregisterBlockType( name );
+			}
+		} );
+	} );
 
 	hooks.addFilter(
 		'blocks.registerBlockType',
@@ -40,6 +72,15 @@ export default function customize() {
 
 			if ( undefined === block ) {
 				return settings;
+			}
+
+			// Remove disabled blocks from inserter.
+			if ( false === block?.enabled ) {
+				return merge( {}, settings, {
+					supports: {
+						inserter: false,
+					},
+				} );
 			}
 
 			// Customize supports.
