@@ -22,7 +22,7 @@ import useDelayedChanges from '../../hooks/use-delayed-changes';
 const { mapValues, pick, uniq } = lodash;
 const {
 	data: { select: wpSelect, useDispatch, useSelect },
-	element: { useEffect },
+	element: { useEffect, useState },
 	i18n: { __ },
 } = wp;
 
@@ -49,12 +49,21 @@ const panels = [
 	},
 ];
 
+const defaultDisplayedPanels = {};
+panels.forEach( ( { name } ) => {
+	defaultDisplayedPanels[ name ] = false;
+} );
+
 const changingFields = [
 	...[ 'name', 'supports_override' ],
 	...panels.map( ( panel ) => panel.name ),
 ];
 
 export default function Block( { name: blockName } ) {
+	const [ displayedPanels, setDisplayedPanels ] = useState(
+		defaultDisplayedPanels
+	);
+
 	const settings = useSelect(
 		( select ) => select( SETTINGS_STORE ).getSettings(),
 		[]
@@ -87,6 +96,14 @@ export default function Block( { name: blockName } ) {
 	useEffect( () => {
 		setInitialData( pick( block, changingFields ) );
 	}, [] );
+
+	function handleAccordionChange( items ) {
+		const currentDisplayedPanels = mapValues(
+			displayedPanels,
+			( displayed, name ) => items.includes( name )
+		);
+		setDisplayedPanels( currentDisplayedPanels );
+	}
 
 	async function handleBlockChange( value ) {
 		await updateBlock( blockName, value );
@@ -132,6 +149,7 @@ export default function Block( { name: blockName } ) {
 			<Accordion
 				allowMultipleExpanded={ true }
 				allowZeroExpanded={ true }
+				onChange={ handleAccordionChange }
 			>
 				{ panels
 					.filter(
@@ -143,27 +161,28 @@ export default function Block( { name: blockName } ) {
 							( 'access' !== panelName ||
 								! displayGlobalActivation )
 					)
-					.map( ( { label, name: panelName, Component } ) => {
-						return (
-							<AccordionItem
-								key={ `${ blockName }/${ panelName }` }
-							>
-								<AccordionItemHeading>
-									<AccordionItemButton>
-										{ 'access' === panelName && (
-											<Checkbox
-												onChange={ ( e ) =>
-													handleOnGlobalAccessChange(
-														e.target.checked
-													)
-												}
-												{ ...globalActivation }
-											/>
-										) }
-										{ label }
-									</AccordionItemButton>
-								</AccordionItemHeading>
-								<AccordionItemPanel>
+					.map( ( { label, name: panelName, Component } ) => (
+						<AccordionItem
+							key={ `${ blockName }/${ panelName }` }
+							uuid={ panelName }
+						>
+							<AccordionItemHeading>
+								<AccordionItemButton>
+									{ 'access' === panelName && (
+										<Checkbox
+											onChange={ ( e ) =>
+												handleOnGlobalAccessChange(
+													e.target.checked
+												)
+											}
+											{ ...globalActivation }
+										/>
+									) }
+									{ label }
+								</AccordionItemButton>
+							</AccordionItemHeading>
+							<AccordionItemPanel>
+								{ displayedPanels[ panelName ] && (
 									<Component
 										value={ block[ panelName ] }
 										disabled={
@@ -177,10 +196,10 @@ export default function Block( { name: blockName } ) {
 											)
 										}
 									/>
-								</AccordionItemPanel>
-							</AccordionItem>
-						);
-					} ) }
+								) }
+							</AccordionItemPanel>
+						</AccordionItem>
+					) ) }
 			</Accordion>
 			{ displayGlobalActivation && (
 				<FakeAccordion>

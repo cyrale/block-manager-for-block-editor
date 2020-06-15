@@ -11,9 +11,12 @@ import Block from './block';
 
 const {
 	data: { useSelect },
+	element: { useEffect, useState },
 } = wp;
 
 export default function Panel() {
+	const [ displayedCategories, setDisplayedCategories ] = useState( {} );
+
 	const { blocks, categories } = useSelect(
 		( select ) => ( {
 			blocks: select( BLOCKS_STORE ).getBlocks(),
@@ -22,15 +25,35 @@ export default function Panel() {
 		[]
 	);
 
+	useEffect( () => {
+		const defaultDisplayedCategories = {};
+
+		categories.forEach( ( category, index ) => {
+			defaultDisplayedCategories[ category ] = 0 === index;
+		} );
+
+		setDisplayedCategories( defaultDisplayedCategories );
+	}, [ categories ] );
+
+	function handleAccordionChange( items ) {
+		const currentDisplayedCategories = {};
+
+		categories.forEach( ( category ) => {
+			currentDisplayedCategories[ category ] = items.includes( category );
+		} );
+
+		setDisplayedCategories( currentDisplayedCategories );
+	}
+
 	return (
 		<div className="bmfbe-blocks-panel">
 			{ 0 === categories.length ? (
 				<></>
 			) : (
 				<Accordion
-					allowMultipleExpanded={ true }
 					allowZeroExpanded={ true }
 					preExpanded={ [ categories[ 0 ] ] }
+					onChange={ handleAccordionChange }
 				>
 					{ categories.map( ( category ) => (
 						<AccordionItem key={ category } uuid={ category }>
@@ -40,16 +63,18 @@ export default function Panel() {
 								</AccordionItemButton>
 							</AccordionItemHeading>
 							<AccordionItemPanel>
-								{ blocks
-									.filter(
-										( block ) => block.category === category
-									)
-									.map( ( block ) => (
-										<Block
-											key={ block.name }
-											{ ...block }
-										/>
-									) ) }
+								{ displayedCategories[ category ] &&
+									blocks
+										.filter(
+											( block ) =>
+												block.category === category
+										)
+										.map( ( block ) => (
+											<Block
+												key={ block.name }
+												{ ...block }
+											/>
+										) ) }
 							</AccordionItemPanel>
 						</AccordionItem>
 					) ) }
