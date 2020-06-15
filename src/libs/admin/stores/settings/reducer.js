@@ -28,7 +28,7 @@ export function reducer( state = DEFAULT_STATE, action ) {
 			return {
 				...state,
 				status:
-					action.type !== 'SAVE_SETTINGS_START'
+					action.type === 'SAVE_SETTINGS_START'
 						? STATUS_SAVING
 						: STATUS_PENDING,
 			};
