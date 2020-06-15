@@ -17,17 +17,17 @@ function Admin() {
 		<Tabs forceRenderTabPanel={ true }>
 			<TabList>
 				<Tab>
-					<BlocksTab>{ __( 'Blocks', 'bmfbe' ) }</BlocksTab>
+					<SettingsTab>{ __( 'Settings', 'bmfbe' ) }</SettingsTab>
 				</Tab>
 				<Tab>
-					<SettingsTab>{ __( 'Settings', 'bmfbe' ) }</SettingsTab>
+					<BlocksTab>{ __( 'Blocks', 'bmfbe' ) }</BlocksTab>
 				</Tab>
 			</TabList>
 			<TabPanel>
-				<BlocksPanel />
+				<SettingsPanel />
 			</TabPanel>
 			<TabPanel>
-				<SettingsPanel />
+				<BlocksPanel />
 			</TabPanel>
 		</Tabs>
 	);
