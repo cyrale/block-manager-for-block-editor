@@ -1,5 +1,3 @@
-function Table( { children } ) {
+export default function Table( { children } ) {
 	return <table>{ children }</table>;
 }
-
-export default Table;

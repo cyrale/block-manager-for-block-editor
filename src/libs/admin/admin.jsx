@@ -12,7 +12,7 @@ const {
 	i18n: { __ },
 } = wp;
 
-function Admin() {
+export default function Admin() {
 	return (
 		<Tabs forceRenderTabPanel={ true }>
 			<TabList>
@@ -32,5 +32,3 @@ function Admin() {
 		</Tabs>
 	);
 }
-
-export default Admin;

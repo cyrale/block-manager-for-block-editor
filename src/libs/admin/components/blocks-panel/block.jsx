@@ -26,6 +26,12 @@ const {
 	i18n: { __ },
 } = wp;
 
+/**
+ * Panels to display below of block description.
+ *
+ * @constant {({name: string, label: string, Component: *})[]}
+ * @since 1.0.0
+ */
 const panels = [
 	{
 		name: 'supports',
@@ -49,17 +55,30 @@ const panels = [
 	},
 ];
 
+/**
+ * Default status for displayed panels (all hidden).
+ *
+ * @constant {Object.<string, boolean>}
+ * @since 1.0.0
+ */
 const defaultDisplayedPanels = {};
 panels.forEach( ( { name } ) => {
 	defaultDisplayedPanels[ name ] = false;
 } );
 
+/**
+ * List of all fields of a block that can be modified.
+ *
+ * @constant {string[]}
+ * @since 1.0.0
+ */
 const changingFields = [
 	...[ 'name', 'supports_override' ],
 	...panels.map( ( panel ) => panel.name ),
 ];
 
 export default function Block( { name: blockName } ) {
+	// Status of panels: show/hide.
 	const [ displayedPanels, setDisplayedPanels ] = useState(
 		defaultDisplayedPanels
 	);
@@ -77,6 +96,11 @@ export default function Block( { name: blockName } ) {
 	const { saveBlock, updateBlock } = useDispatch( BLOCKS_STORE );
 	const { enqueueChanges, setInitialData } = useDelayedChanges( saveBlock );
 
+	useEffect( () => {
+		setInitialData( pick( block, changingFields ) );
+	}, [] );
+
+	// Get uniquely values for access panel.
 	const uniqFlatValues = uniq(
 		Object.values(
 			mapValues( block.access, ( postTypeValues ) =>
@@ -85,26 +109,36 @@ export default function Block( { name: blockName } ) {
 		).reduce( ( acc, values ) => [ ...acc, ...values ], [] )
 	);
 
+	// Display access panel or fake it?
 	const displayGlobalActivation =
 		! settings.limit_access_by_post_type &&
 		! settings.limit_access_by_user_group;
+	// Split value to be used by checkbox.
 	const globalActivation = {
 		checked: 1 === uniqFlatValues.length && uniqFlatValues[ 0 ],
 		indeterminate: 1 < uniqFlatValues.length,
 	};
 
-	useEffect( () => {
-		setInitialData( pick( block, changingFields ) );
-	}, [] );
-
-	function handleAccordionChange( items ) {
+	/**
+	 * Handle changes with accordion. Display or hide panels.
+	 *
+	 * @param {string[]} accordionNames Names of displayed panels.
+	 * @since 1.0.0
+	 */
+	function handleAccordionChange( accordionNames ) {
 		const currentDisplayedPanels = mapValues(
 			displayedPanels,
-			( displayed, name ) => items.includes( name )
+			( displayed, name ) => accordionNames.includes( name )
 		);
 		setDisplayedPanels( currentDisplayedPanels );
 	}
 
+	/**
+	 * Handle changes on block settings.
+	 *
+	 * @param {Object} value New block settings.
+	 * @since 1.0.0
+	 */
 	async function handleBlockChange( value ) {
 		await updateBlock( blockName, value );
 
@@ -112,6 +146,12 @@ export default function Block( { name: blockName } ) {
 		enqueueChanges( pick( newBlock, changingFields ) );
 	}
 
+	/**
+	 * Handle changes with global checkbox for access panel.
+	 *
+	 * @param {boolean} value New access value for all properties.
+	 * @since 1.0.0
+	 */
 	function handleOnGlobalAccessChange( value ) {
 		const newAccess = mapValues( block.access, ( postTypeValues ) =>
 			mapValues( postTypeValues, () => value )
@@ -119,12 +159,6 @@ export default function Block( { name: blockName } ) {
 
 		handleBlockChange( {
 			access: newAccess,
-		} );
-	}
-
-	async function handleOnSettingsChange( key, value ) {
-		handleBlockChange( {
-			[ key ]: value,
 		} );
 	}
 
@@ -140,10 +174,9 @@ export default function Block( { name: blockName } ) {
 				label={ __( 'Override supports?', 'bmfbe' ) }
 				checked={ block.supports_override }
 				onChange={ () =>
-					handleOnSettingsChange(
-						'supports_override',
-						! block.supports_override
-					)
+					handleBlockChange( {
+						supports_override: ! block.supports_override,
+					} )
 				}
 			/>
 			<Accordion
@@ -190,10 +223,9 @@ export default function Block( { name: blockName } ) {
 											! block.supports_override
 										}
 										onChange={ ( checked ) =>
-											handleOnSettingsChange(
-												panelName,
-												checked
-											)
+											handleBlockChange( {
+												[ panelName ]: checked,
+											} )
 										}
 									/>
 								) }

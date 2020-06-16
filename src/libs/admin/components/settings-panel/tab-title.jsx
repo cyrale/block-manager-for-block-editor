@@ -5,7 +5,7 @@ const {
 	data: { useSelect },
 } = wp;
 
-function TabTitle( { children } ) {
+export default function TabTitle( { children } ) {
 	const status = useSelect(
 		( select ) => select( SETTINGS_STORE ).getStatus(),
 		[]
@@ -13,5 +13,3 @@ function TabTitle( { children } ) {
 
 	return <GenericTabTitle status={ status }>{ children }</GenericTabTitle>;
 }
-
-export default TabTitle;

@@ -4,12 +4,19 @@ import Supports from '../supports';
 import Toggle from '../toggle';
 import useDelayedChanges from '../../hooks/use-delayed-changes';
 
+const { merge, omit } = lodash;
 const {
 	data: { select: wpSelect, useDispatch, useSelect },
 	element: { useEffect },
 	i18n: { __ },
 } = wp;
 
+/**
+ * List of supported settings (settings that can be changed).
+ *
+ * @constant {({name: string, label: string}|{name: string, label: string, Component: *})[]}
+ * @since 1.0.0
+ */
 const supportedSettings = [
 	{
 		name: 'supports_override',
@@ -69,6 +76,12 @@ export default function Panel() {
 		setInitialData( settings );
 	}, [ settings ] );
 
+	/**
+	 * Handle changes on settings.
+	 *
+	 * @param {string} key Name of the settings.
+	 * @param {any} value New value for this settings.
+	 */
 	function handleOnChange( key, value ) {
 		updateSettings( key, value );
 
@@ -81,14 +94,17 @@ export default function Panel() {
 			{ supportedSettings.map( ( field ) => {
 				const Component = field.Component ?? Toggle;
 
-				const props = {
+				let props = {
 					checked: settings[ field.name ],
 					label: field.label,
 					onChange: ( value ) => handleOnChange( field.name, value ),
 				};
 
 				if ( 'supports' === field.name ) {
-					props.disabled = ! settings.supports_override;
+					props = merge( {}, omit( props, [ 'checked' ] ), {
+						disabled: ! settings.supports_override,
+						value: props.checked,
+					} );
 				}
 
 				return (

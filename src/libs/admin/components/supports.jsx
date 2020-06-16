@@ -1,9 +1,16 @@
 import Toggle from './toggle';
 
+const { map, merge } = lodash;
 const {
 	i18n: { __ },
 } = wp;
 
+/**
+ * Supported values for alignment.
+ *
+ * @constant {({label: string, value: boolean}|{label: string, value: string})[]}
+ * @since 1.0.0
+ */
 const alignValues = [
 	{
 		label: __( 'Disable', 'bmfbe' ),
@@ -35,9 +42,17 @@ const alignValues = [
 	},
 ];
 
-export default function Supports( { disabled, onChange, value } ) {
-	value = value ?? {};
-
+export default function Supports( {
+	disabled = false,
+	onChange = () => {},
+	value = {},
+} ) {
+	/**
+	 * Handle changes on align supports.
+	 *
+	 * @param {boolean|string[]} align New align values.
+	 * @since 1.0.0
+	 */
 	function handleOnAlignChange( align ) {
 		let newAlignValue;
 
@@ -55,25 +70,25 @@ export default function Supports( { disabled, onChange, value } ) {
 			}
 		}
 
-		return (
-			onChange &&
-			onChange( {
-				...value,
-				align: { ...value.align, value: newAlignValue },
-			} )
-		);
+		onChange( {
+			...value,
+			align: { ...value.align, value: newAlignValue },
+		} );
 	}
 
-	function handleOnChange( key, field, v ) {
-		return (
-			onChange &&
-			onChange( { ...value, [ key ]: { ...value[ key ], [ field ]: v } } )
-		);
+	/**
+	 * Handle changes on other supports settings.
+	 *
+	 * @param {string} key Name of the supports.
+	 * @param {Object} change New value for the supports.
+	 */
+	function handleOnChange( key, change ) {
+		onChange( merge( {}, value, { [ key ]: change } ) );
 	}
 
 	return (
 		<div className="bmfbe-supports">
-			{ Object.entries( value ).map( ( [ key, val ] ) => {
+			{ map( value, ( val, key ) => {
 				if ( 'align' === key ) {
 					return (
 						<div
@@ -84,8 +99,8 @@ export default function Supports( { disabled, onChange, value } ) {
 								label={ key }
 								value={ val.isActive }
 								disabled={ disabled }
-								onChange={ ( v ) =>
-									handleOnChange( key, 'isActive', v )
+								onChange={ ( checked ) =>
+									handleOnChange( key, { isActive: checked } )
 								}
 							>
 								{ alignValues.map(
@@ -120,18 +135,18 @@ export default function Supports( { disabled, onChange, value } ) {
 					<div key={ key } className="bmfbe-supports-row">
 						<Toggle
 							label={ key }
-							value={ val.isActive }
+							checked={ val.isActive }
 							disabled={ disabled }
-							onChange={ ( v ) =>
-								handleOnChange( key, 'isActive', v )
+							onChange={ ( checked ) =>
+								handleOnChange( key, { isActive: checked } )
 							}
 						>
 							<Toggle
 								label={ __( 'Enable', 'bmfbe' ) }
-								value={ val.value }
+								checked={ val.value }
 								disabled={ disabled || ! val.isActive }
-								onChange={ ( v ) =>
-									handleOnChange( key, 'value', v )
+								onChange={ ( checked ) =>
+									handleOnChange( key, { value: checked } )
 								}
 							/>
 						</Toggle>

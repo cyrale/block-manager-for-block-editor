@@ -1,6 +1,23 @@
+/**
+ *
+ * @since 1.0.0
+ */
 import * as apiBlocks from './admin/api/blocks';
 
-const { assign, cloneDeep, isEqual, omit, pick } = lodash;
+const {
+	assign,
+	cloneDeep,
+	differenceBy,
+	forEach,
+	filter,
+	intersection,
+	intersectionBy,
+	isEqual,
+	mapValues,
+	omit,
+	pick,
+	reduce,
+} = lodash;
 const {
 	blocks,
 	data: { dispatch },
@@ -112,15 +129,9 @@ function normalizeIcon( icon ) {
  * @since 1.0.0
  */
 function sanitizeSupports( block ) {
-	const supports = block.supports ?? {};
-
-	block.supports = {};
-
-	Object.keys( supports ).forEach( ( prop ) => {
-		block.supports[ prop ] = {
-			value: supports[ prop ],
-		};
-	} );
+	block.supports = mapValues( block.supports ?? {}, ( value ) => ( {
+		value,
+	} ) );
 
 	return block;
 }
@@ -196,7 +207,10 @@ function updateProperty( properties, editorProperties, fields ) {
 		} );
 
 	// Add new properties.
-	properties = [ ...properties, ...diff( editorProperties, properties ) ];
+	properties = [
+		...properties,
+		...differenceBy( editorProperties, properties, 'name' ),
+	];
 
 	return properties;
 }
@@ -236,15 +250,18 @@ function refreshInfoNotice( message = '' ) {
 
 	// Calculate progress in percent if message is empty.
 	if ( message === '' ) {
-		const progress = Object.values( noticeValues ).reduce(
-			( acc, value ) => acc + value.progress,
-			0
+		const progress = reduce(
+			noticeValues,
+			( acc, value ) => ( {
+				count: acc.count + value.progress,
+				total: acc.total + value.total,
+			} ),
+			{ count: 0, total: 0 }
 		);
-		const total = Object.values( noticeValues ).reduce(
-			( acc, value ) => acc + value.total,
-			0
-		);
-		const progressPercent = 0 === total ? 0 : 100 * ( progress / total );
+		const progressPercent =
+			0 === progress.total
+				? 0
+				: 100 * ( progress.count / progress.total );
 
 		message = progressPercent.toFixed( 1 ) + '%';
 	}
@@ -280,9 +297,7 @@ function refreshInfoNotice( message = '' ) {
 	}
 
 	// Concatenate progress values to display them.
-	const details = Object.values( noticeDetails )
-		.filter( ( str ) => str !== '' )
-		.join( ', ' );
+	const details = filter( noticeDetails, ( str ) => str !== '' ).join( ', ' );
 
 	// Display and refresh progress message.
 	dispatch( 'core/notices' ).createInfoNotice(
@@ -293,38 +308,11 @@ function refreshInfoNotice( message = '' ) {
 }
 
 /**
- * Creates an array of array1 values not included in array2.
+ * Detect and insert/update/delete blocks in API for plugin usage.
  *
- * @param {Array} array1 Source array.
- * @param {Array} array2 Values to exclude.
- *
- * @return {Array} The new array of filtered values.
  * @since 1.0.0
  */
-function diff( array1, array2 ) {
-	return array1.filter(
-		( item1 ) =>
-			array2.findIndex( ( item2 ) => item2.name === item1.name ) < 0
-	);
-}
-
-/**
- * Creates an array of array1 values included in array2.
- *
- * @param {Array} array1 Source array.
- * @param {Array} array2 Values to include.
- *
- * @return {Array} The new array of filtered values.
- * @since 1.0.0
- */
-function intersect( array1, array2 ) {
-	return array1.filter(
-		( item1 ) =>
-			array2.findIndex( ( item2 ) => item2.name === item1.name ) >= 0
-	);
-}
-
-async function detect() {
+export default async function detect() {
 	refreshInfoNotice();
 
 	// Get blocks from database.
@@ -337,7 +325,7 @@ async function detect() {
 		.map( sanitizeVariations );
 
 	// Detect new blocks.
-	const newBlocks = diff( editorBlocks, registeredBlocks );
+	const newBlocks = differenceBy( editorBlocks, registeredBlocks, 'name' );
 
 	if ( newBlocks.length > 0 ) {
 		noticeValues.newOnes.total = newBlocks.length;
@@ -345,7 +333,11 @@ async function detect() {
 	}
 
 	// Extract blocks to update.
-	const updatedBlocks = intersect( registeredBlocks, editorBlocks )
+	const updatedBlocks = intersectionBy(
+		registeredBlocks,
+		editorBlocks,
+		'name'
+	)
 		.filter( ( block ) => {
 			const clonedBlock = cloneDeep( block );
 			const clonedEditorBlock = cloneDeep(
@@ -354,29 +346,24 @@ async function detect() {
 
 			// Remove private unsupported supports.
 			const editorSupports = {};
-			Object.keys( clonedEditorBlock.supports ?? {} ).forEach(
-				( prop ) => {
-					if (
-						Object.keys( clonedBlock.supports ).includes( prop )
-					) {
-						editorSupports[ prop ] =
-							clonedEditorBlock.supports[ prop ];
-					}
-				}
-			);
+			intersection(
+				Object.keys( clonedEditorBlock.supports ?? {} ),
+				Object.keys( clonedBlock.supports )
+			).forEach( ( prop ) => {
+				editorSupports[ prop ] = clonedEditorBlock.supports[ prop ];
+			} );
 
 			clonedEditorBlock.supports = editorSupports;
 
 			// Remove supports not present in editor.
 			const supports = {};
-			Object.keys( clonedBlock.supports ).forEach( ( prop ) => {
-				if (
-					Object.keys( clonedEditorBlock.supports ).includes( prop )
-				) {
-					supports[ prop ] = pick( clonedBlock.supports[ prop ], [
-						'value',
-					] );
-				}
+			intersection(
+				Object.keys( clonedEditorBlock.supports ?? {} ),
+				Object.keys( clonedBlock.supports )
+			).forEach( ( prop ) => {
+				supports[ prop ] = pick( clonedBlock.supports[ prop ], [
+					'value',
+				] );
 			} );
 
 			clonedBlock.supports = supports;
@@ -399,8 +386,7 @@ async function detect() {
 
 			// Update inactive supports.
 			const supports = {};
-			const editorSupports = editorBlock.supports ?? {};
-			Object.keys( editorSupports ).forEach( ( prop ) => {
+			forEach( editorBlock.supports ?? {}, ( support, prop ) => {
 				if (
 					false === block.supports[ prop ]?.isActive &&
 					undefined !== editorBlock.supports[ prop ]?.value
@@ -440,7 +426,11 @@ async function detect() {
 	}
 
 	// Detect old blocks to delete.
-	const deletedBlocks = diff( registeredBlocks, editorBlocks );
+	const deletedBlocks = differenceBy(
+		registeredBlocks,
+		editorBlocks,
+		'name'
+	);
 
 	if ( deletedBlocks.length > 0 ) {
 		noticeValues.deleted.total = deletedBlocks.length;
@@ -482,7 +472,5 @@ async function detect() {
 	refreshInfoNotice( __( 'Complete!', 'bmfbe' ) );
 
 	// Redirect user to settings page.
-	// window.location.href = bmfbeEditorGlobal.settingsPage;
+	window.location.href = bmfbeEditorGlobal.settingsPage;
 }
-
-export default detect;

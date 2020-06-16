@@ -6,12 +6,29 @@ const {
 	hooks,
 } = wp;
 
+/**
+ * Search block by name.
+ *
+ * @param {string} name Name of the block to find.
+ *
+ * @return {Object|undefined} Block with the given name, undefined otherwise.
+ * @since 1.0.0
+ */
 function searchBlock( name ) {
-	return ( bmfbeEditorGlobal.blocks || [] ).find(
+	return ( bmfbeEditorGlobal.blocks ?? [] ).find(
 		( block ) => block.name === name
 	);
 }
 
+/**
+ * Override variations values from editor with values from plugin.
+ *
+ * @param {Object[]} editorVariations Values from editor.
+ * @param {Object[]} blockVariations Values from plugin.
+ *
+ * @return {Object[]} Overridden variations.
+ * @since 1.0.0
+ */
 function overrideVariations( editorVariations, blockVariations ) {
 	return [ ...editorVariations ]
 		.filter(
@@ -29,6 +46,14 @@ function overrideVariations( editorVariations, blockVariations ) {
 		);
 }
 
+/**
+ * List all block names used in content.
+ *
+ * @param {string} [clientId=''] ID of a block. Leave it empty to get all blocks.
+ *
+ * @return {string[]} List of block names.
+ * @since 1.0.0
+ */
 function getBlocksInContent( clientId = '' ) {
 	const editorBlocks = select( 'core/block-editor' ).getBlocks( clientId );
 
@@ -46,6 +71,11 @@ function getBlocksInContent( clientId = '' ) {
 	return uniq( blockNames );
 }
 
+/**
+ * Customize blocks with parameters from plugin.
+ *
+ * @since 1.0.0
+ */
 export default function customize() {
 	domReady( () => {
 		const blocksInContent = getBlocksInContent();
@@ -66,14 +96,14 @@ export default function customize() {
 	hooks.addFilter(
 		'blocks.registerBlockType',
 		'bmfbe/supports/customize',
-		( settings, name ) => {
-			const block = searchBlock( name );
+		( settings, blockName ) => {
+			const block = searchBlock( blockName );
 
 			if ( undefined === block ) {
 				return settings;
 			}
 
-			// Remove disabled blocks from inserter.
+			// Remove disabled blocks from inserter. (Safe alternative to `unregisterBlockType`)
 			if ( false === block?.enabled ) {
 				return merge( {}, settings, {
 					supports: {
@@ -84,12 +114,11 @@ export default function customize() {
 
 			// Customize supports.
 			const overriddenSupports = {};
-			if ( ! block.supports_override ) {
+			if ( block.supports_override ) {
 				Object.entries( block.supports ).forEach(
-					( [ supportsName, supportsValue ] ) => {
-						if ( supportsValue.isActive ) {
-							overriddenSupports[ supportsName ] =
-								supportsValue.value;
+					( [ name, { isActive, value } ] ) => {
+						if ( isActive ) {
+							overriddenSupports[ name ] = value;
 						}
 					}
 				);

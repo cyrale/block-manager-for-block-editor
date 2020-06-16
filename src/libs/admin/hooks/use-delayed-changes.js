@@ -3,16 +3,38 @@ const {
 	element: { useRef },
 } = wp;
 
-function useDelayedChanges( changesCallback ) {
+/**
+ * Enqueue changes on data and send them to callback with delay.
+ *
+ * @param {Function} changesCallback Callback to launch after delay was passed.
+ *
+ * @return {{enqueueChanges: (function(*): number), setInitialData: (function(*): void)}} Exposed functions.
+ * @since 1.0.0
+ */
+export default function useDelayedChanges( changesCallback ) {
 	const queue = useRef( [] );
 	const initialData = useRef( {} );
 	const isStarted = useRef( false );
 	const timeoutID = useRef( null );
 
+	/**
+	 * Set initial data.
+	 *
+	 * @param {any} data Initial data.
+	 * @since 1.0.0
+	 */
 	function setInitialData( data ) {
 		initialData.current = cloneDeep( data );
 	}
 
+	/**
+	 * Enqueue changes on data.
+	 *
+	 * @param {any} data Changed data.
+	 *
+	 * @return {number} Number of items in queue.
+	 * @since 1.0.0
+	 */
 	function enqueueChanges( data ) {
 		const savingData = cloneDeep( data );
 		const firstData = queue.current.length > 0 ? queue.current[ 0 ] : null;
@@ -52,7 +74,11 @@ function useDelayedChanges( changesCallback ) {
 		return queue.current.length;
 	}
 
-	// Treat modifications with delay.
+	/**
+	 * Launch callback with delay. If queue is not empty, launch it directly.
+	 *
+	 * @since 1.0.0
+	 */
 	function maybeLaunchCallbackWithDelay() {
 		if ( 0 === queue.current.length ) {
 			// Reset delayed treatment.
@@ -67,6 +93,11 @@ function useDelayedChanges( changesCallback ) {
 		}
 	}
 
+	/**
+	 * Setup delay to launch callback.
+	 *
+	 * @since 1.0.0
+	 */
 	async function delayChangesCallback() {
 		// Reset timeout.
 		if ( Number.isInteger( timeoutID.current ) ) {
@@ -83,6 +114,11 @@ function useDelayedChanges( changesCallback ) {
 		runChangesCallback();
 	}
 
+	/**
+	 * Launch callback with first value of the queue.
+	 *
+	 * @since 1.0.0
+	 */
 	async function runChangesCallback() {
 		await changesCallback( queue.current[ 0 ] );
 
@@ -97,5 +133,3 @@ function useDelayedChanges( changesCallback ) {
 		setInitialData,
 	};
 }
-
-export default useDelayedChanges;

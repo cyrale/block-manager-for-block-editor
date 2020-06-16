@@ -35,11 +35,19 @@ export default function Panel() {
 		setDisplayedCategories( defaultDisplayedCategories );
 	}, [ categories ] );
 
-	function handleAccordionChange( items ) {
+	/**
+	 * Handle changes with accordion. Display or hide categories.
+	 *
+	 * @param {string[]} accordionNames Names of displayed categories.
+	 * @since 1.0.0
+	 */
+	function handleAccordionChange( accordionNames ) {
 		const currentDisplayedCategories = {};
 
 		categories.forEach( ( category ) => {
-			currentDisplayedCategories[ category ] = items.includes( category );
+			currentDisplayedCategories[ category ] = accordionNames.includes(
+				category
+			);
 		} );
 
 		setDisplayedCategories( currentDisplayedCategories );

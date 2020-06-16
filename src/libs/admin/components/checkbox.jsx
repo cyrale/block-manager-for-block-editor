@@ -2,7 +2,7 @@ const {
 	element: { useEffect, useRef },
 } = wp;
 
-function Checkbox( {
+export default function Checkbox( {
 	checked = false,
 	disabled = false,
 	id = '',
@@ -29,5 +29,3 @@ function Checkbox( {
 		/>
 	);
 }
-
-export default Checkbox;

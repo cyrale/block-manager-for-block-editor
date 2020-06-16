@@ -1,6 +1,6 @@
 import { STATUS_LOADING, STATUS_SAVING } from '../stores/constants';
 
-function TabTitle( { children, status } ) {
+export default function TabTitle( { children, status } ) {
 	return (
 		<>
 			{ children }
@@ -9,5 +9,3 @@ function TabTitle( { children, status } ) {
 		</>
 	);
 }
-
-export default TabTitle;

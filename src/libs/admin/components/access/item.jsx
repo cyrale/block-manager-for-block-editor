@@ -1,14 +1,21 @@
 import Checkbox from '../checkbox';
 
-function Item( { children, cols, onChange, values } ) {
+export default function Item( { children, cols, onChange, values } ) {
+	/**
+	 * Handle changes with checkboxes. Pass them to parent.
+	 *
+	 * @param {string} col Column name.
+	 * @param {boolean} value New value.
+	 *
+	 * @since 1.0.0
+	 */
 	function handleOnChange( col, value ) {
-		return (
-			onChange &&
+		if ( onChange ) {
 			onChange( {
 				col,
 				value,
-			} )
-		);
+			} );
+		}
 	}
 
 	return (
@@ -30,5 +37,3 @@ function Item( { children, cols, onChange, values } ) {
 		</tr>
 	);
 }
-
-export default Item;

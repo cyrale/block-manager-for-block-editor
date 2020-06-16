@@ -1,5 +1,3 @@
-function Body( { children } ) {
+export default function Body( { children } ) {
 	return <tbody>{ children }</tbody>;
 }
-
-export default Body;
