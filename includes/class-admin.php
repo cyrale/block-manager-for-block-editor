@@ -92,7 +92,7 @@ class Admin implements WP_Plugin_Class {
 	 * Display settings page.
 	 */
 	public function page_settings() {
-		echo '<div class="wrap">';
+		echo '<div class="bmfbe-settings">';
 		echo '<h1>' . __( 'Block Manager for WordPress Block Editor (Gutenberg)', 'bmfbe' ) . '</h1>';
 		echo '<div id="bmfbeSettings"></div>';
 		echo '</div>';
