@@ -1,9 +1,7 @@
+import { addQueryArgs } from '@wordpress/url';
+
 import * as actions from './actions';
 import { BLOCKS_API_PATH } from './constants';
-
-const {
-	url: { addQueryArgs },
-} = wp;
 
 export function* getCategories() {
 	return getBlocks();

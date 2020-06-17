@@ -1,8 +1,7 @@
-const { omit } = lodash;
-const {
-	apiFetch,
-	url: { addQueryArgs, isValidPath },
-} = wp;
+import { omit } from 'lodash';
+
+import * as apiFetch from '@wordpress/api-fetch';
+import { addQueryArgs, isValidPath } from '@wordpress/url';
 
 /**
  * API path for blocks.

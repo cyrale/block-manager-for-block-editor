@@ -1,10 +1,11 @@
-const { merge, uniq } = lodash;
-const {
-	blocks,
-	data: { select },
-	domReady,
-	hooks,
-} = wp;
+/* global bmfbeEditorGlobal:false */
+
+import { merge, uniq } from 'lodash';
+
+import * as blocks from '@wordpress/blocks';
+import { select } from '@wordpress/data';
+import domReady from '@wordpress/dom-ready';
+import * as hooks from '@wordpress/hooks';
 
 /**
  * Search block by name.

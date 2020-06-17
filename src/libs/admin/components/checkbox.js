@@ -1,6 +1,4 @@
-const {
-	element: { useEffect, useRef },
-} = wp;
+import { useEffect, useRef } from '@wordpress/element';
 
 export default function Checkbox( {
 	checked = false,

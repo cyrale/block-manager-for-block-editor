@@ -53,6 +53,8 @@ class Editor implements WP_Plugin_Class {
 	 * Enqueue scripts and styles.
 	 */
 	public function enqueue_block_editor_assets() {
+		$asset = require_once $this->plugin->path . 'build/editor.asset.php';
+
 		$post_type = get_post_type();
 		$wp_user   = wp_get_current_user();
 
@@ -97,9 +99,9 @@ class Editor implements WP_Plugin_Class {
 
 		wp_enqueue_script(
 			'bmfbe-editor',
-			$this->plugin->url . 'dist/editor.build.js',
-			array( 'lodash', 'wp-api-fetch', 'wp-blocks', 'wp-dom-ready', 'wp-edit-post', 'wp-element', 'wp-i18n' ),
-			substr( sha1( filemtime( $this->plugin->path . 'dist/editor.build.js' ) ), 0, 8 ),
+			$this->plugin->url . 'build/editor.js',
+			$asset['dependencies'],
+			$asset['version'],
 			true
 		);
 		wp_localize_script(
@@ -115,9 +117,9 @@ class Editor implements WP_Plugin_Class {
 
 		wp_enqueue_style(
 			'bmfbe-editor',
-			$this->plugin->url . 'dist/editor.build.css',
+			$this->plugin->url . 'dist/editor.css',
 			array( 'wp-edit-blocks' ),
-			substr( sha1( filemtime( $this->plugin->path . 'dist/editor.build.css' ) ), 0, 8 )
+			$asset['version']
 		);
 	}
 

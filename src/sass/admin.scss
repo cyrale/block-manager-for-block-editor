@@ -1,2 +1,10 @@
 @import "./components/blocks";
 @import "./components/checkbox";
+
+.toplevel_page_bmfbe-settings,
+.toplevel_page_bmfbe-settings.auto-fold {
+
+	#wpcontent {
+		padding-left: 0;
+	}
+}

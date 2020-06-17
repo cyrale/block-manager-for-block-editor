@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="WordPress Coding Standards for Gutenberg Plugin">
-	<description>Sniffs for WordPress plugins, with minor modifications for Gutenberg</description>
+	<description>Sniffs for WordPress plugins, with minor modifications</description>
 
 	<rule ref="PHPCompatibility"/>
 	<config name="testVersion" value="5.6-"/>

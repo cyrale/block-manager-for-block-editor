@@ -1,15 +1,14 @@
+import { merge, omit } from 'lodash';
+
+import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
+import { useEffect } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
+
 import Row from './row';
 import { SETTINGS_STORE } from '../../stores/settings/constants';
 import Supports from '../supports';
 import Toggle from '../toggle';
 import useDelayedChanges from '../../hooks/use-delayed-changes';
-
-const { merge, omit } = lodash;
-const {
-	data: { select: wpSelect, useDispatch, useSelect },
-	element: { useEffect },
-	i18n: { __ },
-} = wp;
 
 /**
  * List of supported settings (settings that can be changed).

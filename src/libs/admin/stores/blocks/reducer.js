@@ -1,6 +1,6 @@
-import { STATUS_LOADING, STATUS_PENDING, STATUS_SAVING } from './constants';
+import { merge } from 'lodash';
 
-const { merge } = lodash;
+import { STATUS_LOADING, STATUS_PENDING, STATUS_SAVING } from './constants';
 
 const DEFAULT_STATE = {
 	status: STATUS_LOADING,

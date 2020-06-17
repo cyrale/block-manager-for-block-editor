@@ -1,9 +1,7 @@
 import shortid from 'shortid';
 
-const {
-	element: { useEffect, useState },
-	url: { cleanForSlug },
-} = wp;
+import { useEffect, useState } from '@wordpress/element';
+import { cleanForSlug } from '@wordpress/url';
 
 /**
  * Generate random short ID.

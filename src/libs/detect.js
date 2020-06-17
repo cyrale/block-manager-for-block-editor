@@ -1,10 +1,6 @@
-/**
- *
- * @since 1.0.0
- */
-import * as apiBlocks from './admin/api/blocks';
+/* global bmfbeEditorGlobal:false */
 
-const {
+import {
 	assign,
 	cloneDeep,
 	differenceBy,
@@ -17,13 +13,14 @@ const {
 	omit,
 	pick,
 	reduce,
-} = lodash;
-const {
-	blocks,
-	data: { dispatch },
-	element: { render },
-	i18n: { __, sprintf },
-} = wp;
+} from 'lodash';
+
+import * as blocks from '@wordpress/blocks';
+import { dispatch } from '@wordpress/data';
+import { render } from '@wordpress/element';
+import { __, sprintf } from '@wordpress/i18n';
+
+import * as apiBlocks from './admin/api/blocks';
 
 /**
  * Values to follow progress of detect.

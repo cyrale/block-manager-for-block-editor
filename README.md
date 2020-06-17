@@ -1,15 +1,15 @@
 # Block Manager for WordPress Block Editor (Gutenberg)
 
-## Installation ##
+## Installation
 
-### Manual Installation ###
+### Manual Installation
 
 1. Upload the entire `/block-manager-for-block-editor` directory to the `/wp-content/plugins/` directory.
 2. Activate Block Manager for WordPress Block Editor (Gutenberg) through the 'Plugins' menu in WordPress.
 
 ### Composer installation
 
-```
+```json
 {
   "repositories": [
     {
@@ -24,6 +24,6 @@
 2. Run `composer require cyrale/block-manager-for-block-editor`.
 3. Activate Block Manager for WordPress Block Editor (Gutenberg) through the 'Plugins' menu in WordPress.
 
-## Changelog ##
+## Changelog
 
 [See details](https://github.com/cyrale/block-manager-for-block-editor/blob/master/CHANGELOG.md)

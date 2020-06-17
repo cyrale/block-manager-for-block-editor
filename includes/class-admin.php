@@ -44,6 +44,7 @@ class Admin implements WP_Plugin_Class {
 	 */
 	public function hooks() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_dev_assets' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
 
@@ -51,11 +52,13 @@ class Admin implements WP_Plugin_Class {
 	 * Enqueue scripts and styles.
 	 */
 	public function enqueue_admin_assets() {
+		$asset = require_once $this->plugin->path . 'build/admin.asset.php';
+
 		wp_enqueue_script(
 			'bmfbe-admin',
-			$this->plugin->url . 'dist/admin.build.js',
-			array( 'lodash', 'wp-api-fetch', 'wp-data', 'wp-element', 'wp-i18n' ),
-			substr( sha1( filemtime( $this->plugin->path . 'dist/admin.build.js' ) ), 0, 8 ),
+			$this->plugin->url . 'build/admin.js',
+			$asset['dependencies'],
+			$asset['version'],
 			true
 		);
 		wp_localize_script(
@@ -66,10 +69,21 @@ class Admin implements WP_Plugin_Class {
 
 		wp_enqueue_style(
 			'bmfbe-admin',
-			$this->plugin->url . 'dist/admin.build.css',
+			$this->plugin->url . 'build/admin.css',
 			array(),
-			substr( sha1( filemtime( $this->plugin->path . 'dist/admin.build.css' ) ), 0, 8 )
+			$asset['version']
 		);
+	}
+
+	/**
+	 * Enqueue scripts and styles used in development.
+	 */
+	public function enqueue_dev_assets() {
+		if ( ! defined( 'WP_ENV' ) || 'development' !== WP_ENV ) {
+			return;
+		}
+
+		wp_enqueue_script( 'webpack-livereload-plugin', 'http://localhost:35729/livereload.js' );
 	}
 
 	/**

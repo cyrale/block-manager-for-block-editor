@@ -1,3 +1,7 @@
+import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
+
+import { __ } from '@wordpress/i18n';
+
 import {
 	default as BlocksPanel,
 	TabTitle as BlocksTab,
@@ -6,11 +10,6 @@ import {
 	default as SettingsPanel,
 	TabTitle as SettingsTab,
 } from './components/settings-panel';
-import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
-
-const {
-	i18n: { __ },
-} = wp;
 
 export default function Admin() {
 	return (

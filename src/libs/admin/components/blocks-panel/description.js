@@ -1,8 +1,6 @@
-import { BLOCKS_STORE, STATUS_SAVING } from '../../stores/blocks/constants';
+import { useSelect } from '@wordpress/data';
 
-const {
-	data: { useSelect },
-} = wp;
+import { BLOCKS_STORE, STATUS_SAVING } from '../../stores/blocks/constants';
 
 export default function Description( { description, name, title } ) {
 	const status = useSelect(

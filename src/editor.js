@@ -1,9 +1,10 @@
-import './sass/editor.scss';
+/* global bmfbeEditorGlobal:false */
 
+import './sass/editor.scss';
 import customize from './libs/customize';
 import detect from './libs/detect';
 
-if ( ! bmfbeEditorGlobal.detection ) {
+if ( ! bmfbeEditorGlobal.detect ) {
 	customize();
 }
 

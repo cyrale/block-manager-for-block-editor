@@ -1,4 +1,4 @@
-const { apiFetch } = wp;
+import * as apiFetch from '@wordpress/api-fetch';
 
 /**
  * API path for settings.

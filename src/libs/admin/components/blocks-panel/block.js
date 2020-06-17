@@ -1,3 +1,4 @@
+import { mapValues, pick, uniq } from 'lodash';
 import {
 	Accordion,
 	AccordionItem,
@@ -5,6 +6,10 @@ import {
 	AccordionItemHeading,
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
+
+import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
+import { useEffect, useState } from '@wordpress/element';
+import { __ } from '@wordpress/i18n';
 
 import Access from '../access';
 import { BLOCKS_STORE } from '../../stores/blocks/constants';
@@ -18,13 +23,6 @@ import Supports from '../supports';
 import Toggle from '../toggle';
 import Variations from './variations';
 import useDelayedChanges from '../../hooks/use-delayed-changes';
-
-const { mapValues, pick, uniq } = lodash;
-const {
-	data: { select: wpSelect, useDispatch, useSelect },
-	element: { useEffect, useState },
-	i18n: { __ },
-} = wp;
 
 /**
  * Panels to display below of block description.

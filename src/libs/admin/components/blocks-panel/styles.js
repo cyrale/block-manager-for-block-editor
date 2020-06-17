@@ -1,9 +1,8 @@
-import Toggle from '../toggle';
+import { merge } from 'lodash';
 
-const { merge } = lodash;
-const {
-	i18n: { __ },
-} = wp;
+import { __ } from '@wordpress/i18n';
+
+import Toggle from '../toggle';
 
 export default function Styles( { onChange, value } ) {
 	/**

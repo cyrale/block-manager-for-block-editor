@@ -1,9 +1,8 @@
-import Toggle from './toggle';
+import { map, merge } from 'lodash';
 
-const { map, merge } = lodash;
-const {
-	i18n: { __ },
-} = wp;
+import { __ } from '@wordpress/i18n';
+
+import Toggle from './toggle';
 
 /**
  * Supported values for alignment.

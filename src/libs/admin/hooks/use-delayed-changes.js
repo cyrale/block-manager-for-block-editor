@@ -1,7 +1,6 @@
-const { cloneDeep, isEqual, merge } = lodash;
-const {
-	element: { useRef },
-} = wp;
+import { cloneDeep, isEqual, merge } from 'lodash';
+
+import { useRef } from '@wordpress/element';
 
 /**
  * Enqueue changes on data and send them to callback with delay.

@@ -1,6 +1,4 @@
-const {
-	url: { cleanForSlug },
-} = wp;
+import { cleanForSlug } from '@wordpress/url';
 
 export default function Row( { children, name } ) {
 	const className =

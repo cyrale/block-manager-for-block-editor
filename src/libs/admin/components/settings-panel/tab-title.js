@@ -1,9 +1,7 @@
+import { useSelect } from '@wordpress/data';
+
 import GenericTabTitle from '../tab-title';
 import { SETTINGS_STORE } from '../../stores/settings/constants';
-
-const {
-	data: { useSelect },
-} = wp;
 
 export default function TabTitle( { children } ) {
 	const status = useSelect(

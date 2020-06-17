@@ -1,4 +1,4 @@
-    Copyright 2019-2020 Cyril Jacquesson (Cyrale).
+    Copyright 2019-2020 by Cyril Jacquesson (Cyrale).
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

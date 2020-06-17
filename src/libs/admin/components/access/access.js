@@ -1,14 +1,13 @@
+import { difference, mapValues, merge, uniq } from 'lodash';
+
+import { useSelect } from '@wordpress/data';
+
 import Body from './body';
 import Head from './head';
 import Item from './item';
 import { SETTINGS_STORE } from '../../stores/settings/constants';
 import Table from './table';
 import Title from './title';
-
-const { difference, mapValues, merge, uniq } = lodash;
-const {
-	data: { useSelect },
-} = wp;
 
 /**
  * Extract row names in given object.

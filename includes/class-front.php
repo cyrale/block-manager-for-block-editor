@@ -50,11 +50,13 @@ class Front implements WP_Plugin_Class {
 	 * Enqueue scripts and styles.
 	 */
 	public function enqueue_front_assets() {
+		$asset = require_once $this->plugin->path . 'build/front.asset.php';
+
 		wp_enqueue_script(
 			'bmfbe-front',
-			$this->plugin->url . 'dist/front.build.js',
-			array( 'jquery' ),
-			substr( sha1( filemtime( $this->plugin->path . 'dist/front.build.js' ) ), 0, 8 ),
+			$this->plugin->url . 'build/front.js',
+			$asset['dependencies'],
+			$asset['version'],
 			true
 		);
 		wp_localize_script(
@@ -65,9 +67,9 @@ class Front implements WP_Plugin_Class {
 
 		wp_enqueue_style(
 			'bmfbe-front',
-			$this->plugin->url . 'dist/front.build.css',
+			$this->plugin->url . 'dist/front.css',
 			array(),
-			substr( sha1( filemtime( $this->plugin->path . 'dist/front.build.css' ) ), 0, 8 )
+			$asset['dependencies']
 		);
 	}
 }
