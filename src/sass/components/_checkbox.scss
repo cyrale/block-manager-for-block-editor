@@ -17,10 +17,8 @@ input[type="checkbox"]:indeterminate::before {
 }
 
 body {
-
 	@each $theme, $color in $wp-themes {
 		&.admin-color-#{$theme} {
-
 			input[type="checkbox"]:indeterminate::before {
 				content: url(minus-svg($color));
 			}
