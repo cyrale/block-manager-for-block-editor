@@ -43,7 +43,7 @@
 		margin: 0 $default-block-margin;
 
 		@media screen and (min-width: $break-large) {
-			max-width: 800px;
+			max-width: $widget-area-width;
 			margin: 0 auto;
 		}
 
