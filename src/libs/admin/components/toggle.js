@@ -1,25 +1,21 @@
+import { useInstanceId } from '@wordpress/compose';
+
 import Checkbox from './checkbox';
-import useShortID from '../hooks/use-short-id';
 
 export default function Toggle( {
 	checked = false,
 	children,
 	disabled = false,
-	id = '',
 	label = '',
 	onChange,
 } ) {
-	const shortID = useShortID( 'toggle' );
-
-	if ( ! id ) {
-		id = shortID;
-	}
+	const instanceID = useInstanceId( Toggle, 'toggle' );
 
 	return (
 		<>
-			<label htmlFor={ id }>
+			<label htmlFor={ instanceID }>
 				<Checkbox
-					id={ id }
+					id={ instanceID }
 					checked={ !! checked }
 					disabled={ !! disabled }
 					onChange={ ( e ) =>
