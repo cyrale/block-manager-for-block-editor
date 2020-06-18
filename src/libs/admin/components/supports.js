@@ -1,4 +1,4 @@
-import { map, merge } from 'lodash';
+import { map, merge, noop } from 'lodash';
 
 import { __ } from '@wordpress/i18n';
 
@@ -43,7 +43,7 @@ const alignValues = [
 
 export default function Supports( {
 	disabled = false,
-	onChange = () => {},
+	onChange = noop,
 	value = {},
 } ) {
 	/**

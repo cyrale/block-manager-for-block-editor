@@ -1,6 +1,8 @@
+import { noop } from 'lodash';
+
 import Styles from './styles';
 
-export default function Variations( { onChange, value } ) {
+export default function Variations( { onChange = noop, value } ) {
 	return (
 		<Styles
 			className="bmfbe-block__variations"

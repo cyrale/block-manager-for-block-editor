@@ -1,3 +1,5 @@
+import { noop } from 'lodash';
+
 import { useInstanceId } from '@wordpress/compose';
 
 import Checkbox from './checkbox';
@@ -7,7 +9,7 @@ export default function Toggle( {
 	children,
 	disabled = false,
 	label = '',
-	onChange,
+	onChange = noop,
 } ) {
 	const instanceID = useInstanceId( Toggle, 'toggle' );
 
@@ -18,9 +20,7 @@ export default function Toggle( {
 					id={ instanceID }
 					checked={ !! checked }
 					disabled={ !! disabled }
-					onChange={ ( e ) =>
-						onChange && onChange( e.target.checked )
-					}
+					onChange={ ( e ) => onChange( e.target.checked ) }
 				/>
 				{ label }
 			</label>

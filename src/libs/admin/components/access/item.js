@@ -1,6 +1,8 @@
+import { noop } from 'lodash';
+
 import Checkbox from '../checkbox';
 
-export default function Item( { children, cols, onChange, values } ) {
+export default function Item( { children, cols, onChange = noop, values } ) {
 	/**
 	 * Handle changes with checkboxes. Pass them to parent.
 	 *
@@ -10,12 +12,10 @@ export default function Item( { children, cols, onChange, values } ) {
 	 * @since 1.0.0
 	 */
 	function handleOnChange( col, value ) {
-		if ( onChange ) {
-			onChange( {
-				col,
-				value,
-			} );
-		}
+		onChange( {
+			col,
+			value,
+		} );
 	}
 
 	return (

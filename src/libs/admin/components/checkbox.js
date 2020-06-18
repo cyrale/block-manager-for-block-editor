@@ -1,3 +1,5 @@
+import { noop } from 'lodash';
+
 import { useEffect, useRef } from '@wordpress/element';
 
 export default function Checkbox( {
@@ -5,7 +7,7 @@ export default function Checkbox( {
 	disabled = false,
 	id = '',
 	indeterminate = false,
-	onChange,
+	onChange = noop,
 } ) {
 	const checkRef = useRef( null );
 

@@ -1,4 +1,4 @@
-import { difference, mapValues, merge, uniq } from 'lodash';
+import { difference, mapValues, merge, noop, uniq } from 'lodash';
 
 import { useSelect } from '@wordpress/data';
 
@@ -102,7 +102,7 @@ function splitToCheckAndIndeterminateValues( values ) {
 	);
 }
 
-export default function Access( { onChange, value } ) {
+export default function Access( { onChange = noop, value } ) {
 	const settings = useSelect(
 		( select ) => select( SETTINGS_STORE ).getSettings(),
 		[]
@@ -184,9 +184,7 @@ export default function Access( { onChange, value } ) {
 		}
 
 		// Pass new values to event callback.
-		if ( onChange ) {
-			onChange( newValues );
-		}
+		onChange( newValues );
 	}
 
 	return (

@@ -1,10 +1,10 @@
-import { merge } from 'lodash';
+import { merge, noop } from 'lodash';
 
 import { __ } from '@wordpress/i18n';
 
 import Toggle from '../toggle';
 
-export default function Styles( { onChange, value } ) {
+export default function Styles( { onChange = noop, value } ) {
 	/**
 	 * Handle changes on styles.
 	 *
@@ -14,10 +14,7 @@ export default function Styles( { onChange, value } ) {
 	 */
 	function handleOnChange( index, change ) {
 		value[ index ] = merge( {}, value[ index ], change );
-
-		if ( onChange ) {
-			onChange( value );
-		}
+		onChange( value );
 	}
 
 	return (
