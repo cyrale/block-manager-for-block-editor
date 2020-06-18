@@ -1,10 +1,23 @@
 {
 	"extends": [
-		"stylelint-config-wordpress"
+		"stylelint-config-wordpress",
+		"stylelint-config-rational-order"
+	],
+	"plugins": [
+		"stylelint-order",
+		"stylelint-config-rational-order/plugin"
 	],
 	"rules": {
 		"at-rule-empty-line-before": null,
 		"at-rule-no-unknown": null,
-		"rule-empty-line-before": null
+		"order/properties-order": [],
+		"plugin/rational-order": [
+			true,
+			{
+				"empty-line-between-groups": true
+			}
+		],
+		"rule-empty-line-before": null,
+		"selector-class-pattern": null
 	}
 }
