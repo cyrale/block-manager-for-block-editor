@@ -1,0 +1,54 @@
+@import "~@wordpress/base-styles/breakpoints";
+@import "~@wordpress/base-styles/colors";
+@import "~@wordpress/base-styles/mixins";
+@import "~@wordpress/base-styles/variables";
+
+.react-tabs {
+	&__tab-list {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		margin: 0;
+		padding: 0;
+
+		background: $white;
+		cursor: pointer;
+	}
+
+	&__tab {
+		display: block;
+		margin: 0 1rem;
+		padding: 0.5rem 1rem 1rem;
+
+		color: inherit;
+		text-decoration: none;
+
+		transition: box-shadow 0.1s linear;
+		@include reduce-motion("transition");
+
+		&--selected {
+			font-weight: 600;
+
+			box-shadow: inset 0 0 0 $border-width-focus transparent, inset 0 0 -$border-width-tab 0 0 theme(outlines);
+		}
+
+		&:active,
+		&:hover {
+			color: theme(toggle);
+		}
+	}
+
+	&__tab-panel {
+		display: none;
+		margin: 0 $default-block-margin;
+
+		@media screen and (min-width: $break-large) {
+			max-width: 800px;
+			margin: 0 auto;
+		}
+
+		&--selected {
+			display: block;
+		}
+	}
+}

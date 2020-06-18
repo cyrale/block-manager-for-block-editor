@@ -1,9 +1,7 @@
-@import "./components/blocks";
-@import "./components/checkbox";
+@import "layout/page";
 
-.toplevel_page_bmfbe-settings,
-.toplevel_page_bmfbe-settings.auto-fold {
-	#wpcontent {
-		padding-left: 0;
-	}
+.bmfbe-settings {
+	@import "./components/blocks";
+	@import "./components/checkbox";
+	@import "./components/tabs";
 }

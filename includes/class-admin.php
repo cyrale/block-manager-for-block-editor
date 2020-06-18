@@ -79,7 +79,9 @@ class Admin implements WP_Plugin_Class {
 	 * Enqueue scripts and styles used in development.
 	 */
 	public function enqueue_dev_assets() {
-		if ( ! defined( 'WP_ENV' ) || 'development' !== WP_ENV ) {
+		$current_screen = get_current_screen();
+
+		if ( ! defined( 'WP_ENV' ) || 'development' !== WP_ENV || 'toplevel_page_bmfbe-settings' !== $current_screen->id ) {
 			return;
 		}
 
@@ -107,8 +109,12 @@ class Admin implements WP_Plugin_Class {
 	 */
 	public function page_settings() {
 		echo '<div class="bmfbe-settings">';
-		echo '<h1>' . __( 'Block Manager for WordPress Block Editor (Gutenberg)', 'bmfbe' ) . '</h1>';
-		echo '<div id="bmfbeSettings"></div>';
+		echo '  <div class="bmfbe-settings__header">';
+		echo '    <div class="bmfbe-settings__title-section">';
+		echo '      <h1>' . __( 'Block Manager for WordPress Block Editor (Gutenberg)', 'bmfbe' ) . '</h1>';
+		echo '    </div>';
+		echo '  </div>';
+		echo '  <div class="bmfbe-settings__content" id="bmfbeSettings"></div>';
 		echo '</div>';
 	}
 }

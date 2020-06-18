@@ -1,0 +1,30 @@
+@import "~@wordpress/base-styles/colors";
+
+.toplevel_page_bmfbe-settings,
+.toplevel_page_bmfbe-settings.auto-fold {
+	#wpcontent {
+		padding-left: 0;
+	}
+}
+
+.bmfbe-settings {
+	&__header {
+		background: $white;
+	}
+
+	&__title-section {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+
+		h1 {
+			display: inline-block;
+			margin: 0 0.8rem 1rem;
+			padding: 9px 0 4px 0;
+
+			font-weight: 600;
+			font-size: 23px;
+			line-height: 1.3;
+		}
+	}
+}
