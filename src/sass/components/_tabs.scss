@@ -27,17 +27,22 @@
 		text-decoration: none;
 
 		transition: box-shadow 0.1s linear;
+		@include square-style__neutral;
 		@include reduce-motion("transition");
 
 		&--selected {
 			font-weight: 600;
 
-			box-shadow: inset 0 0 0 $border-width-focus transparent, inset 0 0 -$border-width-tab 0 0 theme(outlines);
+			box-shadow: inset 0 -3px theme(outlines);
 		}
 
 		&:active,
 		&:hover {
 			color: theme(toggle);
+		}
+
+		&:focus {
+			@include square-style__focus;
 		}
 	}
 

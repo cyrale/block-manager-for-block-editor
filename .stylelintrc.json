@@ -10,6 +10,9 @@
 	"rules": {
 		"at-rule-empty-line-before": null,
 		"at-rule-no-unknown": null,
+		"comment-empty-line-before": null,
+		"max-line-length": null,
+		"no-duplicate-selectors": null,
 		"order/properties-order": [],
 		"plugin/rational-order": [
 			true,

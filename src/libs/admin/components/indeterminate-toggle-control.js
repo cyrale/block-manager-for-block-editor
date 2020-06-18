@@ -17,16 +17,15 @@ import IndeterminateToggle from './indeterminate-toggle';
 
 export default function IndeterminateToggleControl( {
 	label,
+	disabled,
 	checked,
 	indeterminate,
 	help,
 	className,
 	onChange = noop,
 } ) {
-	const instanceId = useInstanceId(
-		IndeterminateToggleControl,
-		'indeterminate-toggle-control'
-	);
+	const instanceId = useInstanceId( IndeterminateToggleControl );
+	const id = `indeterminate-toggle-control-${ instanceId }`;
 
 	let describedBy, helpLabel;
 	if ( help ) {
@@ -43,7 +42,7 @@ export default function IndeterminateToggleControl( {
 
 	return (
 		<BaseControl
-			id={ instanceId }
+			id={ id }
 			className={ classnames(
 				'indeterminate-toggle-control',
 				className
@@ -51,14 +50,15 @@ export default function IndeterminateToggleControl( {
 			help={ helpLabel }
 		>
 			<IndeterminateToggle
-				id={ instanceId }
+				id={ id }
+				disabled={ disabled }
 				checked={ checked }
 				indeterminate={ indeterminate }
 				onChange={ handleOnChange }
 				aria-describedby={ describedBy }
 			/>
 			<label
-				htmlFor={ instanceId }
+				htmlFor={ id }
 				className="indeterminate-toggle-control__label"
 			>
 				{ label }
