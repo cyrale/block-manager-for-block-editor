@@ -1,10 +1,21 @@
+/**
+ * External dependencies
+ */
 import { merge, noop } from 'lodash';
 
+/**
+ * Wordpress dependencies
+ */
 import { __ } from '@wordpress/i18n';
 
-import Toggle from '../toggle';
+/**
+ * Internal dependencies
+ */
+import IndeterminateToggleControl from '../indeterminate-toggle-control';
 
-export default function Styles( { onChange = noop, value } ) {
+export default function Styles( { className, onChange = noop, value } ) {
+	const wrapperClasses = className ? className : 'bmfbe-block__styles';
+
 	/**
 	 * Handle changes on styles.
 	 *
@@ -18,32 +29,32 @@ export default function Styles( { onChange = noop, value } ) {
 	}
 
 	return (
-		<div className="bmfbe-block__styles">
+		<div className={ className }>
 			{ value.map( ( style, index ) => {
 				return (
-					<div key={ style.name } className="bmfbe-block__styles-row">
-						<Toggle
+					<div
+						key={ style.name }
+						className={ `${ wrapperClasses }-row` }
+					>
+						<IndeterminateToggleControl
 							label={
 								<>
 									{ style.label } <em>{ style.name }</em>
 								</>
 							}
-							value={ style.isActive }
-							onChange={ ( checked ) =>
+							checked={ style.isActive }
+							onChange={ ( { checked } ) =>
 								handleOnChange( index, { isActive: checked } )
 							}
-						>
-							<Toggle
-								label={ __( 'Default', 'bmfbe' ) }
-								value={ style.isDefault }
-								disabled={ ! style.isActive }
-								onChange={ ( checked ) =>
-									handleOnChange( index, {
-										isDefault: checked,
-									} )
-								}
-							/>
-						</Toggle>
+						/>
+						<IndeterminateToggleControl
+							label={ __( 'Default', 'bmfbe' ) }
+							checked={ style.isDefault }
+							disabled={ ! style.isActive }
+							onChange={ ( { checked } ) =>
+								handleOnChange( index, { isDefault: checked } )
+							}
+						/>
 					</div>
 				);
 			} ) }

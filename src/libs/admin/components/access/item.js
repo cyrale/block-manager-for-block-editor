@@ -1,6 +1,6 @@
 import { noop } from 'lodash';
 
-import Checkbox from '../checkbox';
+import IndeterminateToggleControl from '../indeterminate-toggle-control';
 
 export default function Item( { children, cols, onChange = noop, values } ) {
 	/**
@@ -24,11 +24,11 @@ export default function Item( { children, cols, onChange = noop, values } ) {
 			{ cols.map( ( col ) => (
 				<td key={ col }>
 					{ col in values && (
-						<Checkbox
+						<IndeterminateToggleControl
 							checked={ values[ col ].checked }
 							indeterminate={ values[ col ].indeterminate }
-							onChange={ ( e ) =>
-								handleOnChange( col, e.target.checked )
+							onChange={ ( { checked } ) =>
+								handleOnChange( col, checked )
 							}
 						/>
 					) }

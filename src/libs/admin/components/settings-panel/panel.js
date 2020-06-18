@@ -1,13 +1,16 @@
-import { merge, omit } from 'lodash';
-
+/**
+ * WordPress dependencies
+ */
 import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
-import Row from './row';
+/**
+ * Internal dependencies
+ */
 import { SETTINGS_STORE } from '../../stores/settings/constants';
+import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import Supports from '../supports';
-import Toggle from '../toggle';
 import useDelayedChanges from '../../hooks/use-delayed-changes';
 
 /**
@@ -91,26 +94,26 @@ export default function Panel() {
 	return (
 		<div className="bmfbe-settings-panel">
 			{ supportedSettings.map( ( field ) => {
-				const Component = field.Component ?? Toggle;
+				const Component = field.Component ?? IndeterminateToggleControl;
 
 				let props = {
-					checked: settings[ field.name ],
 					label: field.label,
-					onChange: ( value ) => handleOnChange( field.name, value ),
+					checked: settings[ field.name ] ?? false,
+					onChange: ( { checked } ) =>
+						handleOnChange( field.name, checked ),
 				};
 
 				if ( 'supports' === field.name ) {
-					props = merge( {}, omit( props, [ 'checked' ] ), {
-						disabled: ! settings.supports_override,
+					props = {
+						label: field.label,
 						value: props.checked,
-					} );
+						disabled: ! settings.supports_override,
+						onChange: ( value ) =>
+							handleOnChange( field.name, value ),
+					};
 				}
 
-				return (
-					<Row key={ field.name } name={ field.name }>
-						<Component { ...props } />
-					</Row>
-				);
+				return <Component key={ field.name } { ...props } />;
 			} ) }
 		</div>
 	);

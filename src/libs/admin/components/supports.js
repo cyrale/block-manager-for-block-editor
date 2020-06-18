@@ -1,45 +1,57 @@
+/**
+ * External dependencies
+ */
+import classnames from 'classnames';
 import { map, merge, noop } from 'lodash';
 
+/**
+ * WordPress dependencies
+ */
 import { __ } from '@wordpress/i18n';
 
-import Toggle from './toggle';
+/**
+ * Internal dependencies
+ */
+import IndeterminateToggleControl from './indeterminate-toggle-control';
 
 /**
- * Supported values for alignment.
+ * List of values for supports that are not boolean.
  *
- * @constant {({label: string, value: boolean}|{label: string, value: string})[]}
+ * @constant {*}
  * @since 1.0.0
  */
-const alignValues = [
-	{
-		label: __( 'Disable', 'bmfbe' ),
-		value: false,
-	},
-	{
-		label: __( 'Enable', 'bmfbe' ),
-		value: true,
-	},
-	{
-		label: __( 'Left', 'bmfbe' ),
-		value: 'left',
-	},
-	{
-		label: __( 'Center', 'bmfbe' ),
-		value: 'center',
-	},
-	{
-		label: __( 'Right', 'bmfbe' ),
-		value: 'right',
-	},
-	{
-		label: __( 'Wide', 'bmfbe' ),
-		value: 'wide',
-	},
-	{
-		label: __( 'Full', 'bmfbe' ),
-		value: 'full',
-	},
-];
+const supportsValues = {
+	align: [
+		{
+			label: __( 'Disable', 'bmfbe' ),
+			value: false,
+		},
+		{
+			label: __( 'Enable', 'bmfbe' ),
+			value: true,
+		},
+		{
+			label: __( 'Left', 'bmfbe' ),
+			value: 'left',
+		},
+		{
+			label: __( 'Center', 'bmfbe' ),
+			value: 'center',
+		},
+		{
+			label: __( 'Right', 'bmfbe' ),
+			value: 'right',
+		},
+		{
+			label: __( 'Wide', 'bmfbe' ),
+			value: 'wide',
+		},
+		{
+			label: __( 'Full', 'bmfbe' ),
+			value: 'full',
+		},
+	],
+};
 
 export default function Supports( {
 	disabled = false,
@@ -88,67 +100,55 @@ export default function Supports( {
 	return (
 		<div className="bmfbe-supports">
 			{ map( value, ( val, key ) => {
-				if ( 'align' === key ) {
-					return (
-						<div
-							key={ key }
-							className="bmfbe-supports-row bmfbe-supports-row--align"
-						>
-							<Toggle
-								label={ key }
-								value={ val.isActive }
-								disabled={ disabled }
-								onChange={ ( checked ) =>
-									handleOnChange( key, { isActive: checked } )
-								}
-							>
-								{ alignValues.map(
-									( { label, value: alignValue } ) => (
-										<Toggle
-											key={ label }
-											label={ label }
-											value={
-												val.value === alignValue ||
-												( Array.isArray( val.value ) &&
-													val.value.includes(
-														alignValue
-													) )
-											}
-											disabled={
-												disabled || ! val.isActive
-											}
-											onChange={ () =>
-												handleOnAlignChange(
-													alignValue
-												)
-											}
-										/>
-									)
-								) }
-							</Toggle>
-						</div>
-					);
-				}
+				const wrapperClasses = classnames(
+					'bmfbe-supports',
+					`bmfbe-supports--${ key }`
+				);
 
 				return (
-					<div key={ key } className="bmfbe-supports-row">
-						<Toggle
+					<div key={ key } className={ wrapperClasses }>
+						<IndeterminateToggleControl
 							label={ key }
 							checked={ val.isActive }
 							disabled={ disabled }
-							onChange={ ( checked ) =>
+							onChange={ ( { checked } ) =>
 								handleOnChange( key, { isActive: checked } )
 							}
-						>
-							<Toggle
-								label={ __( 'Enable', 'bmfbe' ) }
-								checked={ val.value }
-								disabled={ disabled || ! val.isActive }
-								onChange={ ( checked ) =>
-									handleOnChange( key, { value: checked } )
-								}
-							/>
-						</Toggle>
+						/>
+						<div className="bmfbe-supports__values">
+							{ Array.isArray( supportsValues[ key ] ) ? (
+								supportsValues[
+									key
+								].map( ( { label, value: alignValue } ) => (
+									<IndeterminateToggleControl
+										key={ label }
+										label={ label }
+										checked={
+											val.value === alignValue ||
+											( Array.isArray( val.value ) &&
+												val.value.includes(
+													alignValue
+												) )
+										}
+										disabled={ disabled || ! val.isActive }
+										onChange={ () =>
+											handleOnAlignChange( alignValue )
+										}
+									/>
+								) )
+							) : (
+								<IndeterminateToggleControl
+									label={ __( 'Enable', 'bmfbe' ) }
+									value={ val.value }
+									disabled={ disabled || ! val.isActive }
+									onChange={ ( { checked } ) =>
+										handleOnChange( key, {
+											value: checked,
+										} )
+									}
+								/>
+							) }
+						</div>
 					</div>
 				);
 			} ) }

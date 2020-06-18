@@ -1,3 +1,6 @@
+/**
+ * External dependencies
+ */
 import { mapValues, pick, uniq } from 'lodash';
 import {
 	Accordion,
@@ -7,20 +10,25 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
+/**
+ * WordPress dependencies
+ */
 import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
-import Access from '../access';
+/**
+ * Internal dependencies
+ */
 import { BLOCKS_STORE } from '../../stores/blocks/constants';
-import Checkbox from '../checkbox';
+import { SETTINGS_STORE } from '../../stores/settings/constants';
+import Access from '../access';
 import Description from './description';
 import FakeAccordion from '../fake-accordion';
 import Icon from './icon';
-import { SETTINGS_STORE } from '../../stores/settings/constants';
+import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import Styles from './styles';
 import Supports from '../supports';
-import Toggle from '../toggle';
 import Variations from './variations';
 import useDelayedChanges from '../../hooks/use-delayed-changes';
 
@@ -168,12 +176,12 @@ export default function Block( { name: blockName } ) {
 				title={ block.title }
 				description={ block.description }
 			/>
-			<Toggle
+			<IndeterminateToggleControl
 				label={ __( 'Override supports?', 'bmfbe' ) }
 				checked={ block.supports_override }
-				onChange={ () =>
+				onChange={ ( { checked } ) =>
 					handleBlockChange( {
-						supports_override: ! block.supports_override,
+						supports_override: checked,
 					} )
 				}
 			/>
@@ -200,10 +208,10 @@ export default function Block( { name: blockName } ) {
 							<AccordionItemHeading>
 								<AccordionItemButton>
 									{ 'access' === panelName && (
-										<Checkbox
-											onChange={ ( e ) =>
+										<IndeterminateToggleControl
+											onChange={ ( { checked } ) =>
 												handleOnGlobalAccessChange(
-													e.target.checked
+													checked
 												)
 											}
 											{ ...globalActivation }
@@ -233,13 +241,13 @@ export default function Block( { name: blockName } ) {
 			</Accordion>
 			{ displayGlobalActivation && (
 				<FakeAccordion>
-					<Checkbox
-						onChange={ ( e ) =>
-							handleOnGlobalAccessChange( e.target.checked )
+					<IndeterminateToggleControl
+						label={ __( 'Enabled', 'bmfbe' ) }
+						onChange={ ( { checked } ) =>
+							handleOnGlobalAccessChange( checked )
 						}
 						{ ...globalActivation }
 					/>
-					{ __( 'Enabled', 'bmfbe' ) }
 				</FakeAccordion>
 			) }
 		</div>
