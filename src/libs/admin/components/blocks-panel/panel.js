@@ -17,9 +17,9 @@ const {
 export default function Panel() {
 	const [ displayedCategories, setDisplayedCategories ] = useState( {} );
 
-	const { blocks, categories } = useSelect(
+	const { categorizedBlocks, categories } = useSelect(
 		( select ) => ( {
-			blocks: select( BLOCKS_STORE ).getBlocks(),
+			categorizedBlocks: select( BLOCKS_STORE ).getCategorizedBlocks(),
 			categories: select( BLOCKS_STORE ).getCategories(),
 		} ),
 		[]
@@ -67,22 +67,24 @@ export default function Panel() {
 						<AccordionItem key={ category } uuid={ category }>
 							<AccordionItemHeading>
 								<AccordionItemButton>
-									{ category }
+									{ category }{ ' ' }
+									<em>
+										(
+										{ categorizedBlocks[ category ].length }
+										)
+									</em>
 								</AccordionItemButton>
 							</AccordionItemHeading>
 							<AccordionItemPanel>
 								{ displayedCategories[ category ] &&
-									blocks
-										.filter(
-											( block ) =>
-												block.category === category
-										)
-										.map( ( block ) => (
-											<Block
-												key={ block.name }
-												{ ...block }
-											/>
-										) ) }
+									categorizedBlocks[
+										category
+									].map( ( block ) => (
+										<Block
+											key={ block.name }
+											{ ...block }
+										/>
+									) ) }
 							</AccordionItemPanel>
 						</AccordionItem>
 					) ) }

@@ -3,8 +3,8 @@ import { addQueryArgs } from '@wordpress/url';
 import * as actions from './actions';
 import { BLOCKS_API_PATH } from './constants';
 
-export function* getCategories() {
-	return getBlocks();
+export function* getCategorizedBlocks() {
+	yield getBlocks();
 }
 
 export function* getBlocks() {

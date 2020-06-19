@@ -1,0 +1,58 @@
+@import "~@wordpress/base-styles/colors";
+@import "~@wordpress/base-styles/mixins";
+
+.accordion {
+	border: 1px solid $light-gray-700;
+
+	&__item {
+		border-top: 1px solid $light-gray-700;
+
+		&:first-child {
+			border-top: 0;
+		}
+	}
+
+	&__button {
+		position: relative;
+
+		padding: 1em 3.5em 1em 1.5em;
+
+		font-weight: 600;
+
+		background: $white;
+		cursor: pointer;
+
+		&::before {
+			position: absolute;
+			top: 50%;
+			right: 1.5em;
+
+			width: 0.5rem;
+			height: 0.5rem;
+
+			border-color: $dark-gray-500;
+			border-style: solid;
+			border-width: 0 2px 2px 0;
+			transform: translateY(-70%) rotate(45deg);
+
+			transition: transform 0.1s linear;
+
+			content: "";
+			@include square-style__neutral;
+			@include reduce-motion("transition");
+		}
+
+		&[aria-expanded="true"] {
+			&::before {
+				transform: translateY(-30%) rotate(-135deg);
+			}
+		}
+	}
+
+	&__panel {
+		margin: 0;
+		padding: 1em 1.5em;
+
+		background: $white;
+	}
+}
