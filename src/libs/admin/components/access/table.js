@@ -1,3 +1,3 @@
 export default function Table( { children } ) {
-	return <table>{ children }</table>;
+	return <table className="wp-list-table widefat fixes">{ children }</table>;
 }

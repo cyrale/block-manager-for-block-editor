@@ -1,8 +1,15 @@
 import { noop } from 'lodash';
 
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
+import Title from './title';
 
-export default function Item( { children, cols, onChange = noop, values } ) {
+export default function Item( {
+	children,
+	cols,
+	onChange = noop,
+	onClick = noop,
+	values,
+} ) {
 	/**
 	 * Handle changes with checkboxes. Pass them to parent.
 	 *
@@ -20,9 +27,11 @@ export default function Item( { children, cols, onChange = noop, values } ) {
 
 	return (
 		<tr>
-			<td>{ children }</td>
+			<Title className="row-title" onClick={ onClick }>
+				{ children }
+			</Title>
 			{ cols.map( ( col ) => (
-				<td key={ col }>
+				<td key={ col } className="column-toggle">
 					{ col in values && (
 						<IndeterminateToggleControl
 							checked={ values[ col ].checked }

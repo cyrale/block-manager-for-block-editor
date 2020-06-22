@@ -1,11 +1,21 @@
+/**
+ * External dependencies
+ */
+import classnames from 'classnames';
 import { difference, mapValues, merge, noop, uniq } from 'lodash';
 
+/**
+ * WordPress dependencies
+ */
 import { useSelect } from '@wordpress/data';
 
-import Body from './body';
-import Head from './head';
-import Item from './item';
+/**
+ * Internal dependencies
+ */
 import { SETTINGS_STORE } from '../../stores/settings/constants';
+import Body from './body';
+import Head, { displayHead } from './head';
+import Item from './item';
 import Table from './table';
 import Title from './title';
 
@@ -140,10 +150,68 @@ export default function Access( { onChange = noop, value } ) {
 	}
 
 	/**
+	 * Return an unique boolean from a collection.
+	 *
+	 * @param {Object.boolean} values Collection of boolean values.
+	 *
+	 * @return {boolean} Unique boolean.
+	 * @since 1.0.0
+	 */
+	function flippedValue( values ) {
+		const uniqValues = uniq( Object.values( values ) );
+		return uniqValues.length !== 1 || ! uniqValues[ 0 ];
+	}
+
+	/**
+	 * Flip values from column.
+	 *
+	 * @param {string} columnName Name of the column.
+	 *
+	 * @return {{}} All values with change on the desired column.
+	 * @since 1.0.0
+	 */
+	function flipColumnValues( columnName ) {
+		const newValues = merge( {}, value );
+		const invertedValues = invertRowsCols( newValues );
+
+		return mapValues( newValues, ( rowValues ) =>
+			mapValues( rowValues, ( colValue, col ) => {
+				if ( col === columnName ) {
+					return flippedValue( invertedValues[ columnName ] );
+				}
+
+				return colValue;
+			} )
+		);
+	}
+
+	/**
+	 * Flip values from row.
+	 *
+	 * @param {string} rowName Name of the row.
+	 *
+	 * @return {{}} All values with change on the desired row.
+	 * @since 1.0.0
+	 */
+	function flipRowValues( rowName ) {
+		const newValues = merge( {}, value );
+
+		return mapValues( newValues, ( rowValues, row ) => {
+			if ( row === rowName ) {
+				return mapValues( rowValues, () => flippedValue( rowValues ) );
+			}
+
+			return rowValues;
+		} );
+	}
+
+	/**
 	 * Handle change on access settings.
 	 *
 	 * @param {string} index Name of the post type (row) or user group (column) to change settings.
 	 * @param {Object} change New value of settings.
+	 *
+	 * @since 1.0.0
 	 */
 	function handleOnChange( index, change ) {
 		let newValues = merge( {}, value );
@@ -187,12 +255,51 @@ export default function Access( { onChange = noop, value } ) {
 		onChange( newValues );
 	}
 
+	/**
+	 * Handle click on column title.
+	 *
+	 * @param {string} name Name of the column.
+	 *
+	 * @since 1.0.0
+	 */
+	function handleOnClickColumn( name ) {
+		onChange( flipColumnValues( name ) );
+	}
+
+	/**
+	 * Handle click on row title.
+	 *
+	 * @param {string} name Name of the row.
+	 *
+	 * @since 1.0.0
+	 */
+	function handleOnClickRow( name ) {
+		if (
+			! settings.limit_access_by_post_type &&
+			settings.limit_access_by_user_group
+		) {
+			onChange( flipColumnValues( name ) );
+		} else {
+			onChange( flipRowValues( name ) );
+		}
+	}
+
 	return (
-		<div className="bmfbe-block__access">
+		<div
+			className={ classnames( 'bmfbe-block__access', {
+				'bmfbe-block__access--without-head': ! displayHead( cols ),
+			} ) }
+		>
 			<Table>
 				<Head>
 					{ cols.map( ( col ) => (
-						<Title key={ col }>{ col }</Title>
+						<Title
+							key={ col }
+							className="column-title"
+							onClick={ () => handleOnClickColumn( col ) }
+						>
+							{ col }
+						</Title>
 					) ) }
 				</Head>
 				<Body>
@@ -203,6 +310,7 @@ export default function Access( { onChange = noop, value } ) {
 								cols={ cols }
 								values={ modifiedValues[ row ] }
 								onChange={ ( e ) => handleOnChange( row, e ) }
+								onClick={ () => handleOnClickRow( row ) }
 							>
 								{ row }
 							</Item>
