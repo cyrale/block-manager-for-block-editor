@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { noop } from 'lodash';
+import { assign, noop, omit } from 'lodash';
 
 /**
  * Internal dependencies
@@ -12,7 +12,9 @@ export default function Variations( { onChange = noop, value } ) {
 	return (
 		<Styles
 			className="bmfbe-block__variations"
-			value={ value }
+			value={ value.map( ( v ) =>
+				assign( { label: v.title }, omit( v, [ 'title' ] ) )
+			) }
 			onChange={ onChange }
 		/>
 	);
