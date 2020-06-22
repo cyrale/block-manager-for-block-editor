@@ -1,0 +1,22 @@
+.bmfbe-block__styles-row,
+.bmfbe-block__variations-row {
+	display: flex;
+	align-items: center;
+
+	.indeterminate-toggle-control {
+		flex-basis: 40%;
+		margin-left: 1.5rem;
+
+		&:first-child {
+			margin-left: 0;
+		}
+
+		&__label {
+			em {
+				display: block;
+
+				font-size: 12px;
+			}
+		}
+	}
+}
