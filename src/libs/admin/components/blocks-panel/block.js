@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import classnames from 'classnames';
 import { mapValues, pick, uniq } from 'lodash';
 import {
 	Accordion,
@@ -170,14 +171,17 @@ export default function Block( { name: blockName } ) {
 
 	return (
 		<div className="bmfbe-block">
-			<Icon icon={ block.icon } />
-			<Description
-				name={ blockName }
-				title={ block.title }
-				description={ block.description }
-			/>
+			<div className="bmfbe-block__content">
+				<Icon icon={ block.icon } />
+				<Description
+					name={ blockName }
+					title={ block.title }
+					description={ block.description }
+				/>
+			</div>
 			<IndeterminateToggleControl
 				label={ __( 'Override supports?', 'bmfbe' ) }
+				className="bmfbe-block__override-supports"
 				checked={ block.supports_override }
 				onChange={ ( { checked } ) =>
 					handleBlockChange( {
@@ -204,6 +208,10 @@ export default function Block( { name: blockName } ) {
 						<AccordionItem
 							key={ `${ blockName }/${ panelName }` }
 							uuid={ panelName }
+							className={ classnames(
+								'accordion__item',
+								`accordion__item--${ panelName }`
+							) }
 						>
 							<AccordionItemHeading>
 								<AccordionItemButton>
