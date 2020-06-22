@@ -1,0 +1,80 @@
+@import "~@wordpress/base-styles/colors";
+
+.accordion__panel--access {
+	padding: 0;
+}
+
+.bmfbe-block__access {
+	table {
+		border-width: 0;
+
+		th,
+		td {
+			padding: 1rem;
+
+			border-top: 1px solid $light-gray-700;
+		}
+
+		thead {
+			th,
+			td {
+				border: 0;
+			}
+		}
+
+		.indeterminate-toggle-control .components-base-control__field .indeterminate-toggle,
+		.components-base-control__field {
+			display: inline-block;
+			margin: 0;
+		}
+
+		.row-title {
+			font-size: 12px !important;
+		}
+
+		.column-title,
+		.column-toggle {
+			width: 88px;
+
+			font-size: 12px;
+			text-align: center;
+		}
+
+		.row-title,
+		.column-title {
+			padding: 0.7rem 0.4rem;
+			overflow: hidden;
+
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
+
+		button {
+			padding: 0.3rem 0.6rem;
+
+			font-weight: 600;
+
+			background: none;
+			border: 1px solid transparent;
+			cursor: pointer;
+
+			&:hover {
+				background: $light-gray-100;
+				border-color: $light-gray-300;
+			}
+		}
+	}
+
+	&--without-head {
+		table {
+			tr {
+				&:first-child {
+					th,
+					td {
+						border-top: 0;
+					}
+				}
+			}
+		}
+	}
+}

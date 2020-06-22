@@ -1,8 +1,9 @@
 @import "layout/page";
 
 .bmfbe-settings {
+	@import "components/access";
 	@import "components/accordion";
-	@import "components/blocks";
+	@import "components/block";
 	@import "components/indeterminate-toggle";
 	@import "components/tabs";
 }

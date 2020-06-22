@@ -1,0 +1,60 @@
+@import "~@wordpress/base-styles/colors";
+
+.bmfbe-block {
+	margin: 0 0 1rem;
+
+	border: 1px solid $light-gray-700;
+
+
+	&__content {
+		display: flex;
+		padding: 1rem 0.5rem;
+	}
+
+	&__icon {
+		margin: 0.1rem 1rem 0 0.5rem;
+
+		svg {
+			max-width: 24px;
+			height: auto;
+		}
+	}
+
+	&__title {
+		margin: 0;
+
+		font-size: 1.2em;
+	}
+
+	&__name {
+		margin: 0;
+
+		font-style: italic;
+	}
+
+	&__override-supports {
+		padding: 0 1rem;
+	}
+
+	.accordion {
+		border: 0;
+
+		&__item {
+			border-top: 1px solid $light-gray-700;
+
+			&--access {
+				.accordion__panel {
+					padding: 0;
+				}
+			}
+		}
+
+		&__button {
+			display: flex;
+
+			.components-base-control__field {
+				margin: 0;
+			}
+		}
+	}
+}
