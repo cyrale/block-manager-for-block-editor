@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { merge, noop } from 'lodash';
+import { assign, mapValues, merge, noop } from 'lodash';
 
 /**
  * Wordpress dependencies
@@ -14,18 +14,47 @@ import { __ } from '@wordpress/i18n';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
 
 export default function Styles( { className, onChange = noop, value } ) {
-	const wrapperClasses = className ? className : 'bmfbe-block__styles';
+	const wrapperClasses = className ?? 'bmfbe-block__styles';
 
 	/**
 	 * Handle changes on styles.
 	 *
 	 * @param {string} index Name of the style.
 	 * @param {Object.<string, boolean>} change Change on the style.
+	 *
 	 * @since 1.0.0
 	 */
 	function handleOnChange( index, change ) {
-		value[ index ] = merge( {}, value[ index ], change );
-		onChange( value );
+		const newValue = merge( {}, value );
+
+		newValue[ index ] = assign( newValue[ index ], change );
+
+		onChange( newValue );
+	}
+
+	/**
+	 * Handle changes on default values.
+	 *
+	 * @param {string} index Name of the style.
+	 * @param {boolean} isDefault Default value.
+	 *
+	 * @since 1.0.0
+	 */
+	function handleOnDefaultChange( index, isDefault ) {
+		let newValue = merge( {}, value );
+
+		// Set all default values to false, keep only one.
+		if ( isDefault ) {
+			newValue = mapValues( value, ( v ) =>
+				assign( v, {
+					isDefault: false,
+				} )
+			);
+		}
+
+		newValue[ index ] = assign( newValue[ index ], { isDefault } );
+
+		onChange( newValue );
 	}
 
 	return (
@@ -52,7 +81,7 @@ export default function Styles( { className, onChange = noop, value } ) {
 							checked={ style.isDefault }
 							disabled={ ! style.isActive }
 							onChange={ ( { checked } ) =>
-								handleOnChange( index, { isDefault: checked } )
+								handleOnDefaultChange( index, checked )
 							}
 						/>
 					</div>
