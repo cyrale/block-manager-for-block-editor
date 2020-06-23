@@ -25,6 +25,7 @@ import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import { SETTINGS_STORE } from '../../stores/settings/constants';
 import Access from '../access';
 import Description from './description';
+import ExternalLink from '../external-link';
 import FakeAccordion from '../fake-accordion';
 import Icon from './icon';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
@@ -43,16 +44,22 @@ const panels = [
 	{
 		name: 'supports',
 		label: __( 'Supports', 'bmfbe' ),
+		link:
+			'https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#supports-optional',
 		Component: Supports,
 	},
 	{
 		name: 'styles',
 		label: __( 'Styles', 'bmfbe' ),
+		link:
+			'https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#styles-optional',
 		Component: Styles,
 	},
 	{
 		name: 'variations',
 		label: __( 'Variations', 'bmfbe' ),
+		link:
+			'https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#variations-optional',
 		Component: Variations,
 	},
 	{
@@ -204,7 +211,7 @@ export default function Block( { name: blockName } ) {
 							( 'access' !== panelName ||
 								! displayGlobalActivation )
 					)
-					.map( ( { label, name: panelName, Component } ) => (
+					.map( ( { label, link, name: panelName, Component } ) => (
 						<AccordionItem
 							key={ `${ blockName }/${ panelName }` }
 							uuid={ panelName }
@@ -226,6 +233,7 @@ export default function Block( { name: blockName } ) {
 										/>
 									) }
 									{ label }
+									{ link && <ExternalLink link={ link } /> }
 								</AccordionItemButton>
 							</AccordionItemHeading>
 							<AccordionItemPanel>
