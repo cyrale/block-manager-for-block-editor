@@ -64,7 +64,7 @@ const panels = [
 	},
 	{
 		name: 'access',
-		label: __( 'Enabled', 'bmfbe' ),
+		label: __( 'Enable this block', 'bmfbe' ),
 		Component: Access,
 	},
 ];
@@ -258,7 +258,7 @@ export default function Block( { name: blockName } ) {
 			{ displayGlobalActivation && (
 				<FakeAccordion>
 					<IndeterminateToggleControl
-						label={ __( 'Enabled', 'bmfbe' ) }
+						label={ __( 'Enable this block', 'bmfbe' ) }
 						onChange={ ( { checked } ) =>
 							handleOnGlobalAccessChange( checked )
 						}
