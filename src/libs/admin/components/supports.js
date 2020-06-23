@@ -2,7 +2,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { map, merge, noop } from 'lodash';
+import { difference, map, merge, noop } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -15,21 +15,13 @@ import { __ } from '@wordpress/i18n';
 import IndeterminateToggleControl from './indeterminate-toggle-control';
 
 /**
- * List of values for supports that are not boolean.
+ * List of fields for supports that are not boolean.
  *
  * @constant {*}
  * @since 1.0.0
  */
-const supportsValues = {
+const supportsFields = {
 	align: [
-		{
-			label: __( 'Disable', 'bmfbe' ),
-			value: false,
-		},
-		{
-			label: __( 'Enable', 'bmfbe' ),
-			value: true,
-		},
 		{
 			label: __( 'Left', 'bmfbe' ),
 			value: 'left',
@@ -53,6 +45,34 @@ const supportsValues = {
 	],
 };
 
+/**
+ * List of values for align supports.
+ *
+ * @constant {string[]}
+ * @since 1.0.0
+ */
+const alignValues = supportsFields.align.map( ( a ) => a.value );
+
+/**
+ * Transform align supports from boolean/array to array only.
+ *
+ * @param {boolean|string[]} align Current align value.
+ *
+ * @return {string[]} Transformed align supports.
+ * @since 1.0.0
+ */
+function alignValueToArray( align ) {
+	if ( true === align ) {
+		return [ ...alignValues ];
+	}
+
+	if ( Array.isArray( align ) ) {
+		return [ ...align ];
+	}
+
+	return [];
+}
+
 export default function Supports( {
 	disabled = false,
 	onChange = noop,
@@ -61,30 +81,30 @@ export default function Supports( {
 	/**
 	 * Handle changes on align supports.
 	 *
-	 * @param {boolean|string[]} align New align values.
+	 * @param {string} align New align values.
+	 * @param {boolean} enabled Enable current value of align.
+	 *
 	 * @since 1.0.0
 	 */
-	function handleOnAlignChange( align ) {
-		let newAlignValue;
+	function handleOnAlignChange( align, enabled ) {
+		const currentAlignValues = alignValueToArray( value.align.value );
+		let newAlignValues = [ ...currentAlignValues ];
 
-		if ( 'boolean' === typeof align ) {
-			newAlignValue = align;
-		} else {
-			newAlignValue = ! Array.isArray( value.align.value )
-				? []
-				: [ ...value.align.value ];
-
-			if ( ! newAlignValue.includes( align ) ) {
-				newAlignValue.push( align );
-			} else {
-				newAlignValue = newAlignValue.filter( ( v ) => v !== align );
-			}
+		if ( enabled && ! newAlignValues.includes( align ) ) {
+			newAlignValues.push( align );
+		} else if ( ! enabled && newAlignValues.includes( align ) ) {
+			newAlignValues = newAlignValues.filter( ( v ) => v !== align );
 		}
 
-		onChange( {
-			...value,
-			align: { ...value.align, value: newAlignValue },
-		} );
+		if ( 0 === newAlignValues.length ) {
+			newAlignValues = false;
+		} else if ( 0 === difference( alignValues, newAlignValues ).length ) {
+			newAlignValues = true;
+		}
+
+		value.align.value = newAlignValues;
+
+		onChange( value );
 	}
 
 	/**
@@ -116,23 +136,26 @@ export default function Supports( {
 							}
 						/>
 						<div className="bmfbe-supports__values">
-							{ Array.isArray( supportsValues[ key ] ) ? (
-								supportsValues[
+							{ Array.isArray( supportsFields[ key ] ) ? (
+								supportsFields[
 									key
 								].map( ( { label, value: alignValue } ) => (
 									<IndeterminateToggleControl
 										key={ label }
 										label={ label }
 										checked={
-											val.value === alignValue ||
+											true === val.value ||
 											( Array.isArray( val.value ) &&
 												val.value.includes(
 													alignValue
 												) )
 										}
 										disabled={ disabled || ! val.isActive }
-										onChange={ () =>
-											handleOnAlignChange( alignValue )
+										onChange={ ( { checked } ) =>
+											handleOnAlignChange(
+												alignValue,
+												checked
+											)
 										}
 									/>
 								) )
