@@ -1,0 +1,13 @@
+.bmfbe-external-link {
+	color: theme(button);
+
+	fill: theme(button);
+
+	&:active,
+	&:focus,
+	&:hover {
+		color: theme(toggle);
+
+		fill: theme(toggle);
+	}
+}
