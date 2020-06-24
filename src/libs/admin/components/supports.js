@@ -2,7 +2,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { difference, map, merge, noop } from 'lodash';
+import { difference, intersection, merge, noop } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -21,28 +21,88 @@ import IndeterminateToggleControl from './indeterminate-toggle-control';
  * @since 1.0.0
  */
 const supportsFields = {
-	align: [
-		{
-			label: __( 'Left', 'bmfbe' ),
-			value: 'left',
-		},
-		{
-			label: __( 'Center', 'bmfbe' ),
-			value: 'center',
-		},
-		{
-			label: __( 'Right', 'bmfbe' ),
-			value: 'right',
-		},
-		{
-			label: __( 'Wide', 'bmfbe' ),
-			value: 'wide',
-		},
-		{
-			label: __( 'Full', 'bmfbe' ),
-			value: 'full',
-		},
-	],
+	align: {
+		help: __(
+			'This property adds block controls which allow to change block’s alignment. Important: It doesn’t work with dynamic blocks yet.',
+			'bmfbe'
+		),
+		values: [
+			{
+				label: __( 'Left', 'bmfbe' ),
+				value: 'left',
+			},
+			{
+				label: __( 'Center', 'bmfbe' ),
+				value: 'center',
+			},
+			{
+				label: __( 'Right', 'bmfbe' ),
+				value: 'right',
+			},
+			{
+				label: __( 'Wide', 'bmfbe' ),
+				value: 'wide',
+			},
+			{
+				label: __( 'Full', 'bmfbe' ),
+				value: 'full',
+			},
+		],
+	},
+	alignWide: {
+		help: __(
+			'This property allows to enable wide alignment for your theme. To disable this behavior for a single block, set this flag to `false`.',
+			'bmfbe'
+		),
+	},
+	anchor: {
+		help: __(
+			'Anchors let you link directly to a specific block on a page. This property adds a field to define an id for the block and a button to copy the direct link.',
+			'bmfbe'
+		),
+	},
+	className: {
+		help: __(
+			'By default, the class `.wp-block-your-block-name` is added to the root element of your saved markup. This helps having a consistent mechanism for styling blocks that themes and plugins can rely on. If for whatever reason a class is not desired on the markup, this functionality can be disabled.',
+			'bmfbe'
+		),
+	},
+	customClassName: {
+		help: __(
+			'This property adds a field to define a custom className for the block’s wrapper.',
+			'bmfbe'
+		),
+	},
+	defaultStylePicker: {
+		help: __(
+			'When the style picker is shown, a dropdown is displayed so the user can select a default style for this block type. If you prefer not to show the dropdown, set this property to `false`.',
+			'bmfbe'
+		),
+	},
+	html: {
+		help: __(
+			'By default, a block’s markup can be edited individually. To disable this behavior, set `html` to `false`.',
+			'bmfbe'
+		),
+	},
+	inserter: {
+		help: __(
+			'By default, all blocks will appear in the inserter. To hide a block so that it can only be inserted programmatically, set `inserter` to `false`.',
+			'bmfbe'
+		),
+	},
+	multiple: {
+		help: __(
+			'A non-multiple block can be inserted into each post, one time only. For example, the built-in ‘More’ block cannot be inserted again if it already exists in the post being edited. A non-multiple block’s icon is automatically dimmed (unclickable) to prevent multiple instances.',
+			'bmfbe'
+		),
+	},
+	reusable: {
+		help: __(
+			'A block may want to disable the ability of being converted into a reusable block. By default all blocks can be converted to a reusable block. If supports reusable is set to false, the option to convert the block into a reusable block will not appear.',
+			'bmfbe'
+		),
+	},
 };
 
 /**
@@ -51,7 +111,7 @@ const supportsFields = {
  * @constant {string[]}
  * @since 1.0.0
  */
-const alignValues = supportsFields.align.map( ( a ) => a.value );
+const alignValues = supportsFields.align.values.map( ( a ) => a.value );
 
 /**
  * Transform align supports from boolean/array to array only.
@@ -110,62 +170,75 @@ export default function Supports( {
 	/**
 	 * Handle changes on other supports settings.
 	 *
-	 * @param {string} key Name of the supports.
+	 * @param {string} fieldName Name of the supports.
 	 * @param {Object} change New value for the supports.
 	 */
-	function handleOnChange( key, change ) {
-		onChange( merge( {}, value, { [ key ]: change } ) );
+	function handleOnChange( fieldName, change ) {
+		onChange( merge( {}, value, { [ fieldName ]: change } ) );
 	}
+
+	const supportsFieldKeys = intersection(
+		Object.keys( supportsFields ),
+		Object.keys( value )
+	);
 
 	return (
 		<div className="bmfbe-supports">
-			{ map( value, ( val, key ) => {
+			{ supportsFieldKeys.map( ( fieldName ) => {
 				const wrapperClasses = classnames(
-					'bmfbe-supports',
-					`bmfbe-supports--${ key }`
+					'bmfbe-supports-settings',
+					`bmfbe-supports-settings--${ fieldName }`
 				);
 
+				const field = supportsFields[ fieldName ];
+				const val = value[ fieldName ];
+
 				return (
-					<div key={ key } className={ wrapperClasses }>
+					<div key={ fieldName } className={ wrapperClasses }>
 						<IndeterminateToggleControl
-							label={ key }
+							label={ fieldName }
+							help={ field.help }
 							checked={ val.isActive }
 							disabled={ disabled }
 							onChange={ ( { checked } ) =>
-								handleOnChange( key, { isActive: checked } )
+								handleOnChange( fieldName, {
+									isActive: checked,
+								} )
 							}
 						/>
-						<div className="bmfbe-supports__values">
-							{ Array.isArray( supportsFields[ key ] ) ? (
-								supportsFields[
-									key
-								].map( ( { label, value: alignValue } ) => (
-									<IndeterminateToggleControl
-										key={ label }
-										label={ label }
-										checked={
-											true === val.value ||
-											( Array.isArray( val.value ) &&
-												val.value.includes(
-													alignValue
-												) )
-										}
-										disabled={ disabled || ! val.isActive }
-										onChange={ ( { checked } ) =>
-											handleOnAlignChange(
-												alignValue,
-												checked
-											)
-										}
-									/>
-								) )
+						<div className="bmfbe-supports-settings__values">
+							{ Array.isArray( field?.values ) ? (
+								field.values.map(
+									( { label, value: alignValue } ) => (
+										<IndeterminateToggleControl
+											key={ label }
+											label={ label }
+											checked={
+												true === val.value ||
+												( Array.isArray( val.value ) &&
+													val.value.includes(
+														alignValue
+													) )
+											}
+											disabled={
+												disabled || ! val.isActive
+											}
+											onChange={ ( { checked } ) =>
+												handleOnAlignChange(
+													alignValue,
+													checked
+												)
+											}
+										/>
+									)
+								)
 							) : (
 								<IndeterminateToggleControl
 									label={ __( 'Enable', 'bmfbe' ) }
-									value={ val.value }
+									checked={ val.value }
 									disabled={ disabled || ! val.isActive }
 									onChange={ ( { checked } ) =>
-										handleOnChange( key, {
+										handleOnChange( fieldName, {
 											value: checked,
 										} )
 									}

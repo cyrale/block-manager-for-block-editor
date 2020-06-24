@@ -1,0 +1,22 @@
+@import "~@wordpress/base-styles/colors";
+
+.bmfbe-supports {
+	margin: 0 0 1rem;
+
+	background: $white;
+	border: 1px solid $light-gray-700;
+}
+
+.bmfbe-supports-settings {
+	padding: 1rem 1.5rem;
+
+	border-top: 1px solid $light-gray-700;
+
+	&:first-child {
+		border-top: 0;
+	}
+
+	&__values {
+		padding-left: 1.5rem;
+	}
+}
