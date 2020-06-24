@@ -207,6 +207,9 @@ export default function Block( { name: blockName } ) {
 							// Hide empty panels.
 							( ! Array.isArray( block[ panelName ] ) ||
 								block[ panelName ].length > 0 ) &&
+							// Hide supports panel.
+							( 'supports' !== panelName ||
+								block.supports_override ) &&
 							// Hide access panels.
 							( 'access' !== panelName ||
 								! displayGlobalActivation )

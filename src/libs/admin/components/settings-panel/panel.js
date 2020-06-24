@@ -93,28 +93,35 @@ export default function Panel() {
 
 	return (
 		<div className="bmfbe-settings-panel">
-			{ supportedSettings.map( ( field ) => {
-				const Component = field.Component ?? IndeterminateToggleControl;
+			{ supportedSettings
+				.filter( ( field ) => {
+					return (
+						'supports' !== field.name || settings.supports_override
+					);
+				} )
+				.map( ( field ) => {
+					const Component =
+						field.Component ?? IndeterminateToggleControl;
 
-				let props = {
-					label: field.label,
-					checked: settings[ field.name ] ?? false,
-					onChange: ( { checked } ) =>
-						handleOnChange( field.name, checked ),
-				};
-
-				if ( 'supports' === field.name ) {
-					props = {
+					let props = {
 						label: field.label,
-						value: props.checked,
-						disabled: ! settings.supports_override,
-						onChange: ( value ) =>
-							handleOnChange( field.name, value ),
+						checked: settings[ field.name ] ?? false,
+						onChange: ( { checked } ) =>
+							handleOnChange( field.name, checked ),
 					};
-				}
 
-				return <Component key={ field.name } { ...props } />;
-			} ) }
+					if ( 'supports' === field.name ) {
+						props = {
+							label: field.label,
+							value: props.checked,
+							disabled: ! settings.supports_override,
+							onChange: ( value ) =>
+								handleOnChange( field.name, value ),
+						};
+					}
+
+					return <Component key={ field.name } { ...props } />;
+				} ) }
 		</div>
 	);
 }
