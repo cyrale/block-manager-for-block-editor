@@ -3,6 +3,7 @@
  */
 import classnames from 'classnames';
 import { difference, intersection, merge, noop } from 'lodash';
+import { Parser as HtmlToReactParser } from 'html-to-react';
 
 /**
  * WordPress dependencies
@@ -23,7 +24,7 @@ import IndeterminateToggleControl from './indeterminate-toggle-control';
 const supportsFields = {
 	align: {
 		help: __(
-			'This property adds block controls which allow to change block’s alignment. Important: It doesn’t work with dynamic blocks yet.',
+			'This property adds block controls which allow to change block’s alignment. <em>Important: It doesn’t work with dynamic blocks yet.</em>',
 			'bmfbe'
 		),
 		values: [
@@ -51,7 +52,7 @@ const supportsFields = {
 	},
 	alignWide: {
 		help: __(
-			'This property allows to enable wide alignment for your theme. To disable this behavior for a single block, set this flag to `false`.',
+			'This property allows to enable wide alignment for your theme. To disable this behavior for a single block, set this flag to <code>false</code>.',
 			'bmfbe'
 		),
 	},
@@ -63,7 +64,7 @@ const supportsFields = {
 	},
 	className: {
 		help: __(
-			'By default, the class `.wp-block-your-block-name` is added to the root element of your saved markup. This helps having a consistent mechanism for styling blocks that themes and plugins can rely on. If for whatever reason a class is not desired on the markup, this functionality can be disabled.',
+			'By default, the class <code>.wp-block-your-block-name</code> is added to the root element of your saved markup. This helps having a consistent mechanism for styling blocks that themes and plugins can rely on. If for whatever reason a class is not desired on the markup, this functionality can be disabled.',
 			'bmfbe'
 		),
 	},
@@ -75,19 +76,19 @@ const supportsFields = {
 	},
 	defaultStylePicker: {
 		help: __(
-			'When the style picker is shown, a dropdown is displayed so the user can select a default style for this block type. If you prefer not to show the dropdown, set this property to `false`.',
+			'When the style picker is shown, a dropdown is displayed so the user can select a default style for this block type. If you prefer not to show the dropdown, set this property to <code>false</code>.',
 			'bmfbe'
 		),
 	},
 	html: {
 		help: __(
-			'By default, a block’s markup can be edited individually. To disable this behavior, set `html` to `false`.',
+			'By default, a block’s markup can be edited individually. To disable this behavior, set <code>html</code> to <code>false</code>.',
 			'bmfbe'
 		),
 	},
 	inserter: {
 		help: __(
-			'By default, all blocks will appear in the inserter. To hide a block so that it can only be inserted programmatically, set `inserter` to `false`.',
+			'By default, all blocks will appear in the inserter. To hide a block so that it can only be inserted programmatically, set <code>inserter</code> to <code>false</code>.',
 			'bmfbe'
 		),
 	},
@@ -112,6 +113,14 @@ const supportsFields = {
  * @since 1.0.0
  */
 const alignValues = supportsFields.align.values.map( ( a ) => a.value );
+
+/**
+ * Parser to convert raw HTML from translations to React DOM structure.
+ *
+ * @constant {{parse: *, parseWithInstructions: *}}
+ * @since 1.0.0
+ */
+const htmlToReactParser = new HtmlToReactParser();
 
 /**
  * Transform align supports from boolean/array to array only.
@@ -197,7 +206,7 @@ export default function Supports( {
 					<div key={ fieldName } className={ wrapperClasses }>
 						<IndeterminateToggleControl
 							label={ fieldName }
-							help={ field.help }
+							help={ htmlToReactParser.parse( field.help ) }
 							checked={ val.isActive }
 							disabled={ disabled }
 							onChange={ ( { checked } ) =>
