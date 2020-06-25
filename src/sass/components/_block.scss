@@ -43,23 +43,14 @@
 			border-top: 1px solid $light-gray-700;
 
 
-			&--access,
-			&--supports {
+			&--access {
 				.accordion__panel {
 					padding: 0;
-				}
-			}
-
-			&--supports {
-				.bmfbe-supports {
-					border: 0;
 				}
 			}
 		}
 
 		&__button {
-			display: flex;
-
 			.components-base-control__field {
 				margin: 0;
 			}

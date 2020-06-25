@@ -1,0 +1,13 @@
+.bmfbe-settings-panel {
+	&__title {
+		padding: 1rem 0;
+	}
+
+	&__content {
+		padding: 0 1.5rem;
+
+		.accordion {
+			margin: 0 -1rem;
+		}
+	}
+}
