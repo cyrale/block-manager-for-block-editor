@@ -14,52 +14,75 @@ import Supports from '../supports';
 import useDelayedChanges from '../../hooks/use-delayed-changes';
 
 /**
- * List of supported settings (settings that can be changed).
+ * List of supported settings (settings that can be changed) grouped by section.
  *
- * @constant {({name: string, label: string}|{name: string, label: string, Component: *})[]}
+ * @constant {({name: string, label: string, fields: [{name: string, label: string}|{name: string, label: string,Component: *}]})[]}
  * @since 1.0.0
  */
-const supportedSettings = [
+const sections = [
 	{
-		name: 'supports_override',
-		label: __( 'Override supports?', 'bmfbe' ),
+		name: 'interface',
+		label: __( 'Interface', 'bmfbe' ),
+		fields: [],
 	},
 	{
-		name: 'supports',
-		label: __( 'Supports', 'bmfbe' ),
-		Component: Supports,
+		name: 'colors',
+		label: __( 'Colors', 'bmfbe' ),
+		fields: [
+			{
+				name: 'disable_custom_colors',
+				label: __( 'Disable custom colors?', 'bmfbe' ),
+			},
+			{
+				name: 'disable_color_palettes',
+				label: __( 'Disable color palettes?', 'bmfbe' ),
+			},
+			{
+				name: 'disable_custom_gradients',
+				label: __( 'Disable custom gradients?', 'bmfbe' ),
+			},
+			{
+				name: 'disable_gradient_presets',
+				label: __( 'Disable gradient presets?', 'bmfbe' ),
+			},
+		],
 	},
 	{
-		name: 'disable_custom_colors',
-		label: __( 'Disable custom colors?', 'bmfbe' ),
+		name: 'typography',
+		label: __( 'Typography', 'bmfbe' ),
+		fields: [
+			{
+				name: 'disable_custom_font_sizes',
+				label: __( 'Disable custom font sizes?', 'bmfbe' ),
+			},
+			{
+				name: 'disable_font_sizes',
+				label: __( 'Disable font sizes?', 'bmfbe' ),
+			},
+		],
 	},
 	{
-		name: 'disable_color_palettes',
-		label: __( 'Disable color palettes?', 'bmfbe' ),
-	},
-	{
-		name: 'disable_custom_gradients',
-		label: __( 'Disable custom gradients?', 'bmfbe' ),
-	},
-	{
-		name: 'disable_gradient_presets',
-		label: __( 'Disable gradient presets?', 'bmfbe' ),
-	},
-	{
-		name: 'disable_custom_font_sizes',
-		label: __( 'Disable custom font sizes?', 'bmfbe' ),
-	},
-	{
-		name: 'disable_font_sizes',
-		label: __( 'Disable font sizes?', 'bmfbe' ),
-	},
-	{
-		name: 'limit_access_by_post_type',
-		label: __( 'Limit access by post type?', 'bmfbe' ),
-	},
-	{
-		name: 'limit_access_by_user_group',
-		label: __( 'Limit access by user group?', 'bmfbe' ),
+		name: 'advanced',
+		label: __( 'Advanced', 'bmfbe' ),
+		fields: [
+			{
+				name: 'limit_access_by_post_type',
+				label: __( 'Limit access by post type?', 'bmfbe' ),
+			},
+			{
+				name: 'limit_access_by_user_group',
+				label: __( 'Limit access by user group?', 'bmfbe' ),
+			},
+			{
+				name: 'supports_override',
+				label: __( 'Override supports?', 'bmfbe' ),
+			},
+			{
+				name: 'supports',
+				label: __( 'Supports', 'bmfbe' ),
+				Component: Supports,
+			},
+		],
 	},
 ];
 
@@ -93,35 +116,45 @@ export default function Panel() {
 
 	return (
 		<div className="bmfbe-settings-panel">
-			{ supportedSettings
-				.filter( ( field ) => {
-					return (
-						'supports' !== field.name || settings.supports_override
-					);
-				} )
-				.map( ( field ) => {
-					const Component =
-						field.Component ?? IndeterminateToggleControl;
+			{ sections.map( ( section ) => (
+				<div
+					key={ section.name }
+					className="bmfbe-settings-panel__section"
+				>
+					<h2>{ section.label }</h2>
+					{ section.fields
+						.filter(
+							( field ) =>
+								'supports' !== field.name ||
+								settings.supports_override
+						)
+						.map( ( field ) => {
+							const Component =
+								field.Component ?? IndeterminateToggleControl;
 
-					let props = {
-						label: field.label,
-						checked: settings[ field.name ] ?? false,
-						onChange: ( { checked } ) =>
-							handleOnChange( field.name, checked ),
-					};
+							let props = {
+								label: field.label,
+								checked: settings[ field.name ] ?? false,
+								onChange: ( { checked } ) =>
+									handleOnChange( field.name, checked ),
+							};
 
-					if ( 'supports' === field.name ) {
-						props = {
-							label: field.label,
-							value: props.checked,
-							disabled: ! settings.supports_override,
-							onChange: ( value ) =>
-								handleOnChange( field.name, value ),
-						};
-					}
+							if ( 'supports' === field.name ) {
+								props = {
+									label: field.label,
+									value: props.checked,
+									disabled: ! settings.supports_override,
+									onChange: ( value ) =>
+										handleOnChange( field.name, value ),
+								};
+							}
 
-					return <Component key={ field.name } { ...props } />;
-				} ) }
+							return (
+								<Component key={ field.name } { ...props } />
+							);
+						} ) }
+				</div>
+			) ) }
 		</div>
 	);
 }
