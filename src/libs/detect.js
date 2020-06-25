@@ -17,7 +17,7 @@ import {
 
 import * as blocks from '@wordpress/blocks';
 import { dispatch } from '@wordpress/data';
-import { render } from '@wordpress/element';
+import { renderToString } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
 import * as apiBlocks from './admin/api/blocks';
@@ -108,10 +108,7 @@ function normalizeIcon( icon ) {
 		'function' === typeof icon?.src.type &&
 		'SVG' === icon?.src.type.name
 	) {
-		const shadow = document.createElement( 'div' );
-		render( icon?.src, shadow );
-
-		return shadow.getElementsByTagName( 'svg' )[ 0 ].outerHTML;
+		return renderToString( icon.src );
 	}
 
 	return '';
