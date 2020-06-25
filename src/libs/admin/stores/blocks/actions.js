@@ -1,5 +1,3 @@
-import * as apiBlocks from '../../api/blocks';
-
 export { fetchAllFromAPI } from '../actions';
 
 export function initBlocks( blocks ) {
@@ -23,7 +21,16 @@ export function* saveBlock( block ) {
 		block,
 	};
 
-	const savedBlock = yield apiBlocks.updateBlock( block );
+	const savedBlock = yield {
+		type: 'SAVE_BLOCK',
+		block,
+	};
+
+	yield {
+		type: 'UPDATE_BLOCK',
+		name: savedBlock.name,
+		value: savedBlock,
+	};
 
 	yield {
 		type: 'SAVE_BLOCK_FINISH',

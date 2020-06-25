@@ -1,5 +1,3 @@
-import * as apiSettings from '../../api/settings';
-
 export { fetchAllFromAPI } from '../actions';
 
 export function initSettings( settings ) {
@@ -22,7 +20,15 @@ export function* saveSettings( settings ) {
 		type: 'SAVE_SETTINGS_START',
 	};
 
-	const savedSettings = yield apiSettings.updateSettings( settings );
+	const savedSettings = yield {
+		type: 'SAVE_SETTINGS',
+		settings,
+	};
+
+	yield {
+		type: 'INIT_SETTINGS',
+		settings: savedSettings,
+	};
 
 	yield {
 		type: 'SAVE_SETTINGS_FINISH',
