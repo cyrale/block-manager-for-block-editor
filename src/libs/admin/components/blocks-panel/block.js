@@ -31,6 +31,7 @@ import Icon from './icon';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import Styles from './styles';
 import Supports from '../supports';
+import StatusIcon from '../status-icon';
 import Variations from './variations';
 import useDelayedChanges from '../../hooks/use-delayed-changes';
 
@@ -97,13 +98,12 @@ export default function Block( { name: blockName } ) {
 		defaultDisplayedPanels
 	);
 
-	const settings = useSelect(
-		( select ) => select( SETTINGS_STORE ).getSettings(),
-		[]
-	);
-
-	const block = useSelect(
-		( select ) => select( BLOCKS_STORE ).getBlock( blockName ),
+	const { block, settings, status } = useSelect(
+		( select ) => ( {
+			block: select( BLOCKS_STORE ).getBlock( blockName ),
+			settings: select( SETTINGS_STORE ).getSettings(),
+			status: select( BLOCKS_STORE ).getStatus( blockName ),
+		} ),
 		[]
 	);
 
@@ -178,6 +178,7 @@ export default function Block( { name: blockName } ) {
 
 	return (
 		<div className="bmfbe-block">
+			<StatusIcon status={ status } />
 			<div className="bmfbe-block__content">
 				<Icon icon={ block.icon } />
 				<Description

@@ -387,6 +387,7 @@ class Block_Settings_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 */
 	public function update_item( $request ) {
+		sleep( 10 );
 		$block = $this->get_block( $request['name'] );
 
 		if ( is_wp_error( $block ) ) {

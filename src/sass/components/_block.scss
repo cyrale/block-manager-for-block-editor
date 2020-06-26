@@ -1,6 +1,8 @@
 @import "~@wordpress/base-styles/colors";
 
 .bmfbe-block {
+	position: relative;
+
 	margin: 0 0 1rem;
 
 	border: 1px solid $light-gray-700;
@@ -21,6 +23,7 @@
 	}
 
 	&__title {
+		display: flex;
 		margin: 0;
 
 		font-size: 1.2em;
@@ -34,6 +37,12 @@
 
 	&__override-supports {
 		padding: 0 1rem;
+	}
+
+	.bmfbe-status-icon {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.75rem;
 	}
 
 	.accordion {

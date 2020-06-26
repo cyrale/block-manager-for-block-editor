@@ -1,11 +1,13 @@
-import { STATUS_LOADING, STATUS_SAVING } from '../stores/constants';
+/**
+ * Internal dependencies
+ */
+import StatusIcon from './status-icon';
 
 export default function TabTitle( { children, status } ) {
 	return (
-		<>
+		<div className="bmfbe-tab-title">
 			{ children }
-			{ STATUS_LOADING === status && 'Loading...' }
-			{ STATUS_SAVING === status && 'Saving...' }
-		</>
+			<StatusIcon status={ status } />
+		</div>
 	);
 }

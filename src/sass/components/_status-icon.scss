@@ -1,0 +1,66 @@
+@import "~@wordpress/base-styles/colors";
+
+.bmfbe-status-icon {
+	width: 20px;
+	@include reduce-motion("animation");
+
+	.icon {
+		&--check {
+			color: $alert-green;
+
+			animation: disappear 800ms ease-out forwards;
+
+			fill: $alert-green;
+		}
+
+		&--cloud {
+			color: $alert-yellow;
+
+			animation: cloud 1.6s ease-in-out infinite;
+
+			fill: $alert-yellow;
+		}
+
+		&--loading {
+			stroke-dashoffset: 0;
+
+			transition: stroke-dashoffset 1s linear;
+			stroke-width: 1em;
+			animation: loading 1.6s ease-out infinite;
+
+			.bar {
+				stroke: $alert-yellow;
+			}
+		}
+	}
+}
+
+@keyframes disappear {
+	0% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0;
+	}
+}
+
+@keyframes cloud {
+	0% {
+		opacity: 0.5;
+	}
+	50% {
+		opacity: 1;
+	}
+	100% {
+		opacity: 0.5;
+	}
+}
+
+@keyframes loading {
+	0% {
+		transform: rotate(0);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
