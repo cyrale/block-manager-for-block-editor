@@ -108,7 +108,6 @@ class Global_Settings_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 */
 	public function update_item( $request ) {
-		sleep( 10 );
 		$params = $request->get_params();
 
 		$valid_check = Global_Settings::get_instance()->validate_settings( $params );

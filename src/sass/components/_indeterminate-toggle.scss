@@ -182,15 +182,14 @@ $toggle-border-width: 2px;
 }
 
 .indeterminate-toggle-control {
+	margin-bottom: 1rem;
+
 	.components-base-control__field {
 		display: flex;
 		align-items: center;
-		margin-bottom: $grid-unit-15;
-
-		line-height: initial;
 
 		.indeterminate-toggle {
-			margin-right: $grid-unit-20;
+			margin-right: 1rem;
 		}
 
 		.indeterminate-toggle-control__label {

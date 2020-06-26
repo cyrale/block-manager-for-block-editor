@@ -1,0 +1,77 @@
+@import "~@wordpress/base-styles/breakpoints";
+@import "~@wordpress/base-styles/colors";
+@import "~@wordpress/base-styles/mixins";
+@import "~@wordpress/base-styles/variables";
+
+@mixin editor-width($selector) {
+	#{$selector} { /* Set left position when auto-fold is not on the body element. */
+		width: 100%;
+
+		@include break-medium() {
+			width: calc(100% - #{$admin-sidebar-width});
+		}
+	}
+
+	.auto-fold #{$selector} { /* Auto fold is when on smaller breakpoints, nav menu auto collapses. */
+		@include break-medium() {
+			width: calc(100% - #{$admin-sidebar-width-collapsed});
+		}
+
+		@media (min-width: #{ ($break-large + 1) }) {
+			width: calc(100% - #{$admin-sidebar-width});
+		}
+	}
+
+	/* Sidebar manually collapsed. */
+	.folded #{$selector} {
+		width: 100%;
+
+		@include break-medium() {
+			width: calc(100% - #{$admin-sidebar-width-collapsed});
+		}
+	}
+
+	/* Mobile menu opened. */
+	@media (max-width: #{ ($break-medium) }) {
+		.auto-fold .wp-responsive-open #{$selector} {
+			width: calc(100% - #{$admin-sidebar-width-big});
+		}
+	}
+
+	body.is-fullscreen-mode #{$selector} {
+		width: 100% !important;
+	}
+}
+
+.bmfbe-notice {
+	position: fixed !important;
+	bottom: 0;
+	z-index: 10;
+
+	width: calc(100% - #{$admin-sidebar-width});
+
+	&__content {
+		position: relative;
+	}
+
+	.components-notice {
+		position: relative;
+		top: 0;
+
+		margin: 0;
+
+		border-top: 1px solid $dark-opacity-light-400;
+
+		&__content {
+			margin-top: 12px;
+			margin-bottom: 12px;
+		}
+
+		&.is-success {
+			animation: bmfbe-notice-slide-out 600ms ease-in-out forwards 1s;
+			@include reduce-motion("animation");
+		}
+	}
+}
+
+@include editor-width( ".bmfbe-notice-wrapper" );

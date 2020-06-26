@@ -70,7 +70,7 @@ class Admin implements WP_Plugin_Class {
 		wp_enqueue_style(
 			'bmfbe-admin',
 			$this->plugin->url . 'build/admin.css',
-			array(),
+			array( 'wp-components' ),
 			$asset['version']
 		);
 	}

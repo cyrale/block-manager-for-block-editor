@@ -62,4 +62,13 @@
 
 		background: $white;
 	}
+
+	.accordion {
+		&__heading {
+			.indeterminate-toggle-control,
+			.indeterminate-toggle-control .components-base-control__field {
+				margin: 0;
+			}
+		}
+	}
 }
