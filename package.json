@@ -15,6 +15,10 @@
 	"bugs": {
 		"url": "https://github.com/cyrale/block-manager-for-block-editor/issue"
 	},
+	"engines": {
+		"node": ">=12.18",
+		"pnpm": ">=5.5"
+	},
 	"dependencies": {},
 	"devDependencies": {
 		"@wordpress/api-fetch": "3.17.0",
