@@ -52,6 +52,12 @@ class Admin implements WP_Plugin_Class {
 	 * Enqueue scripts and styles.
 	 */
 	public function enqueue_admin_assets() {
+		$current_screen = get_current_screen();
+
+		if ( 'toplevel_page_bmfbe-settings' !== $current_screen->id ) {
+			return;
+		}
+
 		$asset = require_once $this->plugin->path . 'build/admin.asset.php';
 
 		wp_enqueue_script(
