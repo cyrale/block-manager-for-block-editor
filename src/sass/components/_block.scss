@@ -5,8 +5,7 @@
 
 	margin: 0 0 1rem;
 
-	border: 1px solid $light-gray-700;
-
+	border: 1px solid $gray-200;
 
 	&__content {
 		display: flex;
@@ -49,8 +48,7 @@
 		border: 0;
 
 		&__item {
-			border-top: 1px solid $light-gray-700;
-
+			border-top: 1px solid $gray-200;
 
 			&--access {
 				.accordion__panel {

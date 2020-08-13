@@ -12,7 +12,7 @@
 		td {
 			padding: 1rem;
 
-			border-top: 1px solid $light-gray-700;
+			border-top: 1px solid $gray-200;
 		}
 
 		thead {
@@ -23,7 +23,9 @@
 		}
 
 		.indeterminate-toggle-control,
-		.indeterminate-toggle-control .components-base-control__field .indeterminate-toggle,
+		.indeterminate-toggle-control
+		.components-base-control__field
+		.indeterminate-toggle,
 		.components-base-control__field {
 			display: inline-block;
 			margin: 0;
@@ -60,8 +62,8 @@
 			cursor: pointer;
 
 			&:hover {
-				background: $light-gray-100;
-				border-color: $light-gray-300;
+				background: $gray-100;
+				border-color: $gray-200;
 			}
 		}
 	}

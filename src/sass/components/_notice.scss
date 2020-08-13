@@ -3,8 +3,9 @@
 @import "~@wordpress/base-styles/mixins";
 @import "~@wordpress/base-styles/variables";
 
-@mixin editor-width($selector) {
-	#{$selector} { /* Set left position when auto-fold is not on the body element. */
+@mixin editor-width( $selector ) {
+	#{$selector} {
+		/* Set left position when auto-fold is not on the body element. */
 		width: 100%;
 
 		@include break-medium() {
@@ -12,7 +13,8 @@
 		}
 	}
 
-	.auto-fold #{$selector} { /* Auto fold is when on smaller breakpoints, nav menu auto collapses. */
+	.auto-fold #{$selector} {
+		/* Auto fold is when on smaller breakpoints, nav menu auto collapses. */
 		@include break-medium() {
 			width: calc(100% - #{$admin-sidebar-width-collapsed});
 		}
@@ -60,7 +62,7 @@
 
 		margin: 0;
 
-		border-top: 1px solid $dark-opacity-light-400;
+		border-top: 1px solid rgba($gray-600, 0.2);
 
 		&__content {
 			margin-top: 12px;
@@ -69,7 +71,7 @@
 
 		&.is-success {
 			animation: bmfbe-notice-slide-out 600ms ease-in-out forwards 1s;
-			@include reduce-motion("animation");
+			@include reduce-motion( "animation" );
 		}
 	}
 }

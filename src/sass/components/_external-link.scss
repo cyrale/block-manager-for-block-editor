@@ -1,13 +1,13 @@
 .bmfbe-external-link {
-	color: theme(button);
+	color: var(--wp-admin-theme-color);
 
-	fill: theme(button);
+	fill: var(--wp-admin-theme-color);
 
 	&:active,
 	&:focus,
 	&:hover {
-		color: theme(toggle);
+		color: var(--wp-admin-theme-color-darker-20);
 
-		fill: theme(toggle);
+		fill: var(--wp-admin-theme-color-darker-20);
 	}
 }

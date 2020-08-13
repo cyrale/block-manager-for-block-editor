@@ -1,4 +1,3 @@
-@import "~@wordpress/base-styles/breakpoints";
 @import "~@wordpress/base-styles/colors";
 @import "~@wordpress/base-styles/mixins";
 @import "~@wordpress/base-styles/variables";
@@ -8,13 +7,13 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		margin: 0 0 $panel-padding;
+		margin: 0 0 $default-block-margin;
 		padding: 0;
 
 		text-align: center;
 
 		background: $white;
-		border-bottom: 1px solid $light-gray-500;
+		border-bottom: 1px solid $gray-200;
 		cursor: pointer;
 	}
 
@@ -26,23 +25,33 @@
 		color: inherit;
 		text-decoration: none;
 
+		outline-offset: -1px;
+
 		transition: box-shadow 0.1s linear;
-		@include square-style__neutral;
-		@include reduce-motion("transition");
+		@include reduce-motion( "transition" );
 
 		&--selected {
 			font-weight: 600;
 
-			box-shadow: inset 0 -3px theme(outlines);
+			box-shadow:
+				inset 0 0 0 1px transparent,
+				inset 0 -4px var(--wp-admin-theme-color);
+
+			&:focus {
+				box-shadow:
+					inset 0 0 0 1px var(--wp-admin-theme-color),
+					inset 0 -4px var(--wp-admin-theme-color);
+			}
 		}
 
 		&:active,
 		&:hover {
-			color: theme(toggle);
+			color: var(--wp-admin-theme-color);
 		}
 
-		&:focus {
-			@include square-style__focus;
+		&:focus:not(.react-tabs__tab--selected) {
+			outline: 1px solid transparent;
+			box-shadow: inset 0 0 0 1px var(--wp-admin-theme-color);
 		}
 	}
 
@@ -50,7 +59,7 @@
 		display: none;
 		margin: 0 $default-block-margin;
 
-		@media screen and (min-width: $break-large) {
+		@include break-large {
 			max-width: $widget-area-width;
 			margin: 0 auto;
 		}
