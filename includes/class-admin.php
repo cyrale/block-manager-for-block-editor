@@ -70,7 +70,9 @@ class Admin implements WP_Plugin_Class {
 		wp_localize_script(
 			'bmfbe-admin',
 			'bmfbeAdminGlobal',
-			array()
+			array(
+				'detectionPage' => add_query_arg( array( 'detect' => 1 ), admin_url( 'post-new.php' ) ),
+			)
 		);
 
 		wp_enqueue_style(
