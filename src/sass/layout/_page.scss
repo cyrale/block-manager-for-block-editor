@@ -2,10 +2,15 @@
 @import "~@wordpress/base-styles/colors";
 @import "~@wordpress/base-styles/variables";
 
+html {
+	&,
+	&.wp-toolbar {
+		background: #f1f1f1;
+	}
+}
+
 .toplevel_page_bmfbe-settings,
 .toplevel_page_bmfbe-settings.auto-fold {
-	height: auto;
-
 	#wpcontent {
 		padding-left: 0;
 	}
