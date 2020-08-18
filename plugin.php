@@ -1,14 +1,16 @@
 <?php
 /**
- * Plugin Name: Block Manager for WordPress Block Editor (Gutenberg)
- * Plugin URI:  https://github.com/cyrale/block-manager-for-block-editor
+ * Plugin Name:       Block Manager for WordPress Block Editor (Gutenberg)
+ * Plugin URI:        https://github.com/cyrale/block-manager-for-block-editor
  * Description:
- * Version:     1.0.0
- * Author:      Cyril Jacquesson
- * License:     GPL2
- * License URI: https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain: bmfbe
- * Domain Path: /languages
+ * Version:           1.0.0
+ * Author:            Cyril Jacquesson
+ * License:           GPL2
+ * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * Requires at least: 5.5
+ * Requires PHP:      7.2
+ * Text Domain:       bmfbe
+ * Domain Path:       /languages
  *
  * @package BMFBE
  * @version 1.0.0
