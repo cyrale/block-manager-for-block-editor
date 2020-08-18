@@ -67,7 +67,7 @@ class Front implements WP_Plugin_Class {
 
 		wp_enqueue_style(
 			'bmfbe-front',
-			$this->plugin->url . 'dist/front.css',
+			$this->plugin->url . 'build/front.css',
 			array(),
 			$asset['dependencies']
 		);

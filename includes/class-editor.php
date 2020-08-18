@@ -117,7 +117,7 @@ class Editor implements WP_Plugin_Class {
 
 		wp_enqueue_style(
 			'bmfbe-editor',
-			$this->plugin->url . 'dist/editor.css',
+			$this->plugin->url . 'build/editor.css',
 			array( 'wp-edit-blocks' ),
 			$asset['version']
 		);
