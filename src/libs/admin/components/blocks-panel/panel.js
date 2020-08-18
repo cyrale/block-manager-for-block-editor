@@ -67,7 +67,7 @@ export default function Panel() {
 						<AccordionItem key={ category } uuid={ category }>
 							<AccordionItemHeading>
 								<AccordionItemButton>
-									{ category }{ ' ' }
+									{ category }
 									<em>
 										(
 										{ categorizedBlocks[ category ].length }
