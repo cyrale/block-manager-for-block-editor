@@ -203,6 +203,15 @@ final class Plugin {
 	}
 
 	/**
+	 * Add hooks and filters for late calls.
+	 *
+	 * @since 1.0.0
+	 */
+	public function late_hooks() {
+		Editor::disable_block_directory();
+	}
+
+	/**
 	 * Activate the plugin.
 	 *
 	 * @since 1.0.0

@@ -153,4 +153,16 @@ class Editor implements WP_Plugin_Class {
 			add_theme_support( 'disable-custom-font-sizes' );
 		}
 	}
+
+	/**
+	 * Disable block directory.
+	 */
+	public static function disable_block_directory() {
+		$settings = Global_Settings::get_instance()->get_settings();
+
+		if ( isset( $settings['disable_block_directory'] ) && true === $settings['disable_block_directory'] ) {
+			remove_action( 'enqueue_block_editor_assets', 'wp_enqueue_editor_block_directory_assets' );
+			remove_action( 'enqueue_block_editor_assets', 'gutenberg_enqueue_block_editor_assets_block_directory' );
+		}
+	}
 }

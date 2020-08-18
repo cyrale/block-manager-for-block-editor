@@ -23,7 +23,16 @@ const sections = [
 	{
 		name: 'interface',
 		label: __( 'Interface', 'bmfbe' ),
-		fields: [],
+		fields: [
+			{
+				name: 'disable_fullscreen',
+				label: __( 'Disable fullscreen mode', 'bmfbe' ),
+			},
+			{
+				name: 'disable_block_directory',
+				label: __( 'Disable block directory', 'bmfbe' ),
+			},
+		],
 	},
 	{
 		name: 'colors',
@@ -31,19 +40,19 @@ const sections = [
 		fields: [
 			{
 				name: 'disable_custom_colors',
-				label: __( 'Disable custom colors?', 'bmfbe' ),
+				label: __( 'Disable custom colors', 'bmfbe' ),
 			},
 			{
 				name: 'disable_color_palettes',
-				label: __( 'Disable color palettes?', 'bmfbe' ),
+				label: __( 'Disable color palettes', 'bmfbe' ),
 			},
 			{
 				name: 'disable_custom_gradients',
-				label: __( 'Disable custom gradients?', 'bmfbe' ),
+				label: __( 'Disable custom gradients', 'bmfbe' ),
 			},
 			{
 				name: 'disable_gradient_presets',
-				label: __( 'Disable gradient presets?', 'bmfbe' ),
+				label: __( 'Disable gradient presets', 'bmfbe' ),
 			},
 		],
 	},
@@ -53,11 +62,11 @@ const sections = [
 		fields: [
 			{
 				name: 'disable_custom_font_sizes',
-				label: __( 'Disable custom font sizes?', 'bmfbe' ),
+				label: __( 'Disable custom font sizes', 'bmfbe' ),
 			},
 			{
 				name: 'disable_font_sizes',
-				label: __( 'Disable font sizes?', 'bmfbe' ),
+				label: __( 'Disable font sizes', 'bmfbe' ),
 			},
 		],
 	},
@@ -67,15 +76,15 @@ const sections = [
 		fields: [
 			{
 				name: 'limit_access_by_post_type',
-				label: __( 'Limit access by post type?', 'bmfbe' ),
+				label: __( 'Limit access by post type', 'bmfbe' ),
 			},
 			{
 				name: 'limit_access_by_user_group',
-				label: __( 'Limit access by user group?', 'bmfbe' ),
+				label: __( 'Limit access by user group', 'bmfbe' ),
 			},
 			{
 				name: 'supports_override',
-				label: __( 'Override supports?', 'bmfbe' ),
+				label: __( 'Override supports', 'bmfbe' ),
 			},
 			{
 				name: 'supports',

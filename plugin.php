@@ -39,6 +39,7 @@ function bmfbe() {
 try {
 	// Kick it off.
 	add_action( 'plugins_loaded', array( bmfbe(), 'hooks' ) );
+	add_action( 'plugins_loaded', array( bmfbe(), 'late_hooks' ), 999 );
 
 	// Activation and deactivation.
 	register_activation_hook( __FILE__, array( bmfbe(), 'plugin_activate' ) );

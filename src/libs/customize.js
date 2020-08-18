@@ -3,7 +3,7 @@
 import { merge, uniq } from 'lodash';
 
 import * as blocks from '@wordpress/blocks';
-import { select } from '@wordpress/data';
+import { dispatch, select } from '@wordpress/data';
 import domReady from '@wordpress/dom-ready';
 import * as hooks from '@wordpress/hooks';
 
@@ -79,6 +79,17 @@ function getBlocksInContent( clientId = '' ) {
  */
 export default function customize() {
 	domReady( () => {
+		// Disable fullscreen mode
+		if ( bmfbeEditorGlobal.settings.disable_fullscreen ) {
+			const isFullscreenMode = select( 'core/edit-post' ).isFeatureActive(
+				'fullscreenMode'
+			);
+
+			if ( isFullscreenMode ) {
+				dispatch( 'core/edit-post' ).toggleFeature( 'fullscreenMode' );
+			}
+		}
+
 		const blocksInContent = getBlocksInContent();
 
 		// Remove disabled blocks.

@@ -42,13 +42,28 @@ class Global_Settings extends Settings {
 
 		// Initialize available options like arguments in Rest API.
 		$this->schema = array(
+			'latest_detection'           => array(
+				'description' => __( 'Date of the latest detection', 'bmfbe' ),
+				'type'        => 'integer',
+				'default'     => 0,
+			),
+			'disable_fullscreen'         => array(
+				'description' => __( 'Disable fullscreen mode', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
+			'disable_block_directory'    => array(
+				'description' => __( 'Disable block directory', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
 			'supports_override'          => array(
-				'description' => __( 'Override supports?', 'bmfbe' ),
+				'description' => __( 'Override supports', 'bmfbe' ),
 				'type'        => 'boolean',
 				'default'     => false,
 			),
 			'supports'                   => array(
-				'description'       => __( 'Global block supports.', 'bmfbe' ),
+				'description'       => __( 'Global block supports', 'bmfbe' ),
 				'type'              => 'object',
 				'properties'        => array(
 					'align'           => array_merge_recursive(
@@ -170,42 +185,42 @@ class Global_Settings extends Settings {
 				'validate_callback' => array( $this, 'validate_supports' ),
 			),
 			'disable_color_palettes'     => array(
-				'description' => __( 'Disable all color palettes.', 'bmfbe' ),
+				'description' => __( 'Disable all color palettes', 'bmfbe' ),
 				'type'        => 'boolean',
 				'default'     => false,
 			),
 			'disable_custom_colors'      => array(
-				'description' => __( 'Disable custom colors.', 'bmfbe' ),
+				'description' => __( 'Disable custom colors', 'bmfbe' ),
 				'type'        => 'boolean',
 				'default'     => false,
 			),
 			'disable_gradient_presets'   => array(
-				'description' => __( 'Disable all gradient presets.', 'bmfbe' ),
+				'description' => __( 'Disable all gradient presets', 'bmfbe' ),
 				'type'        => 'boolean',
 				'default'     => false,
 			),
 			'disable_custom_gradients'   => array(
-				'description' => __( 'Disable custom gradients.', 'bmfbe' ),
+				'description' => __( 'Disable custom gradients', 'bmfbe' ),
 				'type'        => 'boolean',
 				'default'     => false,
 			),
 			'disable_font_sizes'         => array(
-				'description' => __( 'Disable all font sizes.', 'bmfbe' ),
+				'description' => __( 'Disable all font sizes', 'bmfbe' ),
 				'type'        => 'boolean',
 				'default'     => false,
 			),
 			'disable_custom_font_sizes'  => array(
-				'description' => __( 'Disable custom font sizes.', 'bmfbe' ),
+				'description' => __( 'Disable custom font sizes', 'bmfbe' ),
 				'type'        => 'boolean',
 				'default'     => false,
 			),
 			'limit_access_by_post_type'  => array(
-				'description' => __( 'Limit access to block by post type.', 'bmfbe' ),
+				'description' => __( 'Limit access to block by post type', 'bmfbe' ),
 				'type'        => 'boolean',
 				'default'     => false,
 			),
 			'limit_access_by_user_group' => array(
-				'description' => __( 'Limit access to block by user group.', 'bmfbe' ),
+				'description' => __( 'Limit access to block by user group', 'bmfbe' ),
 				'type'        => 'boolean',
 				'default'     => false,
 			),

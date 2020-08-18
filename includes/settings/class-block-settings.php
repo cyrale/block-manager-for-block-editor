@@ -130,7 +130,7 @@ class Block_Settings extends Settings {
 					),
 				),
 				'supports_override' => array(
-					'description' => __( 'Override global supports?', 'bmfbe' ),
+					'description' => __( 'Override global supports', 'bmfbe' ),
 					'type'        => 'boolean',
 					'default'     => false,
 				),
