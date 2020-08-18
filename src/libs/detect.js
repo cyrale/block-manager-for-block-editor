@@ -1,7 +1,11 @@
 /* global bmfbeEditorGlobal:false */
 
+/**
+ * External dependencies
+ */
 import {
 	assign,
+	defaults,
 	cloneDeep,
 	differenceBy,
 	forEach,
@@ -15,12 +19,19 @@ import {
 	reduce,
 } from 'lodash';
 
+/**
+ * WordPress dependencies
+ */
 import * as blocks from '@wordpress/blocks';
 import { dispatch } from '@wordpress/data';
 import { renderToString } from '@wordpress/element';
 import { __, sprintf } from '@wordpress/i18n';
 
+/**
+ * Internal dependencies
+ */
 import * as apiBlocks from './admin/api/blocks';
+import { updateSettings } from './admin/api/settings';
 
 /**
  * Values to follow progress of detect.
@@ -156,17 +167,29 @@ function sanitizeStyles( block ) {
  */
 function sanitizeVariations( block ) {
 	block.variations = ( block.variations ?? [] ).map( ( variation ) => {
-		variation = pick( variation, [
-			'name',
-			'title',
-			'description',
-			'icon',
-			'isDefault',
-			'isActive',
-		] );
-		variation.icon = normalizeIcon( variation.icon );
+		const sanitizedVariation = defaults(
+			pick( variation, [
+				'name',
+				'title',
+				'description',
+				'icon',
+				'isDefault',
+				'isActive',
+			] ),
+			{
+				title: '',
+			}
+		);
+		sanitizedVariation.icon = normalizeIcon( sanitizedVariation.icon );
 
-		return variation;
+		if (
+			'' === sanitizedVariation.title &&
+			'' !== variation?.attributes?.label
+		) {
+			sanitizedVariation.title = variation.attributes.label;
+		}
+
+		return sanitizedVariation;
 	} );
 
 	return block;
@@ -462,6 +485,11 @@ export default async function detect() {
 		noticeValues.deleted.progress++;
 		refreshInfoNotice();
 	}
+
+	// Update latest date of detection
+	await updateSettings( {
+		latest_detection: Math.floor( Date.now() / 1000 ),
+	} );
 
 	refreshInfoNotice( __( 'Complete!', 'bmfbe' ) );
 
