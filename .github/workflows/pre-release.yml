@@ -42,7 +42,8 @@ jobs:
                   tar -czf "${{ github.workspace }}/${{ github.event.repository.name }}-latest.tar.gz" ${{ github.event.repository.name }}
                   zip -rq "${{ github.workspace }}/${{ github.event.repository.name }}-latest.zip" ${{ github.event.repository.name }}
                   popd
-            - uses: marvinpinto/action-automatic-releases@latest
+            - name: Create release
+              uses: marvinpinto/action-automatic-releases@latest
               with:
                   repo_token: '${{ secrets.GITHUB_TOKEN }}'
                   automatic_release_tag: 'latest'
