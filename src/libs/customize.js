@@ -1,5 +1,3 @@
-/* global bmfbeEditorGlobal:false */
-
 import { merge, uniq } from 'lodash';
 
 import * as blocks from '@wordpress/blocks';

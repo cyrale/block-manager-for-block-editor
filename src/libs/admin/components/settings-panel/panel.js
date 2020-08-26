@@ -1,5 +1,3 @@
-/* global bmfbeAdminGlobal:false */
-
 /**
  * External dependencies
  */
