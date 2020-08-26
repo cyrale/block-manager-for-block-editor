@@ -2,8 +2,8 @@
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Admin.
  *
- * @since 1.0.0
  * @package BMFBE
+ * @since 1.0.0
  */
 
 namespace BMFBE;
@@ -14,16 +14,17 @@ use BMFBE\Interfaces\WP_Plugin_Class;
  * Block Manager for WordPress Block Editor (Gutenberg): Admin.
  *
  * @since 1.0.0
- * @package BMFBE
  */
 class Admin implements WP_Plugin_Class {
+
 	/**
 	 * Parent plugin class.
 	 *
 	 * @var Plugin
+	 *
 	 * @since 1.0.0
 	 */
-	protected $plugin = null;
+	protected $plugin;
 
 	/**
 	 * Constructor.
@@ -110,7 +111,6 @@ class Admin implements WP_Plugin_Class {
 			99
 		);
 	}
-
 
 	/**
 	 * Display settings page.
