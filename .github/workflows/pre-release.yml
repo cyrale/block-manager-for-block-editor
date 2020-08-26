@@ -1,0 +1,53 @@
+name: pre-release
+
+on:
+    pull_request:
+        branches:
+            - master
+    push:
+        branches:
+            - master
+
+jobs:
+    pre-release:
+        name: pre-release
+        runs-on: ubuntu-latest
+        steps:
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '7.3'
+                  tools: composer
+            - name: Setup NodeJS
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 12
+                  registry-url: https://registry.npmjs.org/
+            - name: Install pnpm
+              run: npm add -g pnpm
+            - name: Checkout code
+              uses: actions/checkout@v2
+            - name: Install NodeJS dependencies
+              run: pnpm install
+              env:
+                  CI: true
+            - name: Install PHP dependencies
+              run: composer install
+            - name: Build project
+              shell: bash
+              run: |
+                  pnpm run build
+                  rsync -az --exclude-from=.release-exclude . "${RUNNER_TEMP}/${{ github.event.repository.name }}"
+                  pushd "${RUNNER_TEMP}"
+                  tar -czf "${{ github.workspace }}/${{ github.event.repository.name }}-latest.tar.gz" ${{ github.event.repository.name }}
+                  zip -rq "${{ github.workspace }}/${{ github.event.repository.name }}-latest.zip" ${{ github.event.repository.name }}
+                  popd
+            - uses: marvinpinto/action-automatic-releases@latest
+              with:
+                  repo_token: '${{ secrets.GITHUB_TOKEN }}'
+                  automatic_release_tag: 'latest'
+                  prerelease: true
+                  title: 'Development Build'
+                  files: |
+                      ${{ github.event.repository.name }}-latest.tar.gz
+                      ${{ github.event.repository.name }}-latest.zip

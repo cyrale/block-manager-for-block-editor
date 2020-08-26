@@ -8,7 +8,7 @@
  * License:           GPL2
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * Requires at least: 5.5
- * Requires PHP:      7.2
+ * Requires PHP:      7.3
  * Text Domain:       bmfbe
  * Domain Path:       /languages
  *

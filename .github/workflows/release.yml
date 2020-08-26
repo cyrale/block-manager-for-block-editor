@@ -1,0 +1,84 @@
+name: release
+
+on:
+    pull_request:
+        tags:
+            - v[0-9]+.[0-9]+.[0-9]+
+    push:
+        tags:
+            - v[0-9]+.[0-9]+.[0-9]+
+
+jobs:
+    release:
+        name: release
+        runs-on: ubuntu-latest
+        steps:
+            - name: Get version from tag
+              id: tag_name
+              run: |
+                  echo ::set-output name=current_version::${GITHUB_REF#refs/tags/v}
+              shell: bash
+            - name: Setup NodeJS
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 12
+                  registry-url: https://registry.npmjs.org/
+            - name: Install pnpm
+              run: npm add -g pnpm
+            - name: Setup PHP
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: '7.3'
+                  tools: composer
+            - name: Checkout code
+              uses: actions/checkout@v2
+            - name: Install NodeJS dependencies
+              run: pnpm install
+              env:
+                  CI: true
+            - name: Install PHP dependencies
+              run: composer install
+            - name: Build project
+              shell: bash
+              run: |
+                  pnpm run build
+                  rsync -az --exclude-from=.release-exclude . "${RUNNER_TEMP}/${{ github.event.repository.name }}"
+                  pushd "${RUNNER_TEMP}"
+                  tar -czf "${{ github.workspace }}/${{ github.event.repository.name }}-${{ steps.tag_name.outputs.current_version }}.tar.gz" ${{ github.event.repository.name }}
+                  zip -rq "${{ github.workspace }}/${{ github.event.repository.name }}-${{ steps.tag_name.outputs.current_version }}.zip" ${{ github.event.repository.name }}
+                  popd
+            - name: Get changelog entry
+              id: changelog_reader
+              uses: mindsers/changelog-reader-action@v1
+              with:
+                  version: ${{ steps.tag_name.outputs.current_version }}
+                  path: ./CHANGELOG.md
+            - name: Create release
+              id: create_release
+              uses: actions/create-release@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  tag_name: ${{ github.ref }}
+                  release_name: ${{ github.ref }}
+                  body: ${{ steps.changelog_reader.outputs.log_entry }}
+                  draft: false
+                  prerelease: false
+            - name: Upload tar.gz asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ${{ github.workspace }}/${{ github.event.repository.name }}-${{ steps.tag_name.outputs.current_version }}.tar.gz
+                  asset_name: ${{ github.event.repository.name }}-${{ steps.tag_name.outputs.current_version }}.tar.gz
+                  asset_content_type: application/tar+gzip
+            - name: Upload zip asset
+              uses: actions/upload-release-asset@v1
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              with:
+                  upload_url: ${{ steps.create_release.outputs.upload_url }}
+                  asset_path: ${{ github.workspace }}/${{ github.event.repository.name }}-${{ steps.tag_name.outputs.current_version }}.zip
+                  asset_name: ${{ github.event.repository.name }}-${{ steps.tag_name.outputs.current_version }}.zip
+                  asset_content_type: application/zip
