@@ -27,12 +27,12 @@ jobs:
               run: npm add -g pnpm
             - name: Checkout code
               uses: actions/checkout@v2
+            - name: Install PHP dependencies
+              run: composer install --no-ansi --no-dev --no-interaction --no-progress --no-plugins --no-scripts --no-suggest --optimize-autoloader
             - name: Install NodeJS dependencies
               run: pnpm install
               env:
                   CI: true
-            - name: Install PHP dependencies
-              run: composer install
             - name: Build project
               shell: bash
               run: |
