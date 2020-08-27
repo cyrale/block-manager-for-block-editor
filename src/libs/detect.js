@@ -29,6 +29,7 @@ import { __, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import * as apiBlocks from './admin/api/blocks';
+import * as apiBlockCategories from './admin/api/block-categories';
 import { updateSettings } from './admin/api/settings';
 
 /**
@@ -178,7 +179,8 @@ function sanitizeVariations( block ) {
 				title: '',
 			}
 		);
-		sanitizedVariation.icon = normalizeIcon( sanitizedVariation.icon );
+
+		sanitizedVariation.icon = normalizeIcon( variation.icon );
 
 		if (
 			'' === sanitizedVariation.title &&
@@ -330,10 +332,24 @@ function refreshInfoNotice( message = '' ) {
 export default async function detect() {
 	refreshInfoNotice();
 
+	// Get block categories from editor and sanitize values.
+	const editorBlockCategories = blocks
+		.getCategories()
+		.map( ( { slug, title, icon } ) => {
+			return {
+				slug,
+				title,
+				icon: normalizeIcon( icon ),
+			};
+		} );
+
+	// Update block categories.
+	await apiBlockCategories.updateBlockCategories( editorBlockCategories );
+
 	// Get blocks from database.
 	const registeredBlocks = await apiBlocks.allBlocks();
 
-	// Get block from editor and sanitize values.
+	// Get blocks from editor and sanitize values.
 	const editorBlocks = getEditorBlocks()
 		.map( sanitizeSupports )
 		.map( sanitizeStyles )

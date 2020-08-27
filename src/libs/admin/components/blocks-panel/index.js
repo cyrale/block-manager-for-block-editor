@@ -1,3 +1,4 @@
+import '../../stores/block-categories';
 import '../../stores/blocks';
 import Panel from './panel';
 

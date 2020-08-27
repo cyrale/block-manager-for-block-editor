@@ -6,6 +6,7 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
+import { BLOCK_CATEGORIES_STORE } from '../../stores/block-categories/constants';
 import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import Block from './block';
 
@@ -17,8 +18,11 @@ const {
 export default function Panel() {
 	const [ displayedCategories, setDisplayedCategories ] = useState( {} );
 
-	const { categorizedBlocks, categories } = useSelect(
+	const { availableCategories, categorizedBlocks, categories } = useSelect(
 		( select ) => ( {
+			availableCategories: select(
+				BLOCK_CATEGORIES_STORE
+			).getBlockCategories(),
 			categorizedBlocks: select( BLOCKS_STORE ).getCategorizedBlocks(),
 			categories: select( BLOCKS_STORE ).getCategories(),
 		} ),
@@ -63,31 +67,47 @@ export default function Panel() {
 					preExpanded={ [ categories[ 0 ] ] }
 					onChange={ handleAccordionChange }
 				>
-					{ categories.map( ( category ) => (
-						<AccordionItem key={ category } uuid={ category }>
-							<AccordionItemHeading>
-								<AccordionItemButton>
-									{ category }
-									<em>
-										(
-										{ categorizedBlocks[ category ].length }
-										)
-									</em>
-								</AccordionItemButton>
-							</AccordionItemHeading>
-							<AccordionItemPanel>
-								{ displayedCategories[ category ] &&
-									categorizedBlocks[
-										category
-									].map( ( block ) => (
-										<Block
-											key={ block.name }
-											{ ...block }
-										/>
-									) ) }
-							</AccordionItemPanel>
-						</AccordionItem>
-					) ) }
+					{ categories.map( ( category ) => {
+						const categoryName = availableCategories.reduce(
+							( name, c ) => {
+								if ( c.slug === category ) {
+									name = c.title;
+								}
+
+								return name;
+							},
+							category
+						);
+
+						return (
+							<AccordionItem key={ category } uuid={ category }>
+								<AccordionItemHeading>
+									<AccordionItemButton>
+										{ categoryName }
+										<em>
+											(
+											{
+												categorizedBlocks[ category ]
+													.length
+											}
+											)
+										</em>
+									</AccordionItemButton>
+								</AccordionItemHeading>
+								<AccordionItemPanel>
+									{ displayedCategories[ category ] &&
+										categorizedBlocks[
+											category
+										].map( ( block ) => (
+											<Block
+												key={ block.name }
+												{ ...block }
+											/>
+										) ) }
+								</AccordionItemPanel>
+							</AccordionItem>
+						);
+					} ) }
 				</Accordion>
 			) }
 		</div>

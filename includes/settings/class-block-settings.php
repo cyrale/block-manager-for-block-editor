@@ -308,13 +308,10 @@ class Block_Settings extends Settings {
 					'core-embed/',
 				);
 
-				$category_order = array(
-					'common',
-					'formatting',
-					'layout',
-					'widgets',
-					'embed',
-				);
+				$category_order = array();
+				foreach ( Block_Categories::get_instance()->get_settings() as $category ) {
+					$category_order[] = $category['slug'];
+				}
 
 				$name_a = array_search(
 					substr( $a['name'], 0, strpos( $a['name'], '/' ) + 1 ),
@@ -484,7 +481,6 @@ class Block_Settings extends Settings {
 		$schema['items']['category']['required']    = false;
 
 		$valid_check = self::validate_params( $block, $schema['items'] );
-
 		if ( is_wp_error( $valid_check ) ) {
 			return $valid_check;
 		}

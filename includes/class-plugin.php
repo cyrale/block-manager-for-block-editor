@@ -8,8 +8,10 @@
 
 namespace BMFBE;
 
+use BMFBE\Rest_API\Block_Categories_Controller;
 use BMFBE\Rest_API\Block_Settings_Controller;
 use BMFBE\Rest_API\Global_Settings_Controller;
+use BMFBE\Settings\Block_Categories;
 use BMFBE\Settings\Block_Settings;
 use BMFBE\Settings\Global_Settings;
 use Exception;
@@ -20,12 +22,13 @@ use Exception;
  * @since 1.0.0
  * @package BMFBE
  *
- * @property-read string          $version         Current version.
- * @property-read string          $basename        Plugin basename.
- * @property-read string          $url             URL of plugin directory.
- * @property-read string          $path            Path of plugin directory.
- * @property-read Block_Settings  $block_settings  Block settings.
- * @property-read Global_Settings $global_settings Global settings of plugin.
+ * @property-read string           $version           Current version.
+ * @property-read string           $basename          Plugin basename.
+ * @property-read string           $url               URL of plugin directory.
+ * @property-read string           $path              Path of plugin directory.
+ * @property-read Block_Categories $block_categories  Block categories.
+ * @property-read Block_Settings   $block_settings    Block settings.
+ * @property-read Global_Settings  $global_settings   Global settings of plugin.
  */
 final class Plugin {
 	/**
@@ -75,6 +78,14 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	protected static $single_instance = null;
+
+	/**
+	 * Instance of BMFBE\Rest_API\Block_Categories_Controller
+	 *
+	 * @var Block_Categories_Controller
+	 * @since 1.0.0
+	 */
+	protected $api_block_categories;
 
 	/**
 	 * Instance of BMFBE\Rest_API\Block_Settings_Controller
@@ -141,6 +152,14 @@ final class Plugin {
 	protected $block_settings;
 
 	/**
+	 * Instance of BMFBE\Settings\Block_Categories: block categories.
+	 *
+	 * @var Block_Categories
+	 * @since 1.0.0
+	 */
+	protected $block_categories;
+
+	/**
 	 * Creates or returns an instance of this class.
 	 *
 	 * @return Plugin A single instance of this class.
@@ -170,8 +189,9 @@ final class Plugin {
 		$this->url      = plugin_dir_url( BMFBE_MAIN_FILE );
 		$this->path     = plugin_dir_path( BMFBE_MAIN_FILE );
 
-		$this->global_settings = Global_Settings::get_instance();
-		$this->block_settings  = Block_Settings::get_instance();
+		$this->global_settings  = Global_Settings::get_instance();
+		$this->block_settings   = Block_Settings::get_instance();
+		$this->block_categories = Block_Categories::get_instance();
 	}
 
 	/**
@@ -180,8 +200,9 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	public function plugin_classes() {
-		$this->api_block_settings  = new Block_Settings_Controller( $this );
-		$this->api_global_settings = new Global_Settings_Controller( $this );
+		$this->api_block_categories = new Block_Categories_Controller( $this );
+		$this->api_block_settings   = new Block_Settings_Controller( $this );
+		$this->api_global_settings  = new Global_Settings_Controller( $this );
 
 		$this->admin  = new Admin( $this );
 		$this->common = new Common( $this );
