@@ -31,6 +31,7 @@ devDependencies:
   react-test-renderer: 16.13.1
   rimraf: 3.0.2
   stylelint-config-rational-order: 0.1.2
+  stylelint-config-wordpress: 17.0.0
   stylelint-order: 4.1.0
 lockfileVersion: 5.1
 packages:
@@ -12347,6 +12348,22 @@ packages:
       stylelint-scss: ^3.0.0
     resolution:
       integrity: sha512-4bI5BYbabo/GCQ6LbRZx/ZlVkK65a1jivNNsD+ix/Lw0U3iAch+jQcvliGnnAX8SUPaZ0UqzNVNNAF3urswa7g==
+  /stylelint-config-recommended-scss/4.2.0_stylelint-scss@3.18.0:
+    dependencies:
+      stylelint-config-recommended: 3.0.0
+      stylelint-scss: 3.18.0
+    dev: true
+    peerDependencies:
+      stylelint: ^10.1.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
+      stylelint-scss: ^3.0.0
+    resolution:
+      integrity: sha512-4bI5BYbabo/GCQ6LbRZx/ZlVkK65a1jivNNsD+ix/Lw0U3iAch+jQcvliGnnAX8SUPaZ0UqzNVNNAF3urswa7g==
+  /stylelint-config-recommended/3.0.0:
+    dev: true
+    peerDependencies:
+      stylelint: '>=10.1.0'
+    resolution:
+      integrity: sha512-F6yTRuc06xr1h5Qw/ykb2LuFynJ2IxkKfCMf+1xqPffkxh0S09Zc902XCffcsw/XMFq/OzQ1w54fLIDtmRNHnQ==
   /stylelint-config-recommended/3.0.0_stylelint@13.6.1:
     dependencies:
       stylelint: 13.6.1
@@ -12355,6 +12372,18 @@ packages:
       stylelint: '>=10.1.0'
     resolution:
       integrity: sha512-F6yTRuc06xr1h5Qw/ykb2LuFynJ2IxkKfCMf+1xqPffkxh0S09Zc902XCffcsw/XMFq/OzQ1w54fLIDtmRNHnQ==
+  /stylelint-config-wordpress/17.0.0:
+    dependencies:
+      stylelint-config-recommended: 3.0.0
+      stylelint-config-recommended-scss: 4.2.0_stylelint-scss@3.18.0
+      stylelint-scss: 3.18.0
+    dev: true
+    engines:
+      node: '>=10'
+    peerDependencies:
+      stylelint: ^10.1.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
+    resolution:
+      integrity: sha512-qUU2kVMd2ezIV9AzRdgietIfnavRRENt4180A1OMoVXIowRjjhohZgBiyVPV5EtNKo3GTO63l8g/QGNG27/h9g==
   /stylelint-config-wordpress/17.0.0_stylelint@13.6.1:
     dependencies:
       stylelint: 13.6.1
@@ -12391,6 +12420,20 @@ packages:
       stylelint: ^10.0.1 || ^11.0.0 || ^12.0.0 || ^13.0.0
     resolution:
       integrity: sha512-sVTikaDvMqg2aJjh4r48jsdfmqLT+nqB1MOsaBnvM3OwLx4S+WXcsxsgk5w18h/OZoxZCxuyXMh61iBHcj9Qiw==
+  /stylelint-scss/3.18.0:
+    dependencies:
+      lodash: 4.17.19
+      postcss-media-query-parser: 0.2.3
+      postcss-resolve-nested-selector: 0.1.1
+      postcss-selector-parser: 6.0.2
+      postcss-value-parser: 4.1.0
+    dev: true
+    engines:
+      node: '>=8'
+    peerDependencies:
+      stylelint: ^8.0.0 || ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0
+    resolution:
+      integrity: sha512-LD7+hv/6/ApNGt7+nR/50ft7cezKP2HM5rI8avIdGaUWre3xlHfV4jKO/DRZhscfuN+Ewy9FMhcTq0CcS0C/SA==
   /stylelint-scss/3.18.0_stylelint@13.6.1:
     dependencies:
       lodash: 4.17.19
@@ -13976,4 +14019,5 @@ specifiers:
   react-test-renderer: 16.13.1
   rimraf: 3.0.2
   stylelint-config-rational-order: 0.1.2
+  stylelint-config-wordpress: 17.0.0
   stylelint-order: 4.1.0
