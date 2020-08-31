@@ -11,9 +11,11 @@ namespace BMFBE;
 use BMFBE\Rest_API\Block_Categories_Controller;
 use BMFBE\Rest_API\Block_Settings_Controller;
 use BMFBE\Rest_API\Global_Settings_Controller;
+use BMFBE\Rest_API\Pattern_Settings_Controller;
 use BMFBE\Settings\Block_Categories;
 use BMFBE\Settings\Block_Settings;
 use BMFBE\Settings\Global_Settings;
+use BMFBE\Settings\Pattern_Settings;
 use Exception;
 
 /**
@@ -29,6 +31,7 @@ use Exception;
  * @property-read Block_Categories $block_categories  Block categories.
  * @property-read Block_Settings   $block_settings    Block settings.
  * @property-read Global_Settings  $global_settings   Global settings of plugin.
+ * @property-read Pattern_Settings $pattern_settings  Pattern settings.
  */
 final class Plugin {
 	/**
@@ -104,6 +107,14 @@ final class Plugin {
 	protected $api_global_settings;
 
 	/**
+	 * Instance of BMFBE\Rest_API\Pattern_Settings_Controller
+	 *
+	 * @var Pattern_Settings_Controller
+	 * @since 1.0.0
+	 */
+	protected $api_pattern_settings;
+
+	/**
 	 * Instance of BMFBE\Admin.
 	 *
 	 * @var Admin
@@ -160,6 +171,14 @@ final class Plugin {
 	protected $block_categories;
 
 	/**
+	 * Instance of BMFBE\Settings\Pattern_Settings: pattern settings.
+	 *
+	 * @var Pattern_Settings
+	 * @since 1.0.0
+	 */
+	protected $pattern_settings;
+
+	/**
 	 * Creates or returns an instance of this class.
 	 *
 	 * @return Plugin A single instance of this class.
@@ -192,6 +211,7 @@ final class Plugin {
 		$this->global_settings  = Global_Settings::get_instance();
 		$this->block_settings   = Block_Settings::get_instance();
 		$this->block_categories = Block_Categories::get_instance();
+		$this->pattern_settings = Pattern_Settings::get_instance();
 	}
 
 	/**
@@ -203,6 +223,7 @@ final class Plugin {
 		$this->api_block_categories = new Block_Categories_Controller( $this );
 		$this->api_block_settings   = new Block_Settings_Controller( $this );
 		$this->api_global_settings  = new Global_Settings_Controller( $this );
+		$this->api_pattern_settings = new Pattern_Settings_Controller( $this );
 
 		$this->admin  = new Admin( $this );
 		$this->common = new Common( $this );
@@ -368,8 +389,10 @@ final class Plugin {
 			case 'basename':
 			case 'url':
 			case 'path':
+			case 'block_categories':
 			case 'block_settings':
 			case 'global_settings':
+			case 'pattern_settings':
 				return $this->$field;
 			default:
 				throw new Exception( 'Invalid ' . __CLASS__ . ' property: ' . $field );
