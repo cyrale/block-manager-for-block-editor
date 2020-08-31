@@ -46,6 +46,7 @@ class Editor implements WP_Plugin_Class {
 	 */
 	public function hooks() {
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ), 999 );
+		add_action( 'init', array( $this, 'early_editor_settings' ), 1 );
 		add_action( 'init', array( $this, 'editor_settings' ), 999 );
 	}
 
@@ -121,6 +122,19 @@ class Editor implements WP_Plugin_Class {
 			array( 'wp-edit-blocks' ),
 			$asset['version']
 		);
+	}
+
+	/**
+	 * Customize editor settings earlier.
+	 *
+	 * @since 1.0.0
+	 */
+	public function early_editor_settings() {
+		$settings = Global_Settings::get_instance()->get_settings();
+
+		if ( isset( $settings['disable_block_patterns'] ) && true === $settings['disable_block_patterns'] ) {
+			remove_theme_support( 'core-block-patterns' );
+		}
 	}
 
 	/**

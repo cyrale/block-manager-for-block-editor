@@ -220,6 +220,7 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	public function hooks() {
+		add_action( 'after_theme_setup', array( $this, 'after_theme_setup' ), 0 );
 		add_action( 'init', array( $this, 'init' ), 0 );
 	}
 
@@ -255,7 +256,7 @@ final class Plugin {
 	}
 
 	/**
-	 * Init hooks
+	 * Init hooks.
 	 *
 	 * @since 1.0.0
 	 */

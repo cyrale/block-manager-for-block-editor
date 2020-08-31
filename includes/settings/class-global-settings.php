@@ -57,6 +57,11 @@ class Global_Settings extends Settings {
 				'type'        => 'boolean',
 				'default'     => false,
 			),
+			'disable_block_patterns'     => array(
+				'description' => __( 'Disable block patterns', 'bmfbe' ),
+				'type'        => 'boolean',
+				'default'     => false,
+			),
 			'supports_override'          => array(
 				'description' => __( 'Override supports', 'bmfbe' ),
 				'type'        => 'boolean',

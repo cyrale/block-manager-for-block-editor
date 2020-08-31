@@ -47,6 +47,10 @@ const sections = [
 				name: 'disable_block_directory',
 				label: __( 'Disable block directory', 'bmfbe' ),
 			},
+			{
+				name: 'disable_block_patterns',
+				label: __( 'Disable block patterns', 'bmfbe' ),
+			},
 		],
 	},
 	{
