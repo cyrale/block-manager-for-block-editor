@@ -21,6 +21,10 @@ import {
 } from './components/blocks-panel';
 import Notice from './components/notice';
 import {
+	default as PatternsPanel,
+	TabTitle as PatternsTab,
+} from './components/patterns-panel';
+import {
 	default as SettingsPanel,
 	TabTitle as SettingsTab,
 } from './components/settings-panel';
@@ -33,6 +37,11 @@ export default function Admin() {
 			: STATUS_PENDING
 	);
 
+	const settings = useSelect(
+		( select ) => select( SETTINGS_STORE ).getSettings(),
+		[]
+	);
+
 	return (
 		<>
 			<Tabs forceRenderTabPanel={ true }>
@@ -43,6 +52,13 @@ export default function Admin() {
 					<Tab>
 						<BlocksTab>{ __( 'Blocks', 'bmfbe' ) }</BlocksTab>
 					</Tab>
+					{ false === settings.disable_block_patterns && (
+						<Tab>
+							<PatternsTab>
+								{ __( 'Patterns', 'bmfbe' ) }
+							</PatternsTab>
+						</Tab>
+					) }
 				</TabList>
 				<TabPanel>
 					<SettingsPanel />
@@ -50,6 +66,11 @@ export default function Admin() {
 				<TabPanel>
 					<BlocksPanel />
 				</TabPanel>
+				{ false === settings.disable_block_patterns && (
+					<TabPanel>
+						<PatternsPanel />
+					</TabPanel>
+				) }
 			</Tabs>
 			<Notice status={ status } />
 		</>
