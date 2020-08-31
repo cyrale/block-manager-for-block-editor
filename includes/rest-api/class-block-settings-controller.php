@@ -205,7 +205,7 @@ class Block_Settings_Controller extends Rest_Controller {
 	 *
 	 * @param array $block Block object.
 	 *
-	 * @return array Links for the given post.
+	 * @return array Links for the given block.
 	 * @since 1.0.0
 	 */
 	protected function prepare_links( $block ) {
