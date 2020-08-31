@@ -24,7 +24,7 @@ import { __ } from '@wordpress/i18n';
 import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import { SETTINGS_STORE } from '../../stores/settings/constants';
 import Access from '../access';
-import Description from './description';
+import Description from '../description';
 import ExternalLink from '../external-link';
 import FakeAccordion from '../fake-accordion';
 import Icon from './icon';
@@ -182,6 +182,7 @@ export default function Block( { name: blockName } ) {
 			<div className="bmfbe-block__content">
 				<Icon icon={ block.icon } />
 				<Description
+					classPrefix="block"
 					name={ blockName }
 					title={ block.title }
 					description={ block.description }

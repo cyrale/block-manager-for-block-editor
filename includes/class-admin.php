@@ -72,7 +72,9 @@ class Admin implements WP_Plugin_Class {
 			'bmfbe-admin',
 			'bmfbeAdminGlobal',
 			array(
-				'detectionPage' => add_query_arg( array( 'detect' => 1 ), admin_url( 'post-new.php' ) ),
+				'detectionPage'     => add_query_arg( array( 'detect' => 1 ), admin_url( 'post-new.php' ) ),
+				'patterns'          => \WP_Block_Patterns_Registry::get_instance()->get_all_registered(),
+				'patternCategories' => \WP_Block_Pattern_Categories_Registry::get_instance()->get_all_registered(),
 			)
 		);
 

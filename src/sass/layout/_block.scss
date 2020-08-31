@@ -1,0 +1,42 @@
+@mixin block( $prefix ) {
+	.bmfbe-#{$prefix} {
+		position: relative;
+
+		margin: 0 0 1rem;
+
+		border: 1px solid $gray-200;
+
+		&__content {
+			display: flex;
+			padding: 1rem 0.5rem;
+		}
+
+		&__icon {
+			margin: 0.1rem 1rem 0 0.5rem;
+
+			svg {
+				max-width: 24px;
+				height: auto;
+			}
+		}
+
+		&__title {
+			display: flex;
+			margin: 0;
+
+			font-size: 1.2em;
+		}
+
+		&__name {
+			margin: 0;
+
+			font-style: italic;
+		}
+
+		.bmfbe-status-icon {
+			position: absolute;
+			top: 0.5rem;
+			right: 0.75rem;
+		}
+	}
+}
