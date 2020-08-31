@@ -1,3 +1,14 @@
 @import "../layout/block";
 
 @include block( "pattern" );
+
+.bmfbe-pattern {
+	&__content {
+		padding-right: 1rem;
+		padding-left: 1rem;
+	}
+
+	&__disable {
+		padding: 0 1rem;
+	}
+}
