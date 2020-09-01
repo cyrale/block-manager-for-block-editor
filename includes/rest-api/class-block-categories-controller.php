@@ -1,6 +1,6 @@
 <?php
 /**
- * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
+ * Block Manager for WordPress Block Editor (Gutenberg): Block categories.
  *
  * @since 1.0.0
  * @package BMFBE\Rest_API
@@ -12,7 +12,7 @@ use BMFBE\Settings\Block_Categories;
 use WP_REST_Server;
 
 /**
- * Block Manager for WordPress Block Editor (Gutenberg): Global settings.
+ * Block Manager for WordPress Block Editor (Gutenberg): Block categories.
  *
  * @since 1.0.0
  * @package BMFBE\Rest_API
@@ -43,15 +43,15 @@ class Block_Categories_Controller extends Rest_Controller {
 			array(
 				array(
 					'methods'             => WP_REST_Server::READABLE,
-					'callback'            => array( $this, 'get_item' ),
+					'callback'            => array( $this, 'get_items' ),
 					'args'                => array(),
-					'permission_callback' => array( $this, 'get_item_permissions_check' ),
+					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 				),
 				array(
 					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'update_item' ),
+					'callback'            => array( $this, 'update_items' ),
 					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
-					'permission_callback' => array( $this, 'update_item_permissions_check' ),
+					'permission_callback' => array( $this, 'update_items_permissions_check' ),
 				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
@@ -59,7 +59,7 @@ class Block_Categories_Controller extends Rest_Controller {
 	}
 
 	/**
-	 * Retrieves the block's schema, conforming to JSON Schema.
+	 * Retrieves the block categories schema, conforming to JSON Schema.
 	 *
 	 * @return array Item schema data.
 	 * @since 1.0.0
@@ -71,14 +71,12 @@ class Block_Categories_Controller extends Rest_Controller {
 
 		$global_schema = Block_Categories::get_instance()->get_schema();
 
-		$schema = array(
+		$this->schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
-			'title'      => 'categories',
+			'title'      => 'block-category',
 			'type'       => 'object',
-			'properties' => $global_schema,
+			'properties' => $global_schema['items']['properties'],
 		);
-
-		$this->schema = $schema;
 
 		return $this->add_additional_fields_schema( $this->schema );
 	}
@@ -91,7 +89,7 @@ class Block_Categories_Controller extends Rest_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @since 1.0.0
 	 */
-	public function get_item( $request ) { // phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+	public function get_items( $request ) { // phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
 		return rest_ensure_response( Block_Categories::get_instance()->get_settings() );
 	}
 
@@ -103,7 +101,7 @@ class Block_Categories_Controller extends Rest_Controller {
 	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
 	 * @since 1.0.0
 	 */
-	public function update_item( $request ) {
+	public function update_items( $request ) {
 		$params = $request->get_params();
 
 		$categories = array();
