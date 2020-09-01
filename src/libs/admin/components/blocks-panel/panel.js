@@ -1,3 +1,6 @@
+/**
+ * External dependencies
+ */
 import {
 	Accordion,
 	AccordionItem,
@@ -6,25 +9,25 @@ import {
 	AccordionItemPanel,
 } from 'react-accessible-accordion';
 
-import { BLOCK_CATEGORIES_STORE } from '../../stores/block-categories/constants';
+/**
+ * WordPress dependencies
+ */
+import { useSelect } from '@wordpress/data';
+import { Fragment, useEffect, useState } from '@wordpress/element';
+
+/**
+ * Internal dependencies
+ */
 import { BLOCKS_STORE } from '../../stores/blocks/constants';
 import Block from './block';
-
-const {
-	data: { useSelect },
-	element: { useEffect, useState },
-} = wp;
 
 export default function Panel() {
 	const [ displayedCategories, setDisplayedCategories ] = useState( {} );
 
-	const { availableCategories, categorizedBlocks, categories } = useSelect(
+	const { blocks, categories } = useSelect(
 		( select ) => ( {
-			availableCategories: select(
-				BLOCK_CATEGORIES_STORE
-			).getBlockCategories(),
-			categorizedBlocks: select( BLOCKS_STORE ).getCategorizedBlocks(),
-			categories: select( BLOCKS_STORE ).getCategories(),
+			blocks: select( BLOCKS_STORE ).getBlocks(),
+			categories: select( BLOCKS_STORE ).getBlockCategories(),
 		} ),
 		[]
 	);
@@ -32,8 +35,8 @@ export default function Panel() {
 	useEffect( () => {
 		const defaultDisplayedCategories = {};
 
-		categories.forEach( ( category, index ) => {
-			defaultDisplayedCategories[ category ] = 0 === index;
+		categories.forEach( ( { slug }, index ) => {
+			defaultDisplayedCategories[ slug ] = 0 === index;
 		} );
 
 		setDisplayedCategories( defaultDisplayedCategories );
@@ -48,9 +51,9 @@ export default function Panel() {
 	function handleAccordionChange( accordionNames ) {
 		const currentDisplayedCategories = {};
 
-		categories.forEach( ( category ) => {
-			currentDisplayedCategories[ category ] = accordionNames.includes(
-				category
+		categories.forEach( ( { slug } ) => {
+			currentDisplayedCategories[ slug ] = accordionNames.includes(
+				slug
 			);
 		} );
 
@@ -64,41 +67,32 @@ export default function Panel() {
 			) : (
 				<Accordion
 					allowZeroExpanded={ true }
-					preExpanded={ [ categories[ 0 ] ] }
+					preExpanded={ [ categories[ 0 ].slug ] }
 					onChange={ handleAccordionChange }
 				>
 					{ categories.map( ( category ) => {
-						const categoryName = availableCategories.reduce(
-							( name, c ) => {
-								if ( c.slug === category ) {
-									name = c.title;
-								}
-
-								return name;
-							},
-							category
+						const categorizedBlocks = blocks.filter(
+							( { category: c } ) => c === category.slug
 						);
 
+						if ( 0 === categorizedBlocks.length ) {
+							return <Fragment key={ category.slug }></Fragment>;
+						}
+
 						return (
-							<AccordionItem key={ category } uuid={ category }>
+							<AccordionItem
+								key={ category.slug }
+								uuid={ category.slug }
+							>
 								<AccordionItemHeading>
 									<AccordionItemButton>
-										{ categoryName }
-										<em>
-											(
-											{
-												categorizedBlocks[ category ]
-													.length
-											}
-											)
-										</em>
+										{ category.title }
+										<em>({ categorizedBlocks.length })</em>
 									</AccordionItemButton>
 								</AccordionItemHeading>
 								<AccordionItemPanel>
-									{ displayedCategories[ category ] &&
-										categorizedBlocks[
-											category
-										].map( ( block ) => (
+									{ displayedCategories[ category.slug ] &&
+										categorizedBlocks.map( ( block ) => (
 											<Block
 												key={ block.name }
 												{ ...block }

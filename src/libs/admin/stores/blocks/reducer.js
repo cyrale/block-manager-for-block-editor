@@ -11,6 +11,12 @@ const DEFAULT_STATE = {
 
 export function reducer( state = DEFAULT_STATE, action ) {
 	switch ( action.type ) {
+		case 'INIT_BLOCK_CATEGORIES':
+			return {
+				...state,
+				categories: action.categories,
+			};
+
 		case 'INIT_BLOCKS':
 			const blocksObject = {};
 			action.blocks.forEach( ( block ) => {
@@ -27,23 +33,23 @@ export function reducer( state = DEFAULT_STATE, action ) {
 				name: block.value.name,
 			} ) );
 
-			const categories = Object.values( blocks ).reduce(
-				( cats, block ) => {
-					if ( ! cats.includes( block.value.category ) ) {
-						cats.push( block.value.category );
-					}
+			// const categories = Object.values( blocks ).reduce(
+			// 	( cats, block ) => {
+			// 		if ( ! cats.includes( block.value.category ) ) {
+			// 			cats.push( block.value.category );
+			// 		}
 
-					return cats;
-				},
-				[]
-			);
+			// 		return cats;
+			// 	},
+			// 	[]
+			// );
 
 			return {
 				...state,
 				status: STATUS_PENDING,
 				blocks,
 				list,
-				categories,
+				// categories,
 			};
 
 		case 'UPDATE_BLOCK':

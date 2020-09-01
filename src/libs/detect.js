@@ -29,7 +29,6 @@ import { __, sprintf } from '@wordpress/i18n';
  * Internal dependencies
  */
 import * as apiBlocks from './admin/api/blocks';
-import * as apiBlockCategories from './admin/api/block-categories';
 import { updateSettings } from './admin/api/settings';
 
 /**
@@ -344,7 +343,7 @@ export default async function detect() {
 		} );
 
 	// Update block categories.
-	await apiBlockCategories.updateBlockCategories( editorBlockCategories );
+	await apiBlocks.updateBlockCategories( editorBlockCategories );
 
 	// Get blocks from database.
 	const registeredBlocks = await apiBlocks.allBlocks();

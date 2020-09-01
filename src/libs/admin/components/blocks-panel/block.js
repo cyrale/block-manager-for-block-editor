@@ -92,7 +92,7 @@ const changingFields = [
 	...panels.map( ( panel ) => panel.name ),
 ];
 
-export default function Block( { name: blockName } ) {
+export default function Block( { name } ) {
 	// Status of panels: show/hide.
 	const [ displayedPanels, setDisplayedPanels ] = useState(
 		defaultDisplayedPanels
@@ -100,9 +100,9 @@ export default function Block( { name: blockName } ) {
 
 	const { block, settings, status } = useSelect(
 		( select ) => ( {
-			block: select( BLOCKS_STORE ).getBlock( blockName ),
+			block: select( BLOCKS_STORE ).getBlock( name ),
 			settings: select( SETTINGS_STORE ).getSettings(),
-			status: select( BLOCKS_STORE ).getStatus( blockName ),
+			status: select( BLOCKS_STORE ).getStatus( name ),
 		} ),
 		[]
 	);
@@ -142,7 +142,7 @@ export default function Block( { name: blockName } ) {
 	function handleAccordionChange( accordionNames ) {
 		const currentDisplayedPanels = mapValues(
 			displayedPanels,
-			( displayed, name ) => accordionNames.includes( name )
+			( displayed, panelName ) => accordionNames.includes( panelName )
 		);
 		setDisplayedPanels( currentDisplayedPanels );
 	}
@@ -154,9 +154,9 @@ export default function Block( { name: blockName } ) {
 	 * @since 1.0.0
 	 */
 	async function handleBlockChange( value ) {
-		await updateBlock( blockName, value );
+		await updateBlock( name, value );
 
-		const newBlock = wpSelect( BLOCKS_STORE ).getBlock( blockName );
+		const newBlock = wpSelect( BLOCKS_STORE ).getBlock( name );
 		enqueueChanges( pick( newBlock, changingFields ) );
 	}
 
@@ -183,7 +183,7 @@ export default function Block( { name: blockName } ) {
 				<Icon icon={ block.icon } />
 				<Description
 					classPrefix="block"
-					name={ blockName }
+					name={ name }
 					title={ block.title }
 					description={ block.description }
 				/>
@@ -218,7 +218,7 @@ export default function Block( { name: blockName } ) {
 					)
 					.map( ( { label, link, name: panelName, Component } ) => (
 						<AccordionItem
-							key={ `${ blockName }/${ panelName }` }
+							key={ `${ name }/${ panelName }` }
 							uuid={ panelName }
 							className={ classnames(
 								'accordion__item',

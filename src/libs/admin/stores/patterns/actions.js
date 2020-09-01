@@ -1,10 +1,4 @@
-export { fetchAllFromAPI } from '../actions';
-
-export function fetchAllCategoriesFromAPI() {
-	return {
-		type: 'API_FETCH_ALL_CATEGORIES',
-	};
-}
+export { fetchAllCategoriesFromAPI, fetchAllFromAPI } from '../actions';
 
 export function initPatternCategories( categories ) {
 	return {

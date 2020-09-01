@@ -1,4 +1,11 @@
-export { fetchAllFromAPI } from '../actions';
+export { fetchAllCategoriesFromAPI, fetchAllFromAPI } from '../actions';
+
+export function initBlockCategories( categories ) {
+	return {
+		type: 'INIT_BLOCK_CATEGORIES',
+		categories,
+	};
+}
 
 export function initBlocks( blocks ) {
 	return {

@@ -1,17 +1,5 @@
-export function getCategories( state ) {
+export function getBlockCategories( state ) {
 	return state.categories;
-}
-
-export function getCategorizedBlocks( state ) {
-	const categorizedBlocks = {};
-
-	state.categories.forEach( ( category ) => {
-		categorizedBlocks[ category ] = state.list.filter(
-			( block ) => block.category === category
-		);
-	} );
-
-	return categorizedBlocks;
 }
 
 export function getBlocks( state ) {
