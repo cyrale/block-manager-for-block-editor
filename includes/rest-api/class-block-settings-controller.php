@@ -105,14 +105,12 @@ class Block_Settings_Controller extends Rest_Controller {
 
 		$block_schema = Block_Settings::get_instance()->get_schema();
 
-		$schema = array(
+		$this->schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'block',
 			'type'       => 'object',
-			'properties' => $block_schema['items'],
+			'properties' => $block_schema['items']['properties'],
 		);
-
-		$this->schema = $schema;
 
 		return $this->add_additional_fields_schema( $this->schema );
 	}

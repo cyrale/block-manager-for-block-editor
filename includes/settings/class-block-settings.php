@@ -96,119 +96,123 @@ class Block_Settings extends Settings {
 			'type'        => 'array',
 			'default'     => array(),
 			'items'       => array(
-				'name'              => array(
-					'description'       => __( 'Unique name for the block.', 'bmfbe' ),
-					'type'              => 'string',
-					'required'          => true,
-					'validate_callback' => array( $this, 'validate_name' ),
-				),
-				'title'             => array(
-					'description' => __( 'The display title for the block.', 'bmfbe' ),
-					'type'        => 'string',
-					'required'    => true,
-				),
-				'description'       => array(
-					'description' => __( 'A short description for the block.', 'bmfbe' ),
-					'type'        => 'string',
-					'required'    => true,
-				),
-				'category'          => array(
-					'description' => __( 'Category to help users browse and discover blocks.', 'bmfbe' ),
-					'type'        => 'string',
-					'required'    => true,
-				),
-				'icon'              => array(
-					'description' => __( 'Icon to make block easier to identify.', 'bmfbe' ),
-					'type'        => 'string',
-				),
-				'keywords'          => array(
-					'description' => __( 'Aliases that help users discover block while searching.', 'bmfbe' ),
-					'type'        => 'array',
-					'default'     => array(),
-					'items'       => array(
-						'type' => 'string',
+				'type'       => 'object',
+				'default'    => array(),
+				'properties' => array(
+					'name'              => array(
+						'description'       => __( 'Unique name for the block.', 'bmfbe' ),
+						'type'              => 'string',
+						'required'          => true,
+						'validate_callback' => array( $this, 'validate_name' ),
 					),
-				),
-				'supports_override' => array(
-					'description' => __( 'Override global supports', 'bmfbe' ),
-					'type'        => 'boolean',
-					'default'     => false,
-				),
-				'supports'          => $supports,
-				'styles'            => array(
-					'description' => __( 'Block styles can be used to provide alternative styles to block.', 'bmfbe' ),
-					'type'        => 'array',
-					'default'     => array(),
-					'items'       => array(
-						'type'       => 'object',
-						'default'    => array(),
-						'properties' => array(
-							'name'      => array(
-								'description' => __( 'The name for a style.', 'bmfbe' ),
-								'type'        => 'string',
-								'required'    => true,
-							),
-							'label'     => array(
-								'description' => __( 'The label displayed for a style.', 'bmfbe' ),
-								'type'        => 'string',
-								'required'    => true,
-							),
-							'isDefault' => array(
-								'description' => __( 'Is default style?', 'bmfbe' ),
-								'type'        => 'boolean',
-								'default'     => false,
-							),
-							'isActive'  => array(
-								'description' => __( 'Is active style?', 'bmfbe' ),
-								'type'        => 'boolean',
-								'default'     => true,
+					'title'             => array(
+						'description' => __( 'The display title for the block.', 'bmfbe' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+					'description'       => array(
+						'description' => __( 'A short description for the block.', 'bmfbe' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+					'category'          => array(
+						'description' => __( 'Category to help users browse and discover blocks.', 'bmfbe' ),
+						'type'        => 'string',
+						'required'    => true,
+					),
+					'icon'              => array(
+						'description' => __( 'Icon to make block easier to identify.', 'bmfbe' ),
+						'type'        => 'string',
+					),
+					'keywords'          => array(
+						'description' => __( 'Aliases that help users discover block while searching.', 'bmfbe' ),
+						'type'        => 'array',
+						'default'     => array(),
+						'items'       => array(
+							'type' => 'string',
+						),
+					),
+					'supports_override' => array(
+						'description' => __( 'Override global supports', 'bmfbe' ),
+						'type'        => 'boolean',
+						'default'     => false,
+					),
+					'supports'          => $supports,
+					'styles'            => array(
+						'description' => __( 'Block styles can be used to provide alternative styles to block.', 'bmfbe' ),
+						'type'        => 'array',
+						'default'     => array(),
+						'items'       => array(
+							'type'       => 'object',
+							'default'    => array(),
+							'properties' => array(
+								'name'      => array(
+									'description' => __( 'The name for a style.', 'bmfbe' ),
+									'type'        => 'string',
+									'required'    => true,
+								),
+								'label'     => array(
+									'description' => __( 'The label displayed for a style.', 'bmfbe' ),
+									'type'        => 'string',
+									'required'    => true,
+								),
+								'isDefault' => array(
+									'description' => __( 'Is default style?', 'bmfbe' ),
+									'type'        => 'boolean',
+									'default'     => false,
+								),
+								'isActive'  => array(
+									'description' => __( 'Is active style?', 'bmfbe' ),
+									'type'        => 'boolean',
+									'default'     => true,
+								),
 							),
 						),
 					),
-				),
-				'variations'        => array(
-					'description' => __(
-						'Block’s style variation can be used to provide alternative styles to block.',
-						'bmfbe'
-					),
-					'type'        => 'array',
-					'default'     => array(),
-					'items'       => array(
-						'type'       => 'object',
-						'default'    => array(),
-						'properties' => array(
-							'name'        => array(
-								'description' => __( 'The name for a variation.', 'bmfbe' ),
-								'type'        => 'string',
-								'required'    => true,
-							),
-							'title'       => array(
-								'description' => __( 'The title displayed for a variation.', 'bmfbe' ),
-								'type'        => 'string',
-								'required'    => true,
-							),
-							'description' => array(
-								'description' => __( 'Description of a variation.', 'bmfbe' ),
-								'type'        => 'string',
-							),
-							'icon'        => array(
-								'description' => __( 'Icon of a variation.', 'bmfbe' ),
-								'type'        => 'string',
-							),
-							'isDefault'   => array(
-								'description' => __( 'Is default variation?', 'bmfbe' ),
-								'type'        => 'boolean',
-								'default'     => false,
-							),
-							'isActive'    => array(
-								'description' => __( 'Is active variation?', 'bmfbe' ),
-								'type'        => 'boolean',
-								'default'     => true,
+					'variations'        => array(
+						'description' => __(
+							'Block’s style variation can be used to provide alternative styles to block.',
+							'bmfbe'
+						),
+						'type'        => 'array',
+						'default'     => array(),
+						'items'       => array(
+							'type'       => 'object',
+							'default'    => array(),
+							'properties' => array(
+								'name'        => array(
+									'description' => __( 'The name for a variation.', 'bmfbe' ),
+									'type'        => 'string',
+									'required'    => true,
+								),
+								'title'       => array(
+									'description' => __( 'The title displayed for a variation.', 'bmfbe' ),
+									'type'        => 'string',
+									'required'    => true,
+								),
+								'description' => array(
+									'description' => __( 'Description of a variation.', 'bmfbe' ),
+									'type'        => 'string',
+								),
+								'icon'        => array(
+									'description' => __( 'Icon of a variation.', 'bmfbe' ),
+									'type'        => 'string',
+								),
+								'isDefault'   => array(
+									'description' => __( 'Is default variation?', 'bmfbe' ),
+									'type'        => 'boolean',
+									'default'     => false,
+								),
+								'isActive'    => array(
+									'description' => __( 'Is active variation?', 'bmfbe' ),
+									'type'        => 'boolean',
+									'default'     => true,
+								),
 							),
 						),
 					),
+					'access'            => $access,
 				),
-				'access'            => $access,
 			),
 		);
 	}
@@ -419,15 +423,15 @@ class Block_Settings extends Settings {
 	public function insert_block( $block ) {
 		$schema = $this->get_schema();
 
-		$valid_check = self::validate_params( $block, $schema['items'] );
+		$valid_check = self::validate_params( $block, $schema['items']['properties'] );
 		if ( is_wp_error( $valid_check ) ) {
 			return $valid_check;
 		}
 
 		$db_block = $this->search_block( $block['name'] );
 
-		$block = self::sanitize_params( $block, $schema['items'] );
-		$block = self::prepare_settings_walker( $block, $schema['items'], $db_block );
+		$block = self::sanitize_params( $block, $schema['items']['properties'] );
+		$block = self::prepare_settings_walker( $block, $schema['items']['properties'], $db_block );
 
 		// Insert new block.
 		$inserted = $this->insert_block_in_database( $block );
@@ -476,11 +480,11 @@ class Block_Settings extends Settings {
 
 		$schema = $this->get_schema();
 
-		$schema['items']['title']['required']       = false;
-		$schema['items']['description']['required'] = false;
-		$schema['items']['category']['required']    = false;
+		$schema['items']['properties']['title']['required']       = false;
+		$schema['items']['properties']['description']['required'] = false;
+		$schema['items']['properties']['category']['required']    = false;
 
-		$valid_check = self::validate_params( $block, $schema['items'] );
+		$valid_check = self::validate_params( $block, $schema['items']['properties'] );
 		if ( is_wp_error( $valid_check ) ) {
 			return $valid_check;
 		}

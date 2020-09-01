@@ -98,7 +98,7 @@ class Pattern_Settings_Controller extends Rest_Controller {
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'pattern',
 			'type'       => 'object',
-			'properties' => $pattern_schema['items'],
+			'properties' => $pattern_schema['items']['properties'],
 		);
 
 		$this->schema = $schema;
@@ -148,13 +148,15 @@ class Pattern_Settings_Controller extends Rest_Controller {
 		$params = $request->get_params();
 		$schema = $this->get_item_schema();
 
-		foreach ( $schema['properties'] as $key => $s ) {
-			if ( 'name' !== $key && 'disabled' !== $key ) {
-				unset( $schema['properties'][ $key ] );
-			}
-		}
+		$properties = array_intersect_assoc(
+			$schema['properties'],
+			array(
+				'name'     => true,
+				'disabled' => true,
+			)
+		);
 
-		return Pattern_Settings::prepare_settings_walker( $params, $schema['properties'] );
+		return Pattern_Settings::prepare_settings_walker( $params, $properties );
 	}
 
 	// phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable -- parent compatibility

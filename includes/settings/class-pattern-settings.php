@@ -35,31 +35,38 @@ class Pattern_Settings extends Settings {
 			'type'        => 'array',
 			'default'     => array(),
 			'items'       => array(
-				'name'        => array(
-					'description' => __( 'Name of the pattern', 'bmfbe' ),
-					'type'        => 'string',
-					'default'     => '',
-					'required'    => true,
-				),
-				'title'       => array(
-					'description' => __( 'Human-readable title of the pattern', 'bmfbe' ),
-					'type'        => 'string',
-					'default'     => '',
-				),
-				'description' => array(
-					'description' => __( 'Description of the pattern', 'bmfbe' ),
-					'type'        => 'string',
-					'default'     => '',
-				),
-				'categories'  => array(
-					'description' => __( 'List of pattern categories', 'bmfbe' ),
-					'type'        => 'array',
-					'default'     => array(),
-				),
-				'disabled'    => array(
-					'description' => __( 'Is current pattern disable?', 'bmfbe' ),
-					'type'        => 'boolean',
-					'required'    => true,
+				'type'       => 'object',
+				'default'    => array(),
+				'properties' => array(
+					'name'        => array(
+						'description' => __( 'Name of the pattern', 'bmfbe' ),
+						'type'        => 'string',
+						'default'     => '',
+						'required'    => true,
+					),
+					'title'       => array(
+						'description' => __( 'Human-readable title of the pattern', 'bmfbe' ),
+						'type'        => 'string',
+						'default'     => '',
+					),
+					'description' => array(
+						'description' => __( 'Description of the pattern', 'bmfbe' ),
+						'type'        => 'string',
+						'default'     => '',
+					),
+					'categories'  => array(
+						'description' => __( 'List of pattern categories', 'bmfbe' ),
+						'type'        => 'array',
+						'default'     => array(),
+						'items'       => array(
+							'type' => 'string',
+						),
+					),
+					'disabled'    => array(
+						'description' => __( 'Is current pattern disable?', 'bmfbe' ),
+						'type'        => 'boolean',
+						'required'    => true,
+					),
 				),
 			),
 		);
@@ -74,8 +81,9 @@ class Pattern_Settings extends Settings {
 	public function get_update_schema() {
 		$schema = $this->get_schema();
 
-		$schema['items'] = array_intersect_key(
-			$schema['items'],
+		// Keep only name and disable properties.
+		$schema['items']['properties'] = array_intersect_key(
+			$schema['items']['properties'],
 			array(
 				'name'     => true,
 				'disabled' => true,
@@ -173,15 +181,15 @@ class Pattern_Settings extends Settings {
 	public function insert_pattern( $pattern ) {
 		$schema = $this->get_update_schema();
 
-		$valid_check = self::validate_params( $pattern, $schema['items'] );
+		$valid_check = self::validate_params( $pattern, $schema['items']['properties'] );
 		if ( is_wp_error( $valid_check ) ) {
 			return $valid_check;
 		}
 
 		$db_pattern = $this->search_pattern( $pattern['name'] );
 
-		$pattern = self::sanitize_params( $pattern, $schema['items'] );
-		$pattern = self::prepare_settings_walker( $pattern, $schema['items'], $db_pattern );
+		$pattern = self::sanitize_params( $pattern, $schema['items']['properties'] );
+		$pattern = self::prepare_settings_walker( $pattern, $schema['items']['properties'], $db_pattern );
 
 		// Insert new pattern.
 		$inserted = $this->insert_pattern_in_database( $pattern );
@@ -218,7 +226,7 @@ class Pattern_Settings extends Settings {
 
 		$schema = $this->get_update_schema();
 
-		$valid_check = self::validate_params( $pattern, $schema['items'] );
+		$valid_check = self::validate_params( $pattern, $schema['items']['properties'] );
 		if ( is_wp_error( $valid_check ) ) {
 			return $valid_check;
 		}
@@ -307,7 +315,7 @@ class Pattern_Settings extends Settings {
 		$schema = $this->get_update_schema();
 
 		foreach ( $patterns as $kp => $pattern ) {
-			$patterns[ $kp ] = array_intersect_key( $pattern, $schema['items'] );
+			$patterns[ $kp ] = array_intersect_key( $pattern, $schema['items']['properties'] );
 		}
 
 		$updated = $this->update_db_value( $patterns );
