@@ -11,6 +11,7 @@ namespace BMFBE;
 use BMFBE\Interfaces\WP_Plugin_Class;
 use BMFBE\Settings\Block_Settings;
 use BMFBE\Settings\Global_Settings;
+use BMFBE\Settings\Pattern_Settings;
 
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Editor.
@@ -165,6 +166,18 @@ class Editor implements WP_Plugin_Class {
 
 		if ( isset( $settings['disable_custom_font_sizes'] ) && true === $settings['disable_custom_font_sizes'] ) {
 			add_theme_support( 'disable-custom-font-sizes' );
+		}
+
+		if ( ! isset( $_GET['page'] )
+			&& 'bmfbe-settings' !== $_GET['page']
+			&& ( ! isset( $settings['disable_block_patterns'] ) || true !== $settings['disable_block_patterns'] ) ) {
+			$patterns = Pattern_Settings::get_instance()->get_all_registered();
+
+			foreach ( $patterns as $pattern ) {
+				if ( true === $pattern['disabled'] ) {
+					unregister_block_pattern( $pattern['name'] );
+				}
+			}
 		}
 	}
 

@@ -99,7 +99,7 @@ class Pattern_Settings extends Settings {
 	 * @return array Array of patterns.
 	 * @since 1.0.0
 	 */
-	protected function get_all_registered() {
+	public function get_all_registered() {
 		$patterns = array();
 		$settings = $this->get_settings();
 
