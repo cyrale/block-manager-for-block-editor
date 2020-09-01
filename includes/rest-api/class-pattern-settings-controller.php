@@ -148,7 +148,7 @@ class Pattern_Settings_Controller extends Rest_Controller {
 		$params = $request->get_params();
 		$schema = $this->get_item_schema();
 
-		$properties = array_intersect_assoc(
+		$properties = array_intersect_key(
 			$schema['properties'],
 			array(
 				'name'     => true,
