@@ -168,8 +168,7 @@ class Editor implements WP_Plugin_Class {
 			add_theme_support( 'disable-custom-font-sizes' );
 		}
 
-		if ( ! isset( $_GET['page'] )
-			&& 'bmfbe-settings' !== $_GET['page']
+		if ( ( ! isset( $_GET['page'] ) || 'bmfbe-settings' === $_GET['page'] )
 			&& ( ! isset( $settings['disable_block_patterns'] ) || true !== $settings['disable_block_patterns'] ) ) {
 			$patterns = Pattern_Settings::get_instance()->get_all_registered();
 
