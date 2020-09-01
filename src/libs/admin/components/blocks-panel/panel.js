@@ -76,7 +76,7 @@ export default function Panel() {
 						);
 
 						if ( 0 === categorizedBlocks.length ) {
-							return <Fragment key={ category.slug }></Fragment>;
+							return <Fragment key={ category.slug } />;
 						}
 
 						return (
