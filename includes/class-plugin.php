@@ -11,6 +11,7 @@ namespace BMFBE;
 use BMFBE\Rest_API\Block_Categories_Controller;
 use BMFBE\Rest_API\Block_Settings_Controller;
 use BMFBE\Rest_API\Global_Settings_Controller;
+use BMFBE\Rest_API\Pattern_Categories_Controller;
 use BMFBE\Rest_API\Pattern_Settings_Controller;
 use BMFBE\Settings\Block_Categories;
 use BMFBE\Settings\Block_Settings;
@@ -105,6 +106,14 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	protected $api_global_settings;
+
+	/**
+	 * Instance of BMFBE\Rest_API\Pattern_Categories_Controller
+	 *
+	 * @var Pattern_Categories_Controller
+	 * @since 1.0.0
+	 */
+	protected $api_pattern_categories;
 
 	/**
 	 * Instance of BMFBE\Rest_API\Pattern_Settings_Controller
@@ -220,15 +229,15 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	public function plugin_classes() {
-		$this->api_block_categories = new Block_Categories_Controller( $this );
-		$this->api_block_settings   = new Block_Settings_Controller( $this );
-		$this->api_global_settings  = new Global_Settings_Controller( $this );
-		$this->api_pattern_settings = new Pattern_Settings_Controller( $this );
-
-		$this->admin  = new Admin( $this );
-		$this->common = new Common( $this );
-		$this->editor = new Editor( $this );
-		$this->front  = new Front( $this );
+		$this->api_block_categories   = new Block_Categories_Controller( $this );
+		$this->api_block_settings     = new Block_Settings_Controller( $this );
+		$this->api_global_settings    = new Global_Settings_Controller( $this );
+		$this->api_pattern_categories = new Pattern_Categories_Controller( $this );
+		$this->api_pattern_settings   = new Pattern_Settings_Controller( $this );
+		$this->admin                  = new Admin( $this );
+		$this->common                 = new Common( $this );
+		$this->editor                 = new Editor( $this );
+		$this->front                  = new Front( $this );
 	} // END OF PLUGIN CLASSES FUNCTION
 
 	/**
