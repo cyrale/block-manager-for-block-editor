@@ -1,9 +1,5 @@
-export function fetchAllFromAPI( path ) {
+export function fetchAllFromAPI() {
 	return {
 		type: 'API_FETCH_ALL',
-		request: {
-			path,
-			method: 'GET',
-		},
 	};
 }

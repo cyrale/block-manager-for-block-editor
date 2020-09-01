@@ -12,17 +12,25 @@ import {
 /**
  * WordPress dependencies
  */
+import { useSelect } from '@wordpress/data';
 import { useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
+import { PATTERNS_STORE } from '../../stores/patterns/constants';
 import Pattern from './pattern';
 
 export default function Panel() {
-	const { patterns, patternCategories: categories } = bmfbeAdminGlobal;
-
 	const [ displayedCategories, setDisplayedCategories ] = useState( {} );
+
+	const { categories, patterns } = useSelect(
+		( select ) => ( {
+			categories: select( PATTERNS_STORE ).getPatternCategories(),
+			patterns: select( PATTERNS_STORE ).getPatterns(),
+		} ),
+		[]
+	);
 
 	useEffect( () => {
 		const defaultDisplayedCategories = {};
