@@ -13,7 +13,7 @@ import {
  * WordPress dependencies
  */
 import { useSelect } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { Fragment, useEffect, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -74,6 +74,10 @@ export default function Panel() {
 						const categorizedPatterns = patterns.filter(
 							( { categories: c } ) => c.includes( category.name )
 						);
+
+						if ( 0 === categorizedPatterns.length ) {
+							return <Fragment key={ category.name } />;
+						}
 
 						return (
 							<AccordionItem
