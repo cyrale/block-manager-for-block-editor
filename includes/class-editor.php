@@ -131,6 +131,10 @@ class Editor implements WP_Plugin_Class {
 	 * @since 1.0.0
 	 */
 	public function early_editor_settings() {
+		if ( ! self::active_editor_settings() ) {
+			return;
+		}
+
 		$settings = Global_Settings::get_instance()->get_settings();
 
 		if ( isset( $settings['disable_block_patterns'] ) && true === $settings['disable_block_patterns'] ) {
@@ -142,6 +146,10 @@ class Editor implements WP_Plugin_Class {
 	 * Customize editor settings.
 	 */
 	public function editor_settings() {
+		if ( ! self::active_editor_settings() ) {
+			return;
+		}
+
 		$settings = Global_Settings::get_instance()->get_settings();
 
 		if ( isset( $settings['disable_color_palettes'] ) && true === $settings['disable_color_palettes'] ) {
@@ -168,8 +176,7 @@ class Editor implements WP_Plugin_Class {
 			add_theme_support( 'disable-custom-font-sizes' );
 		}
 
-		if ( ( ! isset( $_GET['page'] ) || 'bmfbe-settings' === $_GET['page'] )
-			&& ( ! isset( $settings['disable_block_patterns'] ) || true !== $settings['disable_block_patterns'] ) ) {
+		if ( ! isset( $settings['disable_block_patterns'] ) || true !== $settings['disable_block_patterns'] ) {
 			$patterns = Pattern_Settings::get_instance()->get_all_registered();
 
 			foreach ( $patterns as $pattern ) {
@@ -184,11 +191,27 @@ class Editor implements WP_Plugin_Class {
 	 * Disable block directory.
 	 */
 	public static function disable_block_directory() {
+		if ( ! self::active_editor_settings() ) {
+			return;
+		}
+
 		$settings = Global_Settings::get_instance()->get_settings();
 
 		if ( isset( $settings['disable_block_directory'] ) && true === $settings['disable_block_directory'] ) {
 			remove_action( 'enqueue_block_editor_assets', 'wp_enqueue_editor_block_directory_assets' );
 			remove_action( 'enqueue_block_editor_assets', 'gutenberg_enqueue_block_editor_assets_block_directory' );
 		}
+	}
+
+	/**
+	 * Test on which pages to active editor settings.
+	 */
+	protected static function active_editor_settings() {
+		global $pagenow;
+
+		$active = ( isset( $pagenow ) && ( 'post.php' === $pagenow || 'post-new.php' === $pagenow ) );
+		$active = apply_filters( 'bmfbe_active_editor_settings', $active );
+
+		return $active;
 	}
 }
