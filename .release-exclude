@@ -1,6 +1,7 @@
 .git
 .github
 .gitkeep
+.vscode
 node_modules
 .editorconfig
 .eslintignore
