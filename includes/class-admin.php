@@ -51,11 +51,13 @@ class Admin implements WP_Plugin_Class {
 
 	/**
 	 * Enqueue scripts and styles.
+	 *
+	 * @param string $hook_suffix The current admin page.
+	 *
+	 * @since 1.0.0
 	 */
-	public function enqueue_admin_assets() {
-		$current_screen = get_current_screen();
-
-		if ( 'toplevel_page_bmfbe-settings' !== $current_screen->id ) {
+	public function enqueue_admin_assets( $hook_suffix ) {
+		if ( 'toplevel_page_bmfbe-settings' !== $hook_suffix ) {
 			return;
 		}
 
@@ -86,11 +88,13 @@ class Admin implements WP_Plugin_Class {
 
 	/**
 	 * Enqueue scripts and styles used in development.
+	 *
+	 * @param string $hook_suffix The current admin page.
+	 *
+	 * @since 1.0.0
 	 */
-	public function enqueue_dev_assets() {
-		$current_screen = get_current_screen();
-
-		if ( ! defined( 'WP_ENV' ) || 'development' !== WP_ENV || 'toplevel_page_bmfbe-settings' !== $current_screen->id ) {
+	public function enqueue_dev_assets( $hook_suffix ) {
+		if ( ! defined( 'WP_ENV' ) || 'development' !== WP_ENV || 'toplevel_page_bmfbe-settings' !== $hook_suffix ) {
 			return;
 		}
 
