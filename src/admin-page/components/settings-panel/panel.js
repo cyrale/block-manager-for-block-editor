@@ -3,7 +3,6 @@
  */
 import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -12,93 +11,6 @@ import { SETTINGS_STORE } from '../../../stores/settings/constants';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import Supports from './supports';
 import useDelayedChanges from '../../../hooks/use-delayed-changes';
-
-// TODO: get this sections from global variable.
-/**
- * List of supported settings (settings that can be changed) grouped by section.
- *
- * @constant {({name: string, label: string, fields: [{name: string, label: string}|{name: string, label: string,Component: *}]})[]}
- * @since 1.0.0
- */
-const sections = [
-	{
-		name: 'interface',
-		label: __( 'Interface', 'bmfbe' ),
-		fields: [
-			{
-				name: 'disable_fullscreen',
-				label: __( 'Disable fullscreen mode', 'bmfbe' ),
-			},
-			{
-				name: 'disable_block_directory',
-				label: __( 'Disable block directory', 'bmfbe' ),
-			},
-			{
-				name: 'disable_block_patterns',
-				label: __( 'Disable block patterns', 'bmfbe' ),
-			},
-		],
-	},
-	{
-		name: 'colors',
-		label: __( 'Colors', 'bmfbe' ),
-		fields: [
-			{
-				name: 'disable_custom_colors',
-				label: __( 'Disable custom colors', 'bmfbe' ),
-			},
-			{
-				name: 'disable_color_palettes',
-				label: __( 'Disable color palettes', 'bmfbe' ),
-			},
-			{
-				name: 'disable_custom_gradients',
-				label: __( 'Disable custom gradients', 'bmfbe' ),
-			},
-			{
-				name: 'disable_gradient_presets',
-				label: __( 'Disable gradient presets', 'bmfbe' ),
-			},
-		],
-	},
-	{
-		name: 'typography',
-		label: __( 'Typography', 'bmfbe' ),
-		fields: [
-			{
-				name: 'disable_custom_font_sizes',
-				label: __( 'Disable custom font sizes', 'bmfbe' ),
-			},
-			{
-				name: 'disable_font_sizes',
-				label: __( 'Disable font sizes', 'bmfbe' ),
-			},
-		],
-	},
-	{
-		name: 'advanced',
-		label: __( 'Advanced', 'bmfbe' ),
-		fields: [
-			{
-				name: 'limit_access_by_post_type',
-				label: __( 'Limit access by post type', 'bmfbe' ),
-			},
-			{
-				name: 'limit_access_by_user_group',
-				label: __( 'Limit access by user group', 'bmfbe' ),
-			},
-			{
-				name: 'supports_override',
-				label: __( 'Override supports', 'bmfbe' ),
-			},
-			{
-				name: 'supports',
-				label: __( 'Supports', 'bmfbe' ),
-				Component: Supports,
-			},
-		],
-	},
-];
 
 export default function Panel() {
 	const settings = useSelect(
@@ -130,7 +42,7 @@ export default function Panel() {
 
 	return (
 		<div className="bmfbe-settings-panel">
-			{ sections.map( ( section ) => (
+			{ bmfbeAdminGlobal.settingsSections.map( ( section ) => (
 				<div
 					key={ section.name }
 					className="bmfbe-settings-panel__section"
@@ -146,10 +58,6 @@ export default function Panel() {
 									settings.supports_override
 							)
 							.map( ( field ) => {
-								const Component =
-									field.Component ??
-									IndeterminateToggleControl;
-
 								let props = {
 									label: field.label,
 									checked: settings[ field.name ] ?? false,
@@ -165,10 +73,17 @@ export default function Panel() {
 										onChange: ( value ) =>
 											handleOnChange( field.name, value ),
 									};
+
+									return (
+										<Supports
+											key={ field.name }
+											{ ...props }
+										/>
+									);
 								}
 
 								return (
-									<Component
+									<IndeterminateToggleControl
 										key={ field.name }
 										{ ...props }
 									/>

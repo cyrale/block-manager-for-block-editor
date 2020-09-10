@@ -75,6 +75,13 @@ class Admin implements WP_Plugin_Class {
 			$asset['dependencies'],
 			$asset['version']
 		);
+		wp_localize_script(
+			'bmfbe-admin',
+			'bmfbeAdminGlobal',
+			array(
+				'settingsSections' => $this->settings_sections(),
+			)
+		);
 
 		wp_enqueue_style(
 			'bmfbe-admin',
@@ -115,5 +122,95 @@ class Admin implements WP_Plugin_Class {
 		echo '  </div>';
 		echo '  <div class="bmfbe-settings__content" id="bmfbeSettings"></div>';
 		echo '</div>';
+	}
+
+	/**
+	 * Get all sections to display in settings.
+	 *
+	 * @return array Sections to display in settings.
+	 */
+	protected function settings_sections() {
+		$sections = array(
+			array(
+				'name'   => 'interface',
+				'label'  => __( 'Interface', 'bmfbe' ),
+				'fields' => array(
+					array(
+						'name'  => 'disable_fullscreen',
+						'label' => __( 'Disable fullscreen mode', 'bmfbe' ),
+					),
+					array(
+						'name'  => 'disable_block_directory',
+						'label' => __( 'Disable block directory', 'bmfbe' ),
+					),
+					array(
+						'name'  => 'disable_block_patterns',
+						'label' => __( 'Disable block patterns', 'bmfbe' ),
+					),
+				),
+			),
+			array(
+				'name'   => 'colors',
+				'label'  => __( 'Colors', 'bmfbe' ),
+				'fields' => array(
+					array(
+						'name'  => 'disable_custom_colors',
+						'label' => __( 'Disable custom colors', 'bmfbe' ),
+					),
+					array(
+						'name'  => 'disable_color_palettes',
+						'label' => __( 'Disable color palettes', 'bmfbe' ),
+					),
+					array(
+						'name'  => 'disable_custom_gradients',
+						'label' => __( 'Disable custom gradients', 'bmfbe' ),
+					),
+					array(
+						'name'  => 'disable_gradient_presets',
+						'label' => __( 'Disable gradient presets', 'bmfbe' ),
+					),
+				),
+			),
+			array(
+				'name'   => 'typography',
+				'label'  => __( 'Typography', 'bmfbe' ),
+				'fields' => array(
+					array(
+						'name'  => 'disable_custom_font_sizes',
+						'label' => __( 'Disable custom font sizes', 'bmfbe' ),
+					),
+					array(
+						'name'  => 'disable_font_sizes',
+						'label' => __( 'Disable font sizes', 'bmfbe' ),
+					),
+				),
+			),
+			array(
+				'name'   => 'advanced',
+				'label'  => __( 'Advanced', 'bmfbe' ),
+				'fields' => array(
+					array(
+						'name'  => 'limit_access_by_post_type',
+						'label' => __( 'Limit access by post type', 'bmfbe' ),
+					),
+					array(
+						'name'  => 'limit_access_by_user_group',
+						'label' => __( 'Limit access by user group', 'bmfbe' ),
+					),
+					array(
+						'name'  => 'supports_override',
+						'label' => __( 'Override supports', 'bmfbe' ),
+					),
+					array(
+						'name'  => 'supports',
+						'label' => __( 'Supports', 'bmfbe' ),
+					),
+				),
+			),
+		);
+
+		// TODO: filter sections and fields with current version of WordPress or Gutenberg plugin.
+
+		return $sections;
 	}
 }
