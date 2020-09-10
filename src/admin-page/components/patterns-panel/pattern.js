@@ -43,11 +43,11 @@ export default function Pattern( { name } ) {
 	/**
 	 * Handle changes on pattern disabled.
 	 *
-	 * @param {boolean} disabled True if pattern is disabled.
+	 * @param {boolean} enabled True if pattern is disabled.
 	 * @since 1.0.0
 	 */
-	async function handleDisabledChange( disabled ) {
-		await updatePattern( name, { disabled } );
+	async function handleDisabledChange( enabled ) {
+		await updatePattern( name, { disabled: ! enabled } );
 
 		const newPattern = wpSelect( PATTERNS_STORE ).getPattern( name );
 		enqueueChanges( pick( newPattern, changingFields ) );
@@ -65,9 +65,9 @@ export default function Pattern( { name } ) {
 				/>
 			</div>
 			<IndeterminateToggleControl
-				label={ __( 'Disable pattern', 'bmfbe' ) }
+				label={ __( 'Enable pattern', 'bmfbe' ) }
 				className="bmfbe-pattern__disable"
-				checked={ pattern.disabled }
+				checked={ ! pattern.disabled }
 				onChange={ ( { checked } ) => handleDisabledChange( checked ) }
 			/>
 		</div>
