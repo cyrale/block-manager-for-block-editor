@@ -16,8 +16,9 @@ export function* getBlockCategories() {
 }
 
 export function* getBlocks() {
-	const findElementByName = ( elements, name ) =>
-		elements.find( ( el ) => el.name === name );
+	function findElementByName( elements, name ) {
+		return elements.find( ( el ) => el.name === name );
+	}
 
 	const blockFields = [
 		'name',
@@ -52,7 +53,7 @@ export function* getBlocks() {
 	}
 
 	// Update existing blocks.
-	const exportBlockData = ( name ) => {
+	function exportBlockData( name ) {
 		const editor = {};
 		const registered = {};
 
@@ -103,7 +104,7 @@ export function* getBlocks() {
 			editor,
 			registered,
 		};
-	};
+	}
 
 	const updatedBlockNames = registeredBlockNames
 		.filter( ( name ) => editorBlockNames.includes( name ) )
