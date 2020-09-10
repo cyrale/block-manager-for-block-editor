@@ -8,7 +8,7 @@ import { registerCoreBlocks } from '@wordpress/block-library';
 /**
  * Internal dependencies
  */
-import Admin from './admin/admin.js';
+import AdminPage from './admin-page';
 
 import './sass/admin.scss';
 
@@ -17,6 +17,6 @@ domReady( () => {
 
 	const container = document.getElementById( 'bmfbeSettings' );
 	if ( null !== container ) {
-		render( <Admin />, container );
+		render( <AdminPage />, container );
 	}
 } );

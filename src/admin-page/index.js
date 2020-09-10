@@ -30,7 +30,7 @@ import {
 	TabTitle as SettingsTab,
 } from './components/settings-panel';
 
-export default function Admin() {
+export default function AdminPage() {
 	const status = useSelect( ( select ) =>
 		STATUS_SAVING === select( BLOCKS_STORE ).getStatus() ||
 		STATUS_SAVING === select( PATTERNS_STORE ).getStatus() ||
