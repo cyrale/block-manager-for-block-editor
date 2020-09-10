@@ -1,11 +1,11 @@
 import { useSelect } from '@wordpress/data';
 
 import GenericTabTitle from '../tab-title';
-import { PATTERNS_STORE } from '../../stores/patterns/constants';
+import { SETTINGS_STORE } from '../../../stores/settings/constants';
 
 export default function TabTitle( { children } ) {
 	const status = useSelect(
-		( select ) => select( PATTERNS_STORE ).getStatus(),
+		( select ) => select( SETTINGS_STORE ).getStatus(),
 		[]
 	);
 

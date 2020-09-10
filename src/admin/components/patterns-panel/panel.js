@@ -18,16 +18,16 @@ import { Fragment, useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { BLOCKS_STORE } from '../../stores/blocks/constants';
-import Block from './block';
+import { PATTERNS_STORE } from '../../../stores/patterns/constants';
+import Pattern from './pattern';
 
 export default function Panel() {
 	const [ displayedCategories, setDisplayedCategories ] = useState( {} );
 
-	const { blocks, categories } = useSelect(
+	const { categories, patterns } = useSelect(
 		( select ) => ( {
-			blocks: select( BLOCKS_STORE ).getBlocks(),
-			categories: select( BLOCKS_STORE ).getBlockCategories(),
+			categories: select( PATTERNS_STORE ).getPatternCategories(),
+			patterns: select( PATTERNS_STORE ).getPatterns(),
 		} ),
 		[]
 	);
@@ -35,8 +35,8 @@ export default function Panel() {
 	useEffect( () => {
 		const defaultDisplayedCategories = {};
 
-		categories.forEach( ( { slug }, index ) => {
-			defaultDisplayedCategories[ slug ] = 0 === index;
+		categories.forEach( ( { name }, index ) => {
+			defaultDisplayedCategories[ name ] = 0 === index;
 		} );
 
 		setDisplayedCategories( defaultDisplayedCategories );
@@ -51,9 +51,9 @@ export default function Panel() {
 	function handleAccordionChange( accordionNames ) {
 		const currentDisplayedCategories = {};
 
-		categories.forEach( ( { slug } ) => {
-			currentDisplayedCategories[ slug ] = accordionNames.includes(
-				slug
+		categories.forEach( ( { name } ) => {
+			currentDisplayedCategories[ name ] = accordionNames.includes(
+				name
 			);
 		} );
 
@@ -61,43 +61,47 @@ export default function Panel() {
 	}
 
 	return (
-		<div className="bmfbe-blocks-panel">
+		<div className="bmfbe-patterns-panel">
 			{ 0 === categories.length ? (
 				<></>
 			) : (
 				<Accordion
 					allowZeroExpanded={ true }
-					preExpanded={ [ categories[ 0 ].slug ] }
+					preExpanded={ [ categories[ 0 ].name ] }
 					onChange={ handleAccordionChange }
 				>
 					{ categories.map( ( category ) => {
-						const categorizedBlocks = blocks.filter(
-							( { category: c } ) => c === category.slug
+						const categorizedPatterns = patterns.filter(
+							( { categories: c } ) => c.includes( category.name )
 						);
 
-						if ( 0 === categorizedBlocks.length ) {
-							return <Fragment key={ category.slug } />;
+						if ( 0 === categorizedPatterns.length ) {
+							return <Fragment key={ category.name } />;
 						}
 
 						return (
 							<AccordionItem
-								key={ category.slug }
-								uuid={ category.slug }
+								key={ category.name }
+								uuid={ category.name }
 							>
 								<AccordionItemHeading>
 									<AccordionItemButton>
-										{ category.title }
-										<em>({ categorizedBlocks.length })</em>
+										{ category.label }
+										<em>
+											({ categorizedPatterns.length })
+										</em>
 									</AccordionItemButton>
 								</AccordionItemHeading>
 								<AccordionItemPanel>
-									{ displayedCategories[ category.slug ] &&
-										categorizedBlocks.map( ( block ) => (
-											<Block
-												key={ block.name }
-												{ ...block }
-											/>
-										) ) }
+									{ displayedCategories[ category.name ] &&
+										categorizedPatterns.map(
+											( pattern ) => (
+												<Pattern
+													key={ pattern.name }
+													{ ...pattern }
+												/>
+											)
+										) }
 								</AccordionItemPanel>
 							</AccordionItem>
 						);

@@ -8,10 +8,10 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { SETTINGS_STORE } from '../../stores/settings/constants';
+import { SETTINGS_STORE } from '../../../stores/settings/constants';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import Supports from './supports';
-import useDelayedChanges from '../../hooks/use-delayed-changes';
+import useDelayedChanges from '../../../hooks/use-delayed-changes';
 
 // TODO: get this sections from global variable.
 /**

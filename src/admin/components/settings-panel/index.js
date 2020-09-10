@@ -1,4 +1,4 @@
-import '../../stores/blocks';
+import '../../../stores/settings';
 import Panel from './panel';
 
 export { default as TabTitle } from './tab-title';

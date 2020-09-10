@@ -12,7 +12,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { SETTINGS_STORE } from '../../stores/settings/constants';
+import { SETTINGS_STORE } from '../../../stores/settings/constants';
 import Body from './body';
 import Head, { displayHead } from './head';
 import Item from './item';

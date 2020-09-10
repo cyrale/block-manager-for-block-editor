@@ -8,7 +8,7 @@ import { registerCoreBlocks } from '@wordpress/block-library';
 /**
  * Internal dependencies
  */
-import Admin from './libs/admin/admin.js';
+import Admin from './admin/admin.js';
 
 import './sass/admin.scss';
 

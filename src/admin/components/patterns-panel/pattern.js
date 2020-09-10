@@ -13,11 +13,11 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies.
  */
-import { PATTERNS_STORE } from '../../stores/patterns/constants';
+import { PATTERNS_STORE } from '../../../stores/patterns/constants';
 import Description from '../description';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import StatusIcon from '../status-icon';
-import useDelayedChanges from '../../hooks/use-delayed-changes';
+import useDelayedChanges from '../../../hooks/use-delayed-changes';
 
 /**
  * List of all fields of a pattern that can be modified.

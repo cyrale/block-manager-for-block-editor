@@ -12,10 +12,10 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { BLOCKS_STORE } from './stores/blocks/constants';
-import { PATTERNS_STORE } from './stores/patterns/constants';
-import { SETTINGS_STORE } from './stores/settings/constants';
-import { STATUS_PENDING, STATUS_SAVING } from './stores/constants';
+import { BLOCKS_STORE } from '../stores/blocks/constants';
+import { PATTERNS_STORE } from '../stores/patterns/constants';
+import { SETTINGS_STORE } from '../stores/settings/constants';
+import { STATUS_PENDING, STATUS_SAVING } from '../stores/constants';
 import {
 	default as BlocksPanel,
 	TabTitle as BlocksTab,

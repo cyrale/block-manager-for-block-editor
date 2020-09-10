@@ -1,6 +1,6 @@
 import { useSelect } from '@wordpress/data';
 
-import { BLOCKS_STORE } from '../../stores/blocks/constants';
+import { BLOCKS_STORE } from '../../../stores/blocks/constants';
 import GenericTabTitle from '../tab-title';
 
 export default function TabTitle( { children } ) {

@@ -21,8 +21,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { BLOCKS_STORE } from '../../stores/blocks/constants';
-import { SETTINGS_STORE } from '../../stores/settings/constants';
+import { BLOCKS_STORE } from '../../../stores/blocks/constants';
+import { SETTINGS_STORE } from '../../../stores/settings/constants';
 import Access from '../access';
 import Description from '../description';
 import ExternalLink from '../external-link';
@@ -33,7 +33,7 @@ import Styles from './styles';
 import Supports from '../supports';
 import StatusIcon from '../status-icon';
 import Variations from './variations';
-import useDelayedChanges from '../../hooks/use-delayed-changes';
+import useDelayedChanges from '../../../hooks/use-delayed-changes';
 
 /**
  * Panels to display below of block description.
