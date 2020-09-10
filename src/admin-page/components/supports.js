@@ -16,103 +16,14 @@ import { __ } from '@wordpress/i18n';
 import IndeterminateToggleControl from './indeterminate-toggle-control';
 
 /**
- * List of fields for supports that are not boolean.
- *
- * @constant {*}
- * @since 1.0.0
- */
-const supportsFields = {
-	align: {
-		help: __(
-			'This property adds block controls which allow to change block’s alignment. <em>Important: It doesn’t work with dynamic blocks yet.</em>',
-			'bmfbe'
-		),
-		values: [
-			{
-				label: __( 'Left', 'bmfbe' ),
-				value: 'left',
-			},
-			{
-				label: __( 'Center', 'bmfbe' ),
-				value: 'center',
-			},
-			{
-				label: __( 'Right', 'bmfbe' ),
-				value: 'right',
-			},
-			{
-				label: __( 'Wide', 'bmfbe' ),
-				value: 'wide',
-			},
-			{
-				label: __( 'Full', 'bmfbe' ),
-				value: 'full',
-			},
-		],
-	},
-	alignWide: {
-		help: __(
-			'This property allows to enable wide alignment for your theme. To disable this behavior for a single block, set this flag to <code>false</code>.',
-			'bmfbe'
-		),
-	},
-	anchor: {
-		help: __(
-			'Anchors let you link directly to a specific block on a page. This property adds a field to define an id for the block and a button to copy the direct link.',
-			'bmfbe'
-		),
-	},
-	className: {
-		help: __(
-			'By default, the class <code>.wp-block-your-block-name</code> is added to the root element of your saved markup. This helps having a consistent mechanism for styling blocks that themes and plugins can rely on. If for whatever reason a class is not desired on the markup, this functionality can be disabled.',
-			'bmfbe'
-		),
-	},
-	customClassName: {
-		help: __(
-			'This property adds a field to define a custom className for the block’s wrapper.',
-			'bmfbe'
-		),
-	},
-	defaultStylePicker: {
-		help: __(
-			'When the style picker is shown, a dropdown is displayed so the user can select a default style for this block type. If you prefer not to show the dropdown, set this property to <code>false</code>.',
-			'bmfbe'
-		),
-	},
-	html: {
-		help: __(
-			'By default, a block’s markup can be edited individually. To disable this behavior, set <code>html</code> to <code>false</code>.',
-			'bmfbe'
-		),
-	},
-	inserter: {
-		help: __(
-			'By default, all blocks will appear in the inserter. To hide a block so that it can only be inserted programmatically, set <code>inserter</code> to <code>false</code>.',
-			'bmfbe'
-		),
-	},
-	multiple: {
-		help: __(
-			'A non-multiple block can be inserted into each post, one time only. For example, the built-in ‘More’ block cannot be inserted again if it already exists in the post being edited. A non-multiple block’s icon is automatically dimmed (unclickable) to prevent multiple instances.',
-			'bmfbe'
-		),
-	},
-	reusable: {
-		help: __(
-			'A block may want to disable the ability of being converted into a reusable block. By default all blocks can be converted to a reusable block. If supports reusable is set to false, the option to convert the block into a reusable block will not appear.',
-			'bmfbe'
-		),
-	},
-};
-
-/**
  * List of values for align supports.
  *
  * @constant {string[]}
  * @since 1.0.0
  */
-const alignValues = supportsFields.align.values.map( ( a ) => a.value );
+const alignValues = bmfbeAdminGlobal.availableSupportsFields.align.values.map(
+	( a ) => a.value
+);
 
 /**
  * Parser to convert raw HTML from translations to React DOM structure.
@@ -187,7 +98,7 @@ export default function Supports( {
 	}
 
 	const supportsFieldKeys = intersection(
-		Object.keys( supportsFields ),
+		Object.keys( bmfbeAdminGlobal.availableSupportsFields ),
 		Object.keys( value )
 	);
 
@@ -199,7 +110,8 @@ export default function Supports( {
 					`bmfbe-supports-settings--${ fieldName }`
 				);
 
-				const field = supportsFields[ fieldName ];
+				const field =
+					bmfbeAdminGlobal.availableSupportsFields[ fieldName ];
 				const val = value[ fieldName ];
 
 				return (

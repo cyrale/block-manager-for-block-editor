@@ -28,19 +28,6 @@ class Block_Settings extends Settings_Multiple {
 
 		$this->option_name = 'block_settings';
 
-		$global_schema = Global_Settings::get_instance()->get_schema();
-
-		// Build supports schema.
-		$supports = $global_schema['supports'];
-		$supports = array_merge(
-			$supports,
-			array(
-				'description'       => __( 'Block supports', 'bmfbe' ),
-				'type'              => 'object',
-				'validate_callback' => null,
-			)
-		);
-
 		// Extract roles.
 		if ( ! function_exists( 'get_editable_roles' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/user.php';
@@ -116,7 +103,12 @@ class Block_Settings extends Settings_Multiple {
 						'type'        => 'boolean',
 						'default'     => false,
 					),
-					'supports'          => $supports,
+					'supports'          => array(
+						'description'       => __( 'Block supports', 'bmfbe' ),
+						'type'              => 'object',
+						'properties'        => Global_Settings::get_instance()->get_supports_schema(),
+						'validate_callback' => null,
+					),
 					'styles'            => array(
 						'description' => __( 'Block styles can be used to provide alternative styles to block.', 'bmfbe' ),
 						'type'        => 'array',

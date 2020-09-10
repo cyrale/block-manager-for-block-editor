@@ -26,20 +26,6 @@ export const BLOCKS_API_PATH = '/bmfbe/v1/blocks';
  */
 export const BLOCK_CATEGORIES_API_PATH = '/bmfbe/v1/block-categories';
 
-// TODO; get this values from global variable.
-const supports = [
-	'align',
-	'alignWide',
-	'defaultStylePicker',
-	'anchor',
-	'customClassName',
-	'className',
-	'html',
-	'inserter',
-	'multiple',
-	'reusable',
-];
-
 /**
  * Get all blocks registered in editor.
  *
@@ -71,7 +57,9 @@ export function getEditorBlocks() {
 				block.supports = block.supports ?? {};
 
 				Object.keys( block.supports ).forEach( ( name ) => {
-					if ( ! supports.includes( name ) ) {
+					if (
+						! bmfbeAdminGlobal.availableSupports.includes( name )
+					) {
 						delete block.supports[ name ];
 					} else {
 						block.supports[ name ] = {

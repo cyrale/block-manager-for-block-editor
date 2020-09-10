@@ -9,6 +9,7 @@
 namespace BMFBE;
 
 use BMFBE\Interfaces\WP_Plugin_Class;
+use BMFBE\Settings\Global_Settings;
 
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Admin.
@@ -79,7 +80,9 @@ class Admin implements WP_Plugin_Class {
 			'bmfbe-admin',
 			'bmfbeAdminGlobal',
 			array(
-				'settingsSections' => $this->settings_sections(),
+				'settingsSections'        => $this->settings_sections(),
+				'availableSupports'       => $this->available_supports(),
+				'availableSupportsFields' => $this->available_supports_fields(),
 			)
 		);
 
@@ -128,6 +131,8 @@ class Admin implements WP_Plugin_Class {
 	 * Get all sections to display in settings.
 	 *
 	 * @return array Sections to display in settings.
+	 *
+	 * @since 1.0.0
 	 */
 	protected function settings_sections() {
 		$sections = array(
@@ -212,5 +217,37 @@ class Admin implements WP_Plugin_Class {
 		// TODO: filter sections and fields with current version of WordPress or Gutenberg plugin.
 
 		return $sections;
+	}
+
+	/**
+	 * Get available supports from global settings.
+	 *
+	 * @return array Available supports.
+	 *
+	 * @since 1.0.0
+	 */
+	protected function available_supports() {
+		$schema   = Global_Settings::get_instance()->get_supports_schema();
+		$supports = array_keys( $schema );
+
+		// TODO: filter supports with current version of WordPress or Gutenberg plugin.
+
+		return $supports;
+	}
+
+	/**
+	 * Get available supports fields to display in admin screen.
+	 *
+	 * @return array Available supports fields.
+	 *
+	 * @since 1.0.0
+	 */
+	protected function available_supports_fields() {
+		$supports = $this->available_supports();
+
+		$fields = Global_Settings::get_instance()->get_supports_fields();
+		$fields = array_intersect_key( $fields, array_flip( $supports ) );
+
+		return $fields;
 	}
 }
