@@ -331,20 +331,6 @@ function refreshInfoNotice( message = '' ) {
 export default async function detect() {
 	refreshInfoNotice();
 
-	// Get block categories from editor and sanitize values.
-	const editorBlockCategories = blocks
-		.getCategories()
-		.map( ( { slug, title, icon } ) => {
-			return {
-				slug,
-				title,
-				icon: normalizeIcon( icon ),
-			};
-		} );
-
-	// Update block categories.
-	await apiBlocks.updateBlockCategories( editorBlockCategories );
-
 	// Get blocks from database.
 	const registeredBlocks = await apiBlocks.allBlocks();
 

@@ -1,12 +1,21 @@
-import './sass/editor.scss';
+/**
+ * WordPress dependencies
+ */
+import domReady from '@wordpress/dom-ready';
+
+/**
+ * Internal dependencies
+ */
 import customize from './libs/customize';
 import detect from './libs/detect';
+
+import './sass/editor.scss';
 
 if ( ! bmfbeEditorGlobal.detect ) {
 	customize();
 }
 
-wp.domReady( () => {
+domReady( () => {
 	if ( bmfbeEditorGlobal.detect ) {
 		detect();
 	}

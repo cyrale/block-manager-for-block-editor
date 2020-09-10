@@ -45,7 +45,6 @@ class Admin implements WP_Plugin_Class {
 	 */
 	public function hooks() {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_admin_assets' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_dev_assets' ) );
 		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
 
@@ -61,14 +60,20 @@ class Admin implements WP_Plugin_Class {
 			return;
 		}
 
+		// Register block categories.
+		wp_add_inline_script(
+			'wp-blocks',
+			sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( get_block_categories( null ) ) ),
+			'after'
+		);
+
 		$asset = require_once $this->plugin->path . 'build/admin.asset.php';
 
 		wp_enqueue_script(
 			'bmfbe-admin',
 			$this->plugin->url . 'build/admin.js',
 			$asset['dependencies'],
-			$asset['version'],
-			true
+			$asset['version']
 		);
 		wp_localize_script(
 			'bmfbe-admin',
@@ -84,21 +89,6 @@ class Admin implements WP_Plugin_Class {
 			array( 'wp-edit-post', 'wp-components' ),
 			$asset['version']
 		);
-	}
-
-	/**
-	 * Enqueue scripts and styles used in development.
-	 *
-	 * @param string $hook_suffix The current admin page.
-	 *
-	 * @since 1.0.0
-	 */
-	public function enqueue_dev_assets( $hook_suffix ) {
-		if ( ! defined( 'WP_ENV' ) || 'development' !== WP_ENV || 'toplevel_page_bmfbe-settings' !== $hook_suffix ) {
-			return;
-		}
-
-		wp_enqueue_script( 'webpack-livereload-plugin', 'http://localhost:35729/livereload.js' );
 	}
 
 	/**
@@ -120,6 +110,10 @@ class Admin implements WP_Plugin_Class {
 	 * Display settings page.
 	 */
 	public function page_settings() {
+		// Register all assets relative to editor.
+		do_action( 'enqueue_block_editor_assets' );
+
+		// Display admin screen.
 		echo '<div class="bmfbe-settings">';
 		echo '  <div class="bmfbe-settings__header">';
 		echo '    <div class="bmfbe-settings__title-section">';

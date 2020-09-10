@@ -16,7 +16,8 @@ use WP_Error;
  * @since 1.0.0
  * @package BMFBE\Settings
  */
-class Block_Settings extends Settings {
+class Block_Settings extends Settings_Multiple {
+
 	/**
 	 * Constructor.
 	 *
@@ -105,32 +106,10 @@ class Block_Settings extends Settings {
 						'required'          => true,
 						'validate_callback' => array( $this, 'validate_name' ),
 					),
-					'title'             => array(
-						'description' => __( 'The display title for the block.', 'bmfbe' ),
-						'type'        => 'string',
-						'required'    => true,
-					),
-					'description'       => array(
-						'description' => __( 'A short description for the block.', 'bmfbe' ),
-						'type'        => 'string',
-						'required'    => true,
-					),
 					'category'          => array(
 						'description' => __( 'Category to help users browse and discover blocks.', 'bmfbe' ),
 						'type'        => 'string',
 						'required'    => true,
-					),
-					'icon'              => array(
-						'description' => __( 'Icon to make block easier to identify.', 'bmfbe' ),
-						'type'        => 'string',
-					),
-					'keywords'          => array(
-						'description' => __( 'Aliases that help users discover block while searching.', 'bmfbe' ),
-						'type'        => 'array',
-						'default'     => array(),
-						'items'       => array(
-							'type' => 'string',
-						),
 					),
 					'supports_override' => array(
 						'description' => __( 'Override global supports', 'bmfbe' ),
@@ -148,11 +127,6 @@ class Block_Settings extends Settings {
 							'properties' => array(
 								'name'      => array(
 									'description' => __( 'The name for a style.', 'bmfbe' ),
-									'type'        => 'string',
-									'required'    => true,
-								),
-								'label'     => array(
-									'description' => __( 'The label displayed for a style.', 'bmfbe' ),
 									'type'        => 'string',
 									'required'    => true,
 								),
@@ -180,30 +154,17 @@ class Block_Settings extends Settings {
 							'type'       => 'object',
 							'default'    => array(),
 							'properties' => array(
-								'name'        => array(
+								'name'      => array(
 									'description' => __( 'The name for a variation.', 'bmfbe' ),
 									'type'        => 'string',
 									'required'    => true,
 								),
-								'title'       => array(
-									'description' => __( 'The title displayed for a variation.', 'bmfbe' ),
-									'type'        => 'string',
-									'required'    => true,
-								),
-								'description' => array(
-									'description' => __( 'Description of a variation.', 'bmfbe' ),
-									'type'        => 'string',
-								),
-								'icon'        => array(
-									'description' => __( 'Icon of a variation.', 'bmfbe' ),
-									'type'        => 'string',
-								),
-								'isDefault'   => array(
+								'isDefault' => array(
 									'description' => __( 'Is default variation?', 'bmfbe' ),
 									'type'        => 'boolean',
 									'default'     => false,
 								),
-								'isActive'    => array(
+								'isActive'  => array(
 									'description' => __( 'Is active variation?', 'bmfbe' ),
 									'type'        => 'boolean',
 									'default'     => true,
@@ -222,7 +183,7 @@ class Block_Settings extends Settings {
 	 *
 	 * @param mixed $value Name of a block.
 	 *
-	 * @return true|WP_Error True if name was validated, WP_Error otherwise.
+	 * @return true|WP_Error True if name was validated, WP_Error otherwise
 	 */
 	public function validate_name( $value ) {
 		$schema = $this->get_schema();
@@ -245,128 +206,17 @@ class Block_Settings extends Settings {
 	}
 
 	/**
-	 * Get option where settings were stored from database.
-	 *
-	 * @return mixed Value stored in database.
-	 * @since 1.0.0
-	 */
-	protected function get_db_value() {
-		$list   = parent::get_db_value();
-		$blocks = array();
-
-		foreach ( $list as $name ) {
-			$block = get_option( 'bmfbe_block_' . $name, null );
-
-			if ( ! is_null( $block ) ) {
-				$blocks[] = $block;
-			}
-		}
-
-		return self::sort_blocks( $blocks );
-	}
-
-	/**
-	 * Update option where settings were stored in database.
-	 *
-	 * @param array $settings Updated value of settings.
-	 *
-	 * @return bool True if settings was updated, False otherwise.
-	 * @since 1.0.0
-	 */
-	protected function update_db_value( $settings ) {
-		$db_settings = $this->get_db_value();
-
-		// Test if settings have to be updated.
-		if ( $settings === $db_settings
-			|| maybe_serialize( $settings ) === maybe_serialize( $db_settings ) ) {
-			return true;
-		}
-
-		$list = array();
-
-		foreach ( $settings as $block ) {
-			$list[] = $block['name'];
-			update_option( 'bmfbe_block_' . $block['name'], $block, false );
-		}
-
-		update_option( $this->prefix_option_name . $this->option_name, $list, false );
-
-		return true;
-	}
-
-	/**
-	 * Sort blocks.
-	 *
-	 * @param array $blocks Array of blocks.
-	 *
-	 * @return array Sorted array of blocks.
-	 * @since 1.0.0
-	 */
-	protected static function sort_blocks( $blocks ) {
-		// Sort settings by categories and names (core categories and blocks first).
-		usort(
-			$blocks,
-			function( $a, $b ) {
-				$name_order = array(
-					'core/',
-					'core-embed/',
-				);
-
-				$category_order = array();
-				foreach ( Block_Categories::get_instance()->get_settings() as $category ) {
-					$category_order[] = $category['slug'];
-				}
-
-				$name_a = array_search(
-					substr( $a['name'], 0, strpos( $a['name'], '/' ) + 1 ),
-					$name_order,
-					true
-				);
-				$name_b = array_search(
-					substr( $b['name'], 0, strpos( $b['name'], '/' ) + 1 ),
-					$name_order,
-					true
-				);
-
-				$cat_a = array_search( $a['category'], $category_order, true );
-				$cat_b = array_search( $b['category'], $category_order, true );
-
-				if ( $cat_a !== $cat_b ) {
-					if ( false === $cat_a ) {
-						return 1;
-					} elseif ( false === $cat_b ) {
-						return -1;
-					} else {
-						return strcmp( $cat_a, $cat_b );
-					}
-				} elseif ( $name_a !== $name_b ) {
-					if ( false === $name_a ) {
-						return 1;
-					} elseif ( false === $name_b ) {
-						return -1;
-					} else {
-						return $name_a - $name_b;
-					}
-				}
-
-				return strcmp( $a['name'], $b['name'] );
-			}
-		);
-
-		return $blocks;
-	}
-
-	/**
 	 * List available blocks, matching the given criteria.
 	 *
 	 * @param array $args {
-	 *     Optional. Arguments to retrieve blocks.
+	 *                    Optional. Arguments to retrieve blocks.
 	 *
-	 *     @type int $page     Page to display. Default 1.
-	 *     @type int $per_page Number of blocks to display per page. Default 10.
+	 *     @var int $page     Page to display. Default 1.
+	 *     @var int $per_page Number of blocks to display per page. Default 10.
 	 * }
 	 *
-	 * @return array|WP_Error Array of blocks.
+	 * @return array|WP_Error array of blocks
+	 *
 	 * @since 1.0.0
 	 */
 	public function get_blocks( $args = array() ) {
@@ -406,18 +256,19 @@ class Block_Settings extends Settings {
 	 * @param array $block {
 	 *     An array of elements that make up a block to update or insert.
 	 *
-	 *     @type string $name        The name for a block is a unique string that identifies a block.
-	 *     @type string $title       The display title for the block.
-	 *     @type string $description A short description for the block..
-	 *     @type string $category    Category to help users browse and discover blocks.
-	 *     @type string $icon        Icon to make block easier to identify.
-	 *     @type array  $keywords    Optional. Aliases that help users discover block while searching.
-	 *     @type array  $supports    Optional. Some block supports.
-	 *     @type array  $styles      Optional. Block styles can be used to provide alternative styles to block.
+	 *     @var string $name        the name for a block is a unique string that identifies a block
+	 *     @var string $title       the display title for the block
+	 *     @var string $description A short description for the block..
+	 *     @var string $category    category to help users browse and discover blocks
+	 *     @var string $icon        icon to make block easier to identify
+	 *     @var array  $keywords    Optional. Aliases that help users discover block while searching.
+	 *     @var array  $supports    Optional. Some block supports.
+	 *     @var array  $styles      Optional. Block styles can be used to provide alternative styles to block.
 	 * }
 	 *
-	 * @return WP_Error|bool True if block was inserted/updated, False if it was not inserted/updated, WP_Error
-	 *                        otherwise.
+	 * @return bool|WP_Error true if block was inserted/updated, False if it was not inserted/updated, WP_Error
+	 *                       otherwise
+	 *
 	 * @since 1.0.0
 	 */
 	public function insert_block( $block ) {
@@ -428,13 +279,13 @@ class Block_Settings extends Settings {
 			return $valid_check;
 		}
 
-		$db_block = $this->search_block( $block['name'] );
+		$db_block = $this->get_one_db_value( $block['name'] );
 
 		$block = self::sanitize_params( $block, $schema['items']['properties'] );
 		$block = self::prepare_settings_walker( $block, $schema['items']['properties'], $db_block );
 
 		// Insert new block.
-		$inserted = $this->insert_block_in_database( $block );
+		$inserted = $this->update_one_db_value( $block['name'], $block );
 
 		if ( false === $inserted ) {
 			return $inserted;
@@ -449,27 +300,28 @@ class Block_Settings extends Settings {
 	 * @param array $block {
 	 *     An array of elements that make up a block to update or insert.
 	 *
-	 *     @type string $name        The name for a block is a unique string that identifies a block.
-	 *     @type string $title       The display title for the block.
-	 *     @type string $description A short description for the block..
-	 *     @type string $category    Category to help users browse and discover blocks.
-	 *     @type string $icon        Icon to make block easier to identify.
-	 *     @type array  $keywords    Optional. Aliases that help users discover block while searching.
-	 *     @type array  $supports    Optional. Some block supports.
-	 *     @type array  $styles      Optional. Block styles can be used to provide alternative styles to block.
-	 *     @type array  $variations  Optional. Block style variations allow providing alternative styles to existing blocks..
+	 *     @var string $name        the name for a block is a unique string that identifies a block
+	 *     @var string $title       the display title for the block
+	 *     @var string $description A short description for the block..
+	 *     @var string $category    category to help users browse and discover blocks
+	 *     @var string $icon        icon to make block easier to identify
+	 *     @var array  $keywords    Optional. Aliases that help users discover block while searching.
+	 *     @var array  $supports    Optional. Some block supports.
+	 *     @var array  $styles      Optional. Block styles can be used to provide alternative styles to block.
+	 *     @var array  $variations  Optional. Block style variations allow providing alternative styles to existing blocks.
 	 * }
 	 * @param array $keep {
 	 *     An array to mark the attributes whose you want to keep old values.
 	 *
-	 *     @type bool $styles Keep old styles.
+	 *     @var bool $styles Keep old styles.
 	 * }
 	 *
-	 * @return WP_Error|bool True if block was updated, False if it was not updated, WP_Error otherwise.
+	 * @return bool|WP_Error true if block was updated, False if it was not updated, WP_Error otherwise
+	 *
 	 * @since 1.0.0
 	 */
 	public function update_block( $block, $keep = array() ) {
-		$db_block = $this->search_block( $block['name'] );
+		$db_block = $this->get_one_db_value( $block['name'] );
 
 		if ( null === $db_block ) {
 			return new WP_Error(
@@ -525,11 +377,12 @@ class Block_Settings extends Settings {
 	 *
 	 * @param string $name Name of the block.
 	 *
-	 * @return WP_Error|bool True if block was deleted, False if it was not deleted, Wp_Error otherwise.
+	 * @return bool|WP_Error True if block was deleted, False if it was not deleted, WP_Error otherwise.
+	 *
 	 * @since 1.0.0
 	 */
 	public function delete_block( $name ) {
-		$db_block = $this->search_block( $name );
+		$db_block = $this->get_one_db_value( $name );
 
 		if ( null === $db_block ) {
 			return new WP_Error(
@@ -538,134 +391,100 @@ class Block_Settings extends Settings {
 			);
 		}
 
-		return $this->delete_block_in_database( $name );
+		return $this->delete_one_db_value( $name );
 	}
 
 	/**
-	 * Search block with its name.
+	 * Get option where settings were stored from database.
 	 *
-	 * @param string $name Unique name of the block.
+	 * @return mixed value stored in database
 	 *
-	 * @return array|null Index and block data, null if block was not found.
 	 * @since 1.0.0
 	 */
-	protected function search_block_by_name( $name ) {
-		foreach ( $this->get_settings() as $index => $block ) {
-			if ( $block['name'] === $name ) {
-				return array(
-					'index' => $index,
-					'block' => $block,
+	protected function get_db_value() {
+		$db_value = parent::get_db_value();
+
+		return self::sort_blocks( $db_value );
+	}
+
+	/**
+	 * Sort blocks.
+	 *
+	 * @param array $blocks Array of blocks.
+	 *
+	 * @return array Sorted array of blocks.
+	 *
+	 * @since 1.0.0
+	 */
+	protected static function sort_blocks( $blocks ) {
+		if ( ! function_exists( 'get_block_categories' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/post.php';
+		}
+
+		// Sort settings by categories and names (core categories and blocks first).
+		usort(
+			$blocks,
+			function ( $a, $b ) {
+				$name_order = array(
+					'core/',
+					'core-embed/',
 				);
+
+				$category_order = array();
+				foreach ( get_block_categories( null ) as $category ) {
+					$category_order[] = $category['slug'];
+				}
+
+				if ( isset( $a['category'] ) && ! isset( $b['category'] ) ) {
+					return 1;
+				} elseif ( isset( $a['category'] ) && ! isset( $b['category'] ) ) {
+					return -1;
+				} elseif ( isset( $a['category'], $b['category'] ) ) {
+					$cat_a = array_search( $a['category'], $category_order, true );
+					$cat_b = array_search( $b['category'], $category_order, true );
+
+					if ( $cat_a !== $cat_b ) {
+						if ( false === $cat_a ) {
+							return 1;
+						}
+						if ( false === $cat_b ) {
+							return -1;
+						}
+
+						return strcmp( $cat_a, $cat_b );
+					}
+				}
+
+				$name_a = array_search( substr( $a['name'], 0, strpos( $a['name'], '/' ) + 1 ), $name_order, true );
+				$name_b = array_search( substr( $b['name'], 0, strpos( $b['name'], '/' ) + 1 ), $name_order, true );
+
+				if ( $name_a !== $name_b ) {
+					if ( false === $name_a ) {
+						return 1;
+					}
+					if ( false === $name_b ) {
+						return -1;
+					}
+
+					return $name_a - $name_b;
+				}
+
+				return strcmp( $a['name'], $b['name'] );
 			}
-		}
+		);
 
-		return null;
-	}
-
-	/**
-	 * Search block with its name.
-	 *
-	 * @param string $name Unique name of the block.
-	 *
-	 * @return array|null Block data, null if block was not found.
-	 * @since 1.0.0
-	 */
-	public function search_block( $name ) {
-		$block = $this->search_block_by_name( $name );
-		if ( is_null( $block ) ) {
-			return null;
-		}
-
-		return $block['block'];
-	}
-
-	/**
-	 * Search block with its name.
-	 *
-	 * @param string $name Unique name of the block.
-	 *
-	 * @return int|null Index, null if block was not found.
-	 * @since 1.0.0
-	 */
-	public function search_block_index( $name ) {
-		$block = $this->search_block_by_name( $name );
-		if ( is_null( $block ) ) {
-			return null;
-		}
-
-		return $block['index'];
-	}
-
-	/**
-	 * Update/Insert block in database.
-	 *
-	 * @param array $block {
-	 *     An array of elements that make up a block to update or insert.
-	 *
-	 *     @type string $name        The name for a block is a unique string that identifies a block.
-	 *     @type string $title       The display title for the block.
-	 *     @type string $description A short description for the block..
-	 *     @type string $category    Category to help users browse and discover blocks.
-	 *     @type string $icon        Icon to make block easier to identify.
-	 *     @type array  $keywords    Optional. Aliases that help users discover block while searching.
-	 *     @type array  $supports    Optional. Some block supports.
-	 *     @type array  $styles      Optional. Block styles can be used to provide alternative styles to block.
-	 * }
-	 *
-	 * @return bool True if block was inserted/updated, False otherwise.
-	 * @since 1.0.0
-	 */
-	protected function insert_block_in_database( $block ) {
-		$blocks = $this->get_settings();
-		$index  = $this->search_block_index( $block['name'] );
-
-		if ( null === $index ) {
-			$blocks[] = $block;
-		} else {
-			$blocks[ $index ] = $block;
-		}
-
-		// Sort blocks.
-		$settings = self::sort_blocks( $blocks );
-
-		$updated = $this->update_db_value( $settings );
-
-		if ( $updated ) {
-			$this->settings = $settings;
-		}
-
-		return $updated;
-	}
-
-	/**
-	 * Delete block in database.
-	 *
-	 * @param string $name Name of the block.
-	 *
-	 * @return bool True if block inserted/updated, False otherwise.
-	 * @since 1.0.0
-	 */
-	protected function delete_block_in_database( $name ) {
-		$blocks = $this->get_settings();
-		$index  = $this->search_block_index( $name );
-
-		if ( null === $index ) {
-			return false;
-		}
-
-		unset( $blocks[ $index ] );
-
-		return $this->update_db_value( $blocks );
+		return $blocks;
 	}
 
 	/**
 	 * Merge arr2 into arr1, depending on the name field.
 	 *
-	 * @param array $arr1 Array of attributes.
-	 * @param array $arr2 Array of attributes.
-	 * @param bool  $keep Flag to keep old values of attributes.
+	 * @param array $arr1 array of attributes.
+	 * @param array $arr2 array of attributes.
+	 * @param bool  $keep flag to keep old values of attributes.
 	 *
-	 * @return array Merged array of attributes.
+	 * @return array merged array of attributes
+	 *
 	 * @since 1.0.0
 	 */
 	protected function merge_attributes( $arr1, $arr2, $keep = true ) {

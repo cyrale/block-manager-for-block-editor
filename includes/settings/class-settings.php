@@ -8,7 +8,6 @@
 
 namespace BMFBE\Settings;
 
-use Exception;
 use WP_Error;
 
 /**
@@ -111,6 +110,28 @@ abstract class Settings {
 	}
 
 	/**
+	 * Retrieve one settings with its name.
+	 *
+	 * @param string $name Name of settings.
+	 *
+	 * @return mixed Value of the settings.
+	 * @since 1.0.0
+	 */
+	public function get_one_settings( $name ) {
+		if ( empty( $name ) ) {
+			return null;
+		}
+
+		$settings = $this->get_settings();
+
+		if ( ! is_array( $settings ) || ! isset( $settings[ $name ] ) ) {
+			return null;
+		}
+
+		return $settings;
+	}
+
+	/**
 	 * Save settings to database.
 	 *
 	 * @param array $settings New values for settings.
@@ -134,6 +155,24 @@ abstract class Settings {
 		}
 
 		return $this->settings;
+	}
+
+	/**
+	 * Save one settings to database.
+	 *
+	 * @param string $name  Name of settings.
+	 * @param mixed  $value New value of settings.
+	 *
+	 * @return mixed|WP_Error Updated settings, WP_Error otherwise.
+	 * @since 1.0.0
+	 */
+	public function update_one_settings( $name, $value ) {
+		$result = $this->update_settings( array( $name => $value ) );
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		return $this->get_one_settings( $name );
 	}
 
 	/**
@@ -574,12 +613,14 @@ abstract class Settings {
 	 * Prepare settings after loading them.
 	 *
 	 * @param array $settings Settings to prepare.
+	 * @param array $schema   Optional. Schema used to prepare settings.
 	 *
 	 * @return array Prepared settings.
 	 * @since 1.0.0
 	 */
-	public function prepare_settings( $settings ) {
-		return self::prepare_settings_walker( $settings, $this->get_schema() );
+	public function prepare_settings( $settings, $schema = null ) {
+		$schema = null === $schema ? $this->get_schema() : $schema;
+		return self::prepare_settings_walker( $settings, $schema );
 	}
 
 	/**

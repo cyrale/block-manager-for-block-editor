@@ -17,7 +17,7 @@ use WP_Error;
  * @since 1.0.0
  * @package BMFBE\Settings
  */
-class Pattern_Settings extends Settings {
+class Pattern_Settings extends Settings_Multiple {
 
 	/**
 	 * Constructor.

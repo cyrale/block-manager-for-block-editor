@@ -15,6 +15,7 @@ namespace BMFBE\Settings;
  * @package BMFBE\Settings
  */
 class Global_Settings extends Settings {
+
 	/**
 	 * Constructor.
 	 *
@@ -71,7 +72,7 @@ class Global_Settings extends Settings {
 				'description'       => __( 'Global block supports', 'bmfbe' ),
 				'type'              => 'object',
 				'properties'        => array(
-					'align'           => array_merge_recursive(
+					'align'              => array_merge_recursive(
 						$supports_schema,
 						array(
 							'description' => __(
@@ -90,7 +91,19 @@ class Global_Settings extends Settings {
 							),
 						)
 					),
-					'alignWide'       => array_merge_recursive(
+					'defaultStylePicker' => array_merge_recursive(
+						$supports_schema,
+						array(
+							'description' => __(
+								'This property allow the style picker to be shown.',
+								'bmfbe'
+							),
+							'properties'  => array(
+								'value' => array( 'default' => true ),
+							),
+						)
+					),
+					'alignWide'          => array_merge_recursive(
 						$supports_schema,
 						array(
 							'description' => __(
@@ -102,7 +115,7 @@ class Global_Settings extends Settings {
 							),
 						)
 					),
-					'anchor'          => array_merge_recursive(
+					'anchor'             => array_merge_recursive(
 						$supports_schema,
 						array(
 							'description' => __(
@@ -114,7 +127,7 @@ class Global_Settings extends Settings {
 							),
 						)
 					),
-					'customClassName' => array_merge_recursive(
+					'customClassName'    => array_merge_recursive(
 						$supports_schema,
 						array(
 							'description' => __(
@@ -126,7 +139,7 @@ class Global_Settings extends Settings {
 							),
 						)
 					),
-					'className'       => array_merge_recursive(
+					'className'          => array_merge_recursive(
 						$supports_schema,
 						array(
 							'description' => __(
@@ -138,7 +151,7 @@ class Global_Settings extends Settings {
 							),
 						)
 					),
-					'html'            => array_merge_recursive(
+					'html'               => array_merge_recursive(
 						$supports_schema,
 						array(
 							'description' => __(
@@ -150,7 +163,7 @@ class Global_Settings extends Settings {
 							),
 						)
 					),
-					'inserter'        => array_merge_recursive(
+					'inserter'           => array_merge_recursive(
 						$supports_schema,
 						array(
 							'description' => __(
@@ -162,7 +175,7 @@ class Global_Settings extends Settings {
 							),
 						)
 					),
-					'multiple'        => array_merge_recursive(
+					'multiple'           => array_merge_recursive(
 						$supports_schema,
 						array(
 							'description' => __(
@@ -174,7 +187,7 @@ class Global_Settings extends Settings {
 							),
 						)
 					),
-					'reusable'        => array_merge_recursive(
+					'reusable'           => array_merge_recursive(
 						$supports_schema,
 						array(
 							'description' => __(
@@ -235,7 +248,8 @@ class Global_Settings extends Settings {
 	/**
 	 * The capability required to use the plugin.
 	 *
-	 * @return string Capability name.
+	 * @return string capability name
+	 *
 	 * @since 1.0.0
 	 */
 	public function capability() {

@@ -228,7 +228,7 @@ class Block_Settings_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 */
 	protected function get_block( $name ) {
-		$block = Block_Settings::get_instance()->search_block( $name );
+		$block = Block_Settings::get_instance()->get_one_settings( $name );
 
 		if ( null === $block ) {
 			return new WP_Error(

@@ -8,7 +8,6 @@
 
 namespace BMFBE\Rest_API;
 
-use BMFBE\Settings\Block_Categories;
 use WP_REST_Server;
 
 /**
@@ -47,12 +46,6 @@ class Block_Categories_Controller extends Rest_Controller {
 					'args'                => array(),
 					'permission_callback' => array( $this, 'get_items_permissions_check' ),
 				),
-				array(
-					'methods'             => WP_REST_Server::EDITABLE,
-					'callback'            => array( $this, 'update_items' ),
-					'args'                => $this->get_endpoint_args_for_item_schema( WP_REST_Server::EDITABLE ),
-					'permission_callback' => array( $this, 'update_items_permissions_check' ),
-				),
 				'schema' => array( $this, 'get_public_item_schema' ),
 			)
 		);
@@ -69,20 +62,29 @@ class Block_Categories_Controller extends Rest_Controller {
 			return $this->add_additional_fields_schema( $this->schema );
 		}
 
-		$global_schema = Block_Categories::get_instance()->get_schema();
-
 		$this->schema = array(
 			'$schema'    => 'http://json-schema.org/draft-04/schema#',
 			'title'      => 'block-category',
 			'type'       => 'object',
-			'properties' => $global_schema['items']['properties'],
+			'properties' => array(
+				'slug'  => array(
+					'description' => __( 'Name of the category', 'bmfbe' ),
+					'type'        => 'string',
+					'required'    => true,
+				),
+				'title' => array(
+					'description' => __( 'Human readable name of the category', 'bmfbe' ),
+					'type'        => 'string',
+					'required'    => true,
+				),
+			),
 		);
 
 		return $this->add_additional_fields_schema( $this->schema );
 	}
 
 	/**
-	 * Retrieves all settings.
+	 * Retrieves all categories.
 	 *
 	 * @param WP_REST_Request $request Full details about the request.
 	 *
@@ -90,37 +92,17 @@ class Block_Categories_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 */
 	public function get_items( $request ) { // phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		return rest_ensure_response( Block_Categories::get_instance()->get_settings() );
-	}
+		if ( ! function_exists( 'get_block_categories' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/post.php';
+		}
 
-	/**
-	 * Updates settings.
-	 *
-	 * @param WP_REST_Request $request Full details about the request.
-	 *
-	 * @return WP_REST_Response|WP_Error Response object on success, or WP_Error object on failure.
-	 * @since 1.0.0
-	 */
-	public function update_items( $request ) {
-		$params = $request->get_params();
+		$pick_keys = array_flip( array( 'slug', 'title' ) );
 
 		$categories = array();
-		foreach ( $params as $key => $param ) {
-			if ( is_numeric( $key ) ) {
-				$categories[ $key ] = $param;
-			}
+		foreach ( get_block_categories( null ) as $category ) {
+			$categories[] = array_intersect_key( $category, $pick_keys );
 		}
 
-		$valid_check = Block_Categories::get_instance()->validate_settings( $categories );
-		if ( is_wp_error( $valid_check ) ) {
-			return $valid_check;
-		}
-
-		$updated = Block_Categories::get_instance()->update_settings( $categories );
-		if ( is_wp_error( $updated ) ) {
-			return $updated;
-		}
-
-		return $this->get_item( $request );
+		return rest_ensure_response( $categories );
 	}
 }

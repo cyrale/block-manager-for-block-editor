@@ -1,15 +1,14 @@
-import { merge } from 'lodash';
+/**
+ * External dependencies
+ */
+import { merge, pick } from 'lodash';
 
-import { STATUS_LOADING, STATUS_PENDING, STATUS_SAVING } from './constants';
+/**
+ * Internal dependencies
+ */
+import { DEFAULT_STATE, STATUS_PENDING, STATUS_SAVING } from './constants';
 
-const DEFAULT_STATE = {
-	status: STATUS_LOADING,
-	blocks: {},
-	list: [],
-	categories: [],
-};
-
-export function reducer( state = DEFAULT_STATE, action ) {
+export default function reducer( state = DEFAULT_STATE, action ) {
 	switch ( action.type ) {
 		case 'INIT_BLOCK_CATEGORIES':
 			return {
@@ -18,38 +17,23 @@ export function reducer( state = DEFAULT_STATE, action ) {
 			};
 
 		case 'INIT_BLOCKS':
-			const blocksObject = {};
+			const blocks = {};
+			const list = [];
+
 			action.blocks.forEach( ( block ) => {
-				blocksObject[ block.name ] = {
+				blocks[ block.name ] = {
 					status: STATUS_PENDING,
 					value: block,
 				};
+
+				list.push( pick( block, [ 'name', 'category' ] ) );
 			} );
-
-			const blocks = { ...state.blocks, ...blocksObject };
-
-			const list = Object.values( blocks ).map( ( block ) => ( {
-				category: block.value.category,
-				name: block.value.name,
-			} ) );
-
-			// const categories = Object.values( blocks ).reduce(
-			// 	( cats, block ) => {
-			// 		if ( ! cats.includes( block.value.category ) ) {
-			// 			cats.push( block.value.category );
-			// 		}
-
-			// 		return cats;
-			// 	},
-			// 	[]
-			// );
 
 			return {
 				...state,
 				status: STATUS_PENDING,
 				blocks,
 				list,
-				// categories,
 			};
 
 		case 'UPDATE_BLOCK':
@@ -92,5 +76,3 @@ export function reducer( state = DEFAULT_STATE, action ) {
 
 	return state;
 }
-
-export default reducer;

@@ -29,7 +29,6 @@ use Exception;
  * @property-read string           $basename          Plugin basename.
  * @property-read string           $url               URL of plugin directory.
  * @property-read string           $path              Path of plugin directory.
- * @property-read Block_Categories $block_categories  Block categories.
  * @property-read Block_Settings   $block_settings    Block settings.
  * @property-read Global_Settings  $global_settings   Global settings of plugin.
  * @property-read Pattern_Settings $pattern_settings  Pattern settings.
@@ -172,14 +171,6 @@ final class Plugin {
 	protected $block_settings;
 
 	/**
-	 * Instance of BMFBE\Settings\Block_Categories: block categories.
-	 *
-	 * @var Block_Categories
-	 * @since 1.0.0
-	 */
-	protected $block_categories;
-
-	/**
 	 * Instance of BMFBE\Settings\Pattern_Settings: pattern settings.
 	 *
 	 * @var Pattern_Settings
@@ -219,7 +210,6 @@ final class Plugin {
 
 		$this->global_settings  = Global_Settings::get_instance();
 		$this->block_settings   = Block_Settings::get_instance();
-		$this->block_categories = Block_Categories::get_instance();
 		$this->pattern_settings = Pattern_Settings::get_instance();
 	}
 

@@ -1,10 +1,22 @@
+/**
+ * WordPress dependencies
+ */
+import domReady from '@wordpress/dom-ready';
 import { render } from '@wordpress/element';
+import { registerCoreBlocks } from '@wordpress/block-library';
 
-import './sass/admin.scss';
+/**
+ * Internal dependencies
+ */
 import Admin from './libs/admin/admin.js';
 
-const container = document.getElementById( 'bmfbeSettings' );
+import './sass/admin.scss';
 
-if ( null !== container ) {
-	render( <Admin />, container );
-}
+domReady( () => {
+	registerCoreBlocks();
+
+	const container = document.getElementById( 'bmfbeSettings' );
+	if ( null !== container ) {
+		render( <Admin />, container );
+	}
+} );
