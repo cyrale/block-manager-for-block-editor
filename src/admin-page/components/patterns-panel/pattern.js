@@ -65,7 +65,7 @@ export default function Pattern( { name } ) {
 				/>
 			</div>
 			<IndeterminateToggleControl
-				label={ __( 'Enable pattern', 'bmfbe' ) }
+				label={ __( 'Enable this pattern', 'bmfbe' ) }
 				className="bmfbe-pattern__disable"
 				checked={ ! pattern.disabled }
 				onChange={ ( { checked } ) => handleDisabledChange( checked ) }
