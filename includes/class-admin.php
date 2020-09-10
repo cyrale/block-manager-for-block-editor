@@ -75,13 +75,6 @@ class Admin implements WP_Plugin_Class {
 			$asset['dependencies'],
 			$asset['version']
 		);
-		wp_localize_script(
-			'bmfbe-admin',
-			'bmfbeAdminGlobal',
-			array(
-				'detectionPage' => add_query_arg( array( 'detect' => 1 ), admin_url( 'post-new.php' ) ),
-			)
-		);
 
 		wp_enqueue_style(
 			'bmfbe-admin',

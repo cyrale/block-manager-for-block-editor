@@ -43,11 +43,6 @@ class Global_Settings extends Settings {
 
 		// Initialize available options like arguments in Rest API.
 		$this->schema = array(
-			'latest_detection'           => array(
-				'description' => __( 'Date of the latest detection', 'bmfbe' ),
-				'type'        => 'integer',
-				'default'     => 0,
-			),
 			'disable_fullscreen'         => array(
 				'description' => __( 'Disable fullscreen mode', 'bmfbe' ),
 				'type'        => 'boolean',

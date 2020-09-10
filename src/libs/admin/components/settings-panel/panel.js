@@ -1,16 +1,9 @@
 /**
- * External dependencies
- */
-import classnames from 'classnames';
-import { Parser as HtmlToReactParser } from 'html-to-react';
-
-/**
  * WordPress dependencies
  */
-import { Button } from '@wordpress/components';
 import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
 import { useEffect } from '@wordpress/element';
-import { __, sprintf } from '@wordpress/i18n';
+import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
@@ -20,14 +13,7 @@ import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import Supports from './supports';
 import useDelayedChanges from '../../hooks/use-delayed-changes';
 
-/**
- * Parser to convert raw HTML from translations to React DOM structure.
- *
- * @constant {{parse: *, parseWithInstructions: *}}
- * @since 1.0.0
- */
-const htmlToReactParser = new HtmlToReactParser();
-
+// TODO: get this sections from global variable.
 /**
  * List of supported settings (settings that can be changed) grouped by section.
  *
@@ -114,23 +100,11 @@ const sections = [
 	},
 ];
 
-/**
- * Time interval after which an alert is displayed
- *
- * @constant {number}
- * @since 1.0.0
- */
-const detectionInterval = 7 * 24 * 60 * 60; // 1 week.
-
 export default function Panel() {
 	const settings = useSelect(
 		( select ) => select( SETTINGS_STORE ).getSettings(),
 		[]
 	);
-
-	const latestDetection = settings?.latest_detection ?? 0;
-	const latestDetectionInterval =
-		Math.floor( Date.now() / 1000 ) - latestDetection;
 
 	const { saveSettings, updateSettings } = useDispatch( SETTINGS_STORE );
 	const { enqueueChanges, setInitialData } = useDelayedChanges(
@@ -156,60 +130,6 @@ export default function Panel() {
 
 	return (
 		<div className="bmfbe-settings-panel">
-			{ settings?.latest_detection && (
-				<div className="bmfbe-settings-panel__notices">
-					{ 0 !== latestDetection ? (
-						<div
-							className={ classnames(
-								'notice',
-								latestDetectionInterval <= detectionInterval
-									? 'notice-info'
-									: 'notice-warning'
-							) }
-						>
-							<p>
-								<span className="bmfbe-settings-panel__notice-message">
-									{ htmlToReactParser.parse(
-										sprintf(
-											// translators: %s: date of latest detection.
-											__(
-												'Latest detection: %s.',
-												'bmfbe'
-											),
-											`<b>${ new Date(
-												latestDetection * 1000
-											).toLocaleString() }</b>`
-										)
-									) }
-								</span>
-								<Button
-									href={ bmfbeAdminGlobal.detectionPage }
-									isPrimary
-								>
-									{ __( 'Update blocks', 'bmfbe' ) }
-								</Button>
-							</p>
-						</div>
-					) : (
-						<div className="notice notice-error">
-							<p>
-								<span className="bmfbe-settings-panel__notice-message">
-									{ __(
-										'Blocks never initialized.',
-										'bmfbe'
-									) }
-								</span>
-								<Button
-									href={ bmfbeAdminGlobal.detectionPage }
-									isPrimary
-								>
-									{ __( 'Detect blocks.', 'bmfbe' ) }
-								</Button>
-							</p>
-						</div>
-					) }
-				</div>
-			) }
 			{ sections.map( ( section ) => (
 				<div
 					key={ section.name }
