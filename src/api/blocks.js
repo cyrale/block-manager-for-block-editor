@@ -1,12 +1,13 @@
 /**
  * External dependencies
  */
-import { omit } from 'lodash';
+import { omit, pick } from 'lodash';
 
 /**
  * WordPress dependencies
  */
 import * as apiFetch from '@wordpress/api-fetch';
+import { getBlockTypes } from '@wordpress/blocks';
 import { addQueryArgs, isValidPath } from '@wordpress/url';
 
 /**
@@ -24,6 +25,72 @@ export const BLOCKS_API_PATH = '/bmfbe/v1/blocks';
  * @since 1.0.0
  */
 export const BLOCK_CATEGORIES_API_PATH = '/bmfbe/v1/block-categories';
+
+// TODO; get this values from global variable.
+const supports = [
+	'align',
+	'alignWide',
+	'defaultStylePicker',
+	'anchor',
+	'customClassName',
+	'className',
+	'html',
+	'inserter',
+	'multiple',
+	'reusable',
+];
+
+/**
+ * Get all blocks registered in editor.
+ *
+ * @return {[]} List of all blocks in editor.
+ * @since 1.0.0
+ */
+export function getEditorBlocks() {
+	return (
+		getBlockTypes() // Remove blocks not visible in inserter.
+			.filter( ( block ) => block.supports?.inserter !== false )
+			// Keep only necessary fields.
+			.map( ( block ) =>
+				pick( block, [
+					'name',
+					'title',
+					'description',
+					'category',
+					'icon',
+					'keywords',
+					'supports_override',
+					'supports',
+					'styles',
+					'variations',
+				] )
+			)
+			// Sanitize values.
+			.map( ( block ) => {
+				// Sanitize supports.
+				block.supports = block.supports ?? {};
+
+				Object.keys( block.supports ).forEach( ( name ) => {
+					if ( ! supports.includes( name ) ) {
+						delete block.supports[ name ];
+					} else {
+						block.supports[ name ] = {
+							value: block.supports[ name ],
+						};
+					}
+				} );
+
+				// Sanitize styles and variations.
+				[ 'styles', 'variations' ].forEach( ( key ) => {
+					block[ key ] = ( block[ key ] ?? [] ).map( ( v ) =>
+						pick( v, [ 'name', 'isDefault', 'isActive' ] )
+					);
+				} );
+
+				return block;
+			} )
+	);
+}
 
 /**
  * Get all block categories.

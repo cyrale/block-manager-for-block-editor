@@ -6,6 +6,7 @@ import { isEqual, mapValues, merge, pick, pickBy } from 'lodash';
 /**
  * Internal dependencies
  */
+import { getEditorBlocks } from '../../api/blocks';
 import * as actions from './actions';
 
 export function* getBlockCategories() {
@@ -27,7 +28,7 @@ export function* getBlocks() {
 	];
 
 	const registeredBlocks = yield actions.fetchAllFromAPI();
-	const editorBlocks = actions.getEditorBlocks();
+	const editorBlocks = getEditorBlocks();
 
 	// Extract names.
 	const registeredBlockNames = registeredBlocks.map( ( { name } ) => name );
