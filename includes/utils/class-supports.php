@@ -16,12 +16,12 @@ namespace BMFBE\Utils;
  */
 class Supports extends Singleton {
 	/**
-	 * Schema for supports.
+	 * Common schema for all properties.
 	 *
 	 * @var array
 	 * @since 1.0.0
 	 */
-	protected $supports_schema = array();
+	protected $schema = array();
 
 	/**
 	 * Properties used to build schema or fields for supports.
@@ -39,7 +39,7 @@ class Supports extends Singleton {
 	public function __construct() {
 		parent::__construct();
 
-		$this->supports_schema = array(
+		$this->schema = array(
 			'type'       => 'object',
 			'properties' => array(
 				'isActive' => array(
@@ -268,7 +268,7 @@ class Supports extends Singleton {
 		$schema = array();
 		foreach ( $this->supports as $name => $prop ) {
 			$schema[ $name ] = array_merge_recursive(
-				$this->supports_schema,
+				$this->schema,
 				$prop['schema']
 			);
 		}
