@@ -52,7 +52,7 @@ class Global_Settings extends Settings {
 			'supports'                   => array(
 				'description'       => __( 'Global block supports', 'bmfbe' ),
 				'type'              => 'object',
-				'properties'        => Supports::get_instance()->get_schema(),
+				'properties'        => Supports::get_instance()->schema,
 				'validate_callback' => array( $this, 'validate_supports' ),
 			),
 			'disable_color_palettes'     => array(

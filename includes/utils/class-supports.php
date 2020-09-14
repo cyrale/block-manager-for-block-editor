@@ -8,11 +8,16 @@
 
 namespace BMFBE\Utils;
 
+use Exception;
+
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Supports.
  *
  * @since 1.0.0
  * @package BMFBE\Utils
+
+ * @property-read array $fields Schema that defined supports.
+ * @property-read array $schema Schema that defined supports.
  */
 class Supports extends Singleton {
 	/**
@@ -21,15 +26,31 @@ class Supports extends Singleton {
 	 * @var array
 	 * @since 1.0.0
 	 */
-	protected $schema = array();
+	protected $common_schema = array();
 
 	/**
-	 * Properties used to build schema or fields for supports.
+	 * List of all supported properties.
 	 *
 	 * @var array
 	 * @since 1.0.0
 	 */
-	protected $supports = array();
+	protected $properties = array();
+
+	/**
+	 * Schema that defined supports.
+	 *
+	 * @var array
+	 * @since 1.0.0
+	 */
+	protected $schema = array();
+
+	/**
+	 * Fields used in admin screen.
+	 *
+	 * @var array
+	 * @since 1.0.0
+	 */
+	protected $fields = array();
 
 	/**
 	 * Constructor.
@@ -39,7 +60,7 @@ class Supports extends Singleton {
 	public function __construct() {
 		parent::__construct();
 
-		$this->schema = array(
+		$this->common_schema = array(
 			'type'       => 'object',
 			'properties' => array(
 				'isActive' => array(
@@ -54,7 +75,7 @@ class Supports extends Singleton {
 			),
 		);
 
-		$this->supports = array(
+		$this->properties = array(
 			'align'              => array(
 				'field'  => array(
 					'help'   => __(
@@ -255,40 +276,35 @@ class Supports extends Singleton {
 				),
 			),
 		);
-	}
 
-	/**
-	 * Get schema for supports.
-	 *
-	 * @return array Schema for supports.
-	 *
-	 * @since 1.0.0
-	 */
-	public function get_schema() {
-		$schema = array();
-		foreach ( $this->supports as $name => $prop ) {
-			$schema[ $name ] = array_merge_recursive(
-				$this->schema,
+		// Apply common schema to all properties to define supports schema and
+		// extract fields definition.
+		foreach ( $this->properties as $name => $prop ) {
+			$this->schema[ $name ] = array_merge_recursive(
+				$this->common_schema,
 				$prop['schema']
 			);
-		}
 
-		return $schema;
+			$this->fields[ $name ] = $prop['field'];
+		}
 	}
 
 	/**
-	 * Get supports fields to display in admin screen.
+	 * Magic getter for our object.
 	 *
-	 * @return array Fields to display.
+	 * @param string $field Field to get.
 	 *
+	 * @return mixed     Value of the field.
+	 * @throws Exception Throws an exception if the field is invalid.
 	 * @since 1.0.0
 	 */
-	public function get_fields() {
-		$fields = array();
-		foreach ( $this->supports as $name => $prop ) {
-			$fields[ $name ] = $prop['field'];
+	public function __get( $field ) {
+		switch ( $field ) {
+			case 'fields':
+			case 'schema':
+				return $this->$field;
+			default:
+				throw new Exception( 'Invalid ' . __CLASS__ . ' property: ' . $field );
 		}
-
-		return $fields;
 	}
 }

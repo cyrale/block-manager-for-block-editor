@@ -18,7 +18,6 @@ use WP_Error;
  * @package BMFBE\Settings
  */
 class Block_Settings extends Settings_Multiple {
-
 	/**
 	 * Constructor.
 	 *
@@ -107,7 +106,7 @@ class Block_Settings extends Settings_Multiple {
 					'supports'          => array(
 						'description'       => __( 'Block supports', 'bmfbe' ),
 						'type'              => 'object',
-						'properties'        => Supports::get_instance()->get_schema(),
+						'properties'        => Supports::get_instance()->schema,
 						'validate_callback' => null,
 					),
 					'styles'            => array(

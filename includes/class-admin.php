@@ -228,7 +228,7 @@ class Admin implements WP_Plugin_Class {
 	 * @since 1.0.0
 	 */
 	protected function available_supports() {
-		$schema   = Supports::get_instance()->get_schema();
+		$schema   = Supports::get_instance()->schema;
 		$supports = array_keys( $schema );
 
 		// TODO: filter supports with current version of WordPress or Gutenberg plugin.
@@ -246,7 +246,7 @@ class Admin implements WP_Plugin_Class {
 	protected function available_supports_fields() {
 		$supports = $this->available_supports();
 
-		$fields = Supports::get_instance()->get_fields();
+		$fields = Supports::get_instance()->fields;
 		$fields = array_intersect_key( $fields, array_flip( $supports ) );
 
 		return $fields;
