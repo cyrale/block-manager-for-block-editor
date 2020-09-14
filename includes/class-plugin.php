@@ -17,6 +17,7 @@ use BMFBE\Settings\Block_Categories;
 use BMFBE\Settings\Block_Settings;
 use BMFBE\Settings\Global_Settings;
 use BMFBE\Settings\Pattern_Settings;
+use BMFBE\Utils\Singleton;
 use Exception;
 
 /**
@@ -33,7 +34,7 @@ use Exception;
  * @property-read Global_Settings  $global_settings   Global settings of plugin.
  * @property-read Pattern_Settings $pattern_settings  Pattern settings.
  */
-final class Plugin {
+final class Plugin extends Singleton {
 	/**
 	 * Current version.
 	 *
@@ -73,14 +74,6 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	protected $activation_errors = array();
-
-	/**
-	 * Singleton instance of plugin.
-	 *
-	 * @var Plugin
-	 * @since 1.0.0
-	 */
-	protected static $single_instance = null;
 
 	/**
 	 * Instance of BMFBE\Rest_API\Block_Categories_Controller
@@ -177,21 +170,6 @@ final class Plugin {
 	 * @since 1.0.0
 	 */
 	protected $pattern_settings;
-
-	/**
-	 * Creates or returns an instance of this class.
-	 *
-	 * @return Plugin A single instance of this class.
-	 * @throws Exception If plugin not correctly initialized.
-	 * @since 1.0.0
-	 */
-	public static function get_instance() {
-		if ( null === self::$single_instance ) {
-			self::$single_instance = new self();
-		}
-
-		return self::$single_instance;
-	}
 
 	/**
 	 * Sets up our plugin.

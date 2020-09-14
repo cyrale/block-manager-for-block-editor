@@ -8,6 +8,7 @@
 
 namespace BMFBE\Settings;
 
+use BMFBE\Utils\Singleton;
 use WP_Error;
 
 /**
@@ -16,7 +17,7 @@ use WP_Error;
  * @since 1.0.0
  * @package BMFBE\Settings
  */
-abstract class Settings {
+abstract class Settings extends Singleton {
 	/**
 	 * Prefix for the name of the option to store settings.
 	 *
@@ -48,37 +49,6 @@ abstract class Settings {
 	 * @since 1.0.0
 	 */
 	protected $settings;
-
-	/**
-	 * Singleton instance of plugin.
-	 *
-	 * @var Settings
-	 * @since 1.0.0
-	 */
-	private static $single_instances = array();
-
-	/**
-	 * Creates or returns an instance of this class.
-	 *
-	 * @return Settings A single instance of this class.
-	 * @since 1.0.0
-	 */
-	final public static function get_instance() {
-		$called_class = get_called_class();
-		if ( ! isset( self::$single_instances[ $called_class ] ) ) {
-			self::$single_instances[ $called_class ] = new $called_class();
-		}
-
-		return self::$single_instances[ $called_class ];
-	}
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 1.0.0
-	 */
-	public function __construct() {
-	}
 
 	/**
 	 * Retrieves all available options.
