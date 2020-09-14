@@ -1,11 +1,12 @@
-.git
-.github
-.gitkeep
-.vscode
-node_modules
+.git/
+.github/
+.vscode/
+node_modules/
+src/
 .editorconfig
 .eslintignore
 .gitignore
+.gitkeep
 .mardownlintignore
 .npmrc
 .nvmrc
