@@ -246,6 +246,13 @@ class Pattern_Settings_Controller extends Rest_Controller {
 			}
 		}
 
+		$defaults = array(
+			'page'     => 1,
+			'per_page' => 10,
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
 		$result   = Pattern_Settings::get_instance()->get_patterns( $args );
 		$patterns = array();
 

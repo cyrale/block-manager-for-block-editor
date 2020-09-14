@@ -264,6 +264,13 @@ class Block_Settings_Controller extends Rest_Controller {
 			}
 		}
 
+		$defaults = array(
+			'page'     => 1,
+			'per_page' => 10,
+		);
+
+		$args = wp_parse_args( $args, $defaults );
+
 		$result = Block_Settings::get_instance()->get_blocks( $args );
 		$blocks = array();
 
