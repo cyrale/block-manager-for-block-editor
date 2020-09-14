@@ -8,6 +8,7 @@
 
 namespace BMFBE\Settings;
 
+use BMFBE\Utils\Supports;
 use WP_Error;
 
 /**
@@ -106,7 +107,7 @@ class Block_Settings extends Settings_Multiple {
 					'supports'          => array(
 						'description'       => __( 'Block supports', 'bmfbe' ),
 						'type'              => 'object',
-						'properties'        => Global_Settings::get_instance()->get_supports_schema(),
+						'properties'        => Supports::get_instance()->get_schema(),
 						'validate_callback' => null,
 					),
 					'styles'            => array(

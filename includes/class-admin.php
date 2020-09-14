@@ -10,6 +10,7 @@ namespace BMFBE;
 
 use BMFBE\Interfaces\WP_Plugin_Class;
 use BMFBE\Settings\Global_Settings;
+use BMFBE\Utils\Supports;
 
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Admin.
@@ -227,7 +228,7 @@ class Admin implements WP_Plugin_Class {
 	 * @since 1.0.0
 	 */
 	protected function available_supports() {
-		$schema   = Global_Settings::get_instance()->get_supports_schema();
+		$schema   = Supports::get_instance()->get_schema();
 		$supports = array_keys( $schema );
 
 		// TODO: filter supports with current version of WordPress or Gutenberg plugin.
@@ -245,7 +246,7 @@ class Admin implements WP_Plugin_Class {
 	protected function available_supports_fields() {
 		$supports = $this->available_supports();
 
-		$fields = Global_Settings::get_instance()->get_supports_fields();
+		$fields = Supports::get_instance()->get_fields();
 		$fields = array_intersect_key( $fields, array_flip( $supports ) );
 
 		return $fields;
