@@ -8,6 +8,7 @@
 
 namespace BMFBE\Settings;
 
+use BMFBE\Utils\Access;
 use BMFBE\Utils\Supports;
 use WP_Error;
 
@@ -27,56 +28,6 @@ class Block_Settings extends Settings_Multiple {
 		parent::__construct();
 
 		$this->option_name = 'block_settings';
-
-		// Extract roles.
-		if ( ! function_exists( 'get_editable_roles' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/user.php';
-		}
-		$roles = get_editable_roles();
-
-		// Build access schema.
-		$access = array(
-			'description' => '',
-			'type'        => 'object',
-			'properties'  => array(),
-		);
-
-		$post_types = get_post_types(
-			array(
-				'public'       => true,
-				'show_in_rest' => true,
-			),
-			'object'
-		);
-		foreach ( $post_types as $post_type ) {
-			// Remove post type that not support editor.
-			if ( ! post_type_supports( $post_type->name, 'editor' ) ) {
-				continue;
-			}
-
-			// Access by roles.
-			$properties = array();
-
-			foreach ( $roles as $role_name => $role ) {
-				if ( ! in_array( $post_type->cap->create_posts, array_keys( $role['capabilities'] ), true )
-					&& ! in_array( $post_type->cap->edit_posts, array_keys( $role['capabilities'] ), true ) ) {
-					continue;
-				}
-
-				$properties[ $role_name ] = array(
-					'type'    => 'boolean',
-					'default' => true,
-				);
-			}
-
-			// Access by post type.
-			if ( ! empty( $properties ) ) {
-				$access['properties'][ $post_type->name ] = array(
-					'type'       => 'object',
-					'properties' => $properties,
-				);
-			}
-		}
 
 		// Initialize available options like arguments in Rest API.
 		$this->schema = array(
@@ -164,7 +115,7 @@ class Block_Settings extends Settings_Multiple {
 							),
 						),
 					),
-					'access'            => $access,
+					'access'            => Access::get_instance()->schema,
 				),
 			),
 		);
