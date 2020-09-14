@@ -13,7 +13,6 @@ use BMFBE\Rest_API\Block_Settings_Controller;
 use BMFBE\Rest_API\Global_Settings_Controller;
 use BMFBE\Rest_API\Pattern_Categories_Controller;
 use BMFBE\Rest_API\Pattern_Settings_Controller;
-use BMFBE\Settings\Block_Categories;
 use BMFBE\Settings\Block_Settings;
 use BMFBE\Settings\Global_Settings;
 use BMFBE\Settings\Pattern_Settings;
