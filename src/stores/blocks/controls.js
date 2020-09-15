@@ -21,7 +21,7 @@ function batchProcess( items, cb ) {
 	return chunk( items, 10 ).reduce(
 		async ( memo, part ) => [
 			...( await memo ),
-			...( await Promise.all( part.map( ( item ) => cb( item ) ) ) ),
+			...( await Promise.all( part.map( cb ) ) ),
 		],
 		[]
 	);
