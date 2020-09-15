@@ -1,13 +1,7 @@
 /**
- * External dependencies
- */
-import { pick } from 'lodash';
-
-/**
  * WordPress dependencies.
  */
-import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import { useDispatch, useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -17,15 +11,6 @@ import { COLLECTION_STORE as PATTERNS_STORE } from '../../../stores/patterns/con
 import Description from '../description';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import StatusIcon from '../status-icon';
-import useDelayedChanges from '../../../hooks/use-delayed-changes';
-
-/**
- * List of all fields of a pattern that can be modified.
- *
- * @constant {string[]}
- * @since 1.0.0
- */
-const changingFields = [ 'name', 'disabled' ];
 
 export default function Pattern( { name } ) {
 	const { pattern, status } = useSelect( ( select ) => ( {
@@ -33,12 +18,7 @@ export default function Pattern( { name } ) {
 		status: select( PATTERNS_STORE ).getStatus( name ),
 	} ) );
 
-	const { saveItem, updateItem } = useDispatch( PATTERNS_STORE );
-	const { enqueueChanges, setInitialData } = useDelayedChanges( saveItem );
-
-	useEffect( () => {
-		setInitialData( pick( pattern, changingFields ) );
-	}, [] );
+	const { updateItem } = useDispatch( PATTERNS_STORE );
 
 	/**
 	 * Handle changes on pattern disabled.
@@ -47,10 +27,7 @@ export default function Pattern( { name } ) {
 	 * @since 1.0.0
 	 */
 	async function handleDisabledChange( enabled ) {
-		await updateItem( name, { disabled: ! enabled } );
-
-		const newPattern = wpSelect( PATTERNS_STORE ).getItem( name );
-		enqueueChanges( pick( newPattern, changingFields ) );
+		updateItem( name, { disabled: ! enabled } );
 	}
 
 	return (

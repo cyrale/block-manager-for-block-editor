@@ -12,15 +12,11 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { COLLECTION_STORE as BLOCKS_STORE } from '../stores/blocks/constants';
-import { COLLECTION_STORE as PATTERNS_STORE } from '../stores/patterns/constants';
 import { ITEM_STORE as SETTINGS_STORE } from '../stores/settings/constants';
-import { STATUS_PENDING, STATUS_SAVING } from '../stores/common/constants';
 import {
 	default as BlocksPanel,
 	TabTitle as BlocksTab,
 } from './components/blocks-panel';
-import Notice from './components/notice';
 import {
 	default as PatternsPanel,
 	TabTitle as PatternsTab,
@@ -31,14 +27,6 @@ import {
 } from './components/settings-panel';
 
 export default function AdminPage() {
-	const status = useSelect( ( select ) =>
-		STATUS_SAVING === select( BLOCKS_STORE ).getStatus() ||
-		STATUS_SAVING === select( PATTERNS_STORE ).getStatus() ||
-		STATUS_SAVING === select( SETTINGS_STORE ).getStatus()
-			? STATUS_SAVING
-			: STATUS_PENDING
-	);
-
 	const settings = useSelect(
 		( select ) => select( SETTINGS_STORE ).getItem(),
 		[]
@@ -74,7 +62,6 @@ export default function AdminPage() {
 					</TabPanel>
 				) }
 			</Tabs>
-			<Notice status={ status } />
 		</>
 	);
 }

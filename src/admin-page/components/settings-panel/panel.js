@@ -1,8 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect } from '@wordpress/element';
+import { useDispatch, useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
@@ -10,7 +9,6 @@ import { useEffect } from '@wordpress/element';
 import { ITEM_STORE as SETTINGS_STORE } from '../../../stores/settings/constants';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import Supports from './supports';
-import useDelayedChanges from '../../../hooks/use-delayed-changes';
 
 export default function Panel() {
 	const settings = useSelect(
@@ -18,12 +16,7 @@ export default function Panel() {
 		[]
 	);
 
-	const { saveItem, updateItem } = useDispatch( SETTINGS_STORE );
-	const { enqueueChanges, setInitialData } = useDelayedChanges( saveItem );
-
-	useEffect( () => {
-		setInitialData( settings );
-	}, [ settings ] );
+	const { updateItem } = useDispatch( SETTINGS_STORE );
 
 	/**
 	 * Handle changes on settings.
@@ -33,9 +26,6 @@ export default function Panel() {
 	 */
 	function handleOnChange( key, value ) {
 		updateItem( key, value );
-
-		const newSettings = wpSelect( SETTINGS_STORE ).getItem();
-		enqueueChanges( newSettings );
 	}
 
 	return (

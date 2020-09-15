@@ -2,7 +2,7 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { mapValues, pick, uniq } from 'lodash';
+import { mapValues, uniq } from 'lodash';
 import {
 	Accordion,
 	AccordionItem,
@@ -14,8 +14,8 @@ import {
 /**
  * WordPress dependencies
  */
-import { select as wpSelect, useDispatch, useSelect } from '@wordpress/data';
-import { useEffect, useState } from '@wordpress/element';
+import { useDispatch, useSelect } from '@wordpress/data';
+import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -33,7 +33,6 @@ import Styles from './styles';
 import Supports from '../supports';
 import StatusIcon from '../status-icon';
 import Variations from './variations';
-import useDelayedChanges from '../../../hooks/use-delayed-changes';
 
 /**
  * Panels to display below of block description.
@@ -81,17 +80,6 @@ panels.forEach( ( { name } ) => {
 	defaultDisplayedPanels[ name ] = false;
 } );
 
-/**
- * List of all fields of a block that can be modified.
- *
- * @constant {string[]}
- * @since 1.0.0
- */
-const changingFields = [
-	...[ 'name', 'supports_override' ],
-	...panels.map( ( panel ) => panel.name ),
-];
-
 export default function Block( { name } ) {
 	// Status of panels: show/hide.
 	const [ displayedPanels, setDisplayedPanels ] = useState(
@@ -107,12 +95,7 @@ export default function Block( { name } ) {
 		[]
 	);
 
-	const { saveItem, updateItem } = useDispatch( BLOCKS_STORE );
-	const { enqueueChanges, setInitialData } = useDelayedChanges( saveItem );
-
-	useEffect( () => {
-		setInitialData( pick( block, changingFields ) );
-	}, [] );
+	const { updateItem } = useDispatch( BLOCKS_STORE );
 
 	// Get uniquely values for access panel.
 	const uniqFlatValues = uniq(
@@ -154,10 +137,7 @@ export default function Block( { name } ) {
 	 * @since 1.0.0
 	 */
 	async function handleBlockChange( value ) {
-		await updateItem( name, value );
-
-		const newBlock = wpSelect( BLOCKS_STORE ).getItem( name );
-		enqueueChanges( pick( newBlock, changingFields ) );
+		updateItem( name, value );
 	}
 
 	/**
