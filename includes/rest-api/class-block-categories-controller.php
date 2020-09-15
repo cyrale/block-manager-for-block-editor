@@ -8,6 +8,7 @@
 
 namespace BMFBE\Rest_API;
 
+use BMFBE\Settings\Block_Settings;
 use WP_REST_Server;
 
 /**
@@ -92,14 +93,10 @@ class Block_Categories_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 */
 	public function get_items( $request ) { // phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		if ( ! function_exists( 'get_block_categories' ) ) {
-			require_once ABSPATH . '/wp-admin/includes/post.php';
-		}
-
 		$pick_keys = array_flip( array( 'slug', 'title' ) );
 
 		$categories = array();
-		foreach ( get_block_categories( null ) as $category ) {
+		foreach ( Block_Settings::get_instance()->get_categories() as $category ) {
 			$categories[] = array_intersect_key( $category, $pick_keys );
 		}
 

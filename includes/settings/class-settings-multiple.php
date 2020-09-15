@@ -16,6 +16,27 @@ namespace BMFBE\Settings;
  */
 abstract class Settings_Multiple extends Settings {
 	/**
+	 * Get categories used to group settings.
+	 *
+	 * @return array Categories used to group settings.
+	 * @since 1.0.0
+	 */
+	abstract public function get_categories();
+
+	/**
+	 * Retrieves all settings.
+	 *
+	 * @return array Value of settings.
+	 * @since 1.0.0
+	 */
+	public function get_settings() {
+		parent::get_settings();
+		$this->sort_settings();
+
+		return $this->settings;
+	}
+
+	/**
 	 * Retrieve one settings with its name.
 	 *
 	 * @param string $name Name of settings.
@@ -158,4 +179,12 @@ abstract class Settings_Multiple extends Settings {
 	protected function delete_one_db_value( $name ) {
 		return delete_option( $this->option_prefix() . $name );
 	}
+
+	/**
+	 * Sort settings.
+	 *
+	 * @return array Sorted settings.
+	 * @since 1.0.0
+	 */
+	abstract protected function sort_settings();
 }

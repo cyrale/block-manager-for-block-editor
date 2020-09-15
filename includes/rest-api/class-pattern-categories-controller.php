@@ -8,7 +8,7 @@
 
 namespace BMFBE\Rest_API;
 
-use WP_Block_Pattern_Categories_Registry;
+use BMFBE\Settings\Pattern_Settings;
 use WP_REST_Server;
 
 /**
@@ -95,6 +95,6 @@ class Pattern_Categories_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 */
 	public function get_items( $request ) { // phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
-		return rest_ensure_response( WP_Block_Pattern_Categories_Registry::get_instance()->get_all_registered() );
+		return rest_ensure_response( Pattern_Settings::get_instance()->get_categories() );
 	}
 }

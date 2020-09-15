@@ -9,6 +9,7 @@
 namespace BMFBE\Settings;
 
 use WP_Block_Patterns_Registry;
+use WP_Block_Pattern_Categories_Registry;
 use WP_Error;
 
 /**
@@ -18,7 +19,6 @@ use WP_Error;
  * @package BMFBE\Settings
  */
 class Pattern_Settings extends Settings_Multiple {
-
 	/**
 	 * Constructor.
 	 *
@@ -73,6 +73,76 @@ class Pattern_Settings extends Settings_Multiple {
 	}
 
 	/**
+	 * Get categories used to group patterns.
+	 *
+	 * @return array Categories used to group patterns.
+	 * @since 1.0.0
+	 */
+	public function get_categories() {
+		return WP_Block_Pattern_Categories_Registry::get_instance()->get_all_registered();
+	}
+
+	/**
+	 * Get all options from database.
+	 *
+	 * @return mixed Value stored in database.
+	 * @since 1.0.0
+	 */
+	protected function get_db_value() {
+		$value    = array();
+		$db_value = parent::get_db_value();
+
+		$summarized_value = array();
+		foreach ( $db_value as $pattern ) {
+			$summarized_value[ $pattern['name'] ] = isset( $pattern['disabled'] ) ? $pattern['disabled'] : false;
+		}
+
+		foreach ( WP_Block_Patterns_Registry::get_instance()->get_all_registered() as $pattern ) {
+			$value[] = array(
+				'name'        => $pattern['name'],
+				'title'       => $pattern['title'],
+				'description' => $pattern['description'],
+				'categories'  => $pattern['categories'],
+				'disabled'    => isset( $summarized_value[ $pattern['name'] ] ) ? $summarized_value[ $pattern['name'] ] : false,
+			);
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Get one option from database.
+	 *
+	 * @param string $name    Name of the settings.
+	 * @param bool   $from_db Optional. Flag to search value from database or not.
+	 *
+	 * @return array|null Option value, Null if not exists.
+	 * @since 1.0.0
+	 */
+	public function get_one_db_value( $name, $from_db = true ) {
+		if ( $from_db ) {
+			$db_value = get_option( $this->option_prefix() . $name, null );
+			if ( null !== $db_value ) {
+				return $db_value;
+			}
+		}
+
+		foreach ( WP_Block_Patterns_Registry::get_instance()->get_all_registered() as $pattern ) {
+			if ( $name === $pattern['name'] ) {
+				return array(
+					'name'        => $pattern['name'],
+					'title'       => $pattern['title'],
+					'description' => $pattern['description'],
+					'categories'  => $pattern['categories'],
+					'disabled'    => false,
+				);
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Retrieves all available options used in update.
 	 *
 	 * @return array Schema for available options used in update.
@@ -91,34 +161,6 @@ class Pattern_Settings extends Settings_Multiple {
 		);
 
 		return $schema;
-	}
-
-	/**
-	 * List of all registered patterns.
-	 *
-	 * @return array Array of patterns.
-	 * @since 1.0.0
-	 */
-	public function get_all_registered() {
-		$patterns = array();
-		$settings = $this->get_settings();
-
-		$summarized_settings = array();
-		foreach ( $settings as $pattern ) {
-			$summarized_settings[ $pattern['name'] ] = isset( $pattern['disabled'] ) ? $pattern['disabled'] : false;
-		}
-
-		foreach ( WP_Block_Patterns_Registry::get_instance()->get_all_registered() as $pattern ) {
-			$patterns[] = array(
-				'name'        => $pattern['name'],
-				'title'       => $pattern['title'],
-				'description' => $pattern['description'],
-				'categories'  => $pattern['categories'],
-				'disabled'    => isset( $summarized_settings[ $pattern['name'] ] ) ? $summarized_settings[ $pattern['name'] ] : false,
-			);
-		}
-
-		return $patterns;
 	}
 
 	/**
@@ -142,10 +184,9 @@ class Pattern_Settings extends Settings_Multiple {
 
 		$args = wp_parse_args( $args, $defaults );
 
-		$patterns = $this->get_all_registered();
+		$patterns = $this->get_settings();
 
-		$total = count( $patterns );
-
+		$total     = count( $patterns );
 		$max_pages = ceil( $total / (int) $args['per_page'] );
 
 		if ( $args['page'] > $max_pages && $total > 0 ) {
@@ -186,13 +227,13 @@ class Pattern_Settings extends Settings_Multiple {
 			return $valid_check;
 		}
 
-		$db_pattern = $this->search_pattern( $pattern['name'] );
+		$db_pattern = $this->get_one_db_value( $pattern['name'] );
 
 		$pattern = self::sanitize_params( $pattern, $schema['items']['properties'] );
 		$pattern = self::prepare_settings_walker( $pattern, $schema['items']['properties'], $db_pattern );
 
 		// Insert new pattern.
-		$inserted = $this->insert_pattern_in_database( $pattern );
+		$inserted = $this->update_one_db_value( $pattern['name'], $pattern );
 
 		if ( false === $inserted ) {
 			return $inserted;
@@ -215,7 +256,7 @@ class Pattern_Settings extends Settings_Multiple {
 	 * @since 1.0.0
 	 */
 	public function update_pattern( $pattern ) {
-		$db_pattern = $this->search_pattern( $pattern['name'] );
+		$db_pattern = $this->get_one_db_value( $pattern['name'] );
 
 		if ( null === $db_pattern ) {
 			return new WP_Error(
@@ -235,95 +276,63 @@ class Pattern_Settings extends Settings_Multiple {
 	}
 
 	/**
-	 * Search pattern with its name.
+	 * Delete a pattern.
 	 *
-	 * @param string $name Unique name of the pattern.
+	 * @param string $name Name of the pattern.
 	 *
-	 * @return array|null Index and pattern data, null if pattern was not found.
+	 * @return bool|WP_Error True if pattern was deleted, False if it was not deleted, WP_Error otherwise.
 	 * @since 1.0.0
 	 */
-	protected function search_pattern_by_name( $name ) {
-		foreach ( $this->get_all_registered() as $index => $pattern ) {
-			if ( $pattern['name'] === $name ) {
-				return array(
-					'index'   => $index,
-					'pattern' => $pattern,
+	public function delete_pattern( $name ) {
+		$db_pattern = $this->get_one_db_value( $name );
+
+		if ( null === $db_pattern ) {
+			return new WP_Error(
+				'invalid_pattern_name',
+				__( 'Invalid pattern name.', 'bmfbe' )
+			);
+		}
+
+		return $this->delete_one_db_value( $name );
+	}
+
+	/**
+	 * Sort patterns.
+	 *
+	 * @return array Sorted patterns.
+	 * @since 1.0.0
+	 */
+	protected function sort_settings() {
+		if ( ! function_exists( 'get_block_categories' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/post.php';
+		}
+
+		// Sort settings by names (core patterns first).
+		usort(
+			$this->settings,
+			function ( $a, $b ) {
+				$name_order = array(
+					'core/',
 				);
+
+				$name_a = array_search( substr( $a['name'], 0, strpos( $a['name'], '/' ) + 1 ), $name_order, true );
+				$name_b = array_search( substr( $b['name'], 0, strpos( $b['name'], '/' ) + 1 ), $name_order, true );
+
+				if ( $name_a !== $name_b ) {
+					if ( false === $name_a ) {
+						return 1;
+					}
+					if ( false === $name_b ) {
+						return -1;
+					}
+
+					return $name_a - $name_b;
+				}
+
+				return strcmp( $a['name'], $b['name'] );
 			}
-		}
+		);
 
-		return null;
-	}
-
-	/**
-	 * Search pattern with its name.
-	 *
-	 * @param string $name Unique name of the pattern.
-	 *
-	 * @return array|null Pattern data, null if pattern was not found.
-	 * @since 1.0.0
-	 */
-	public function search_pattern( $name ) {
-		$pattern = $this->search_pattern_by_name( $name );
-		if ( null === $pattern ) {
-			return null;
-		}
-
-		return $pattern['pattern'];
-	}
-
-	/**
-	 * Search pattern with its name.
-	 *
-	 * @param string $name Unique name of the pattern.
-	 *
-	 * @return int|null Index, null if pattern was not found.
-	 * @since 1.0.0
-	 */
-	public function search_pattern_index( $name ) {
-		$pattern = $this->search_pattern_by_name( $name );
-		if ( is_null( $pattern ) ) {
-			return null;
-		}
-
-		return $pattern['index'];
-	}
-
-	/**
-	 * Update/Insert pattern in database.
-	 *
-	 * @param array $pattern {
-	 *     An array of elements that make up a pattern to update or insert.
-	 *
-	 *     @type string  $name     The name for a pattern is a unique string that identifies a pattern.
-	 *     @type boolean $disabled True if pattern is disabled.
-	 * }
-	 *
-	 * @return bool True if pattern was inserted/updated, False otherwise.
-	 * @since 1.0.0
-	 */
-	protected function insert_pattern_in_database( $pattern ) {
-		$patterns = $this->get_all_registered();
-		$index    = $this->search_pattern_index( $pattern['name'] );
-
-		if ( null === $index ) {
-			$patterns[] = $pattern;
-		} else {
-			$patterns[ $index ] = $pattern;
-		}
-
-		$schema = $this->get_update_schema();
-
-		foreach ( $patterns as $kp => $pattern ) {
-			$patterns[ $kp ] = array_intersect_key( $pattern, $schema['items']['properties'] );
-		}
-
-		$updated = $this->update_db_value( $patterns );
-
-		if ( $updated ) {
-			$this->settings = $patterns;
-		}
-
-		return $updated;
+		return $this->settings;
 	}
 }

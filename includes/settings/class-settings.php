@@ -93,7 +93,6 @@ abstract class Settings extends Singleton {
 		}
 
 		$settings = $this->get_settings();
-
 		if ( ! is_array( $settings ) || ! isset( $settings[ $name ] ) ) {
 			return null;
 		}
@@ -590,6 +589,7 @@ abstract class Settings extends Singleton {
 	 */
 	public function prepare_settings( $settings, $schema = null ) {
 		$schema = null === $schema ? $this->get_schema() : $schema;
+
 		return self::prepare_settings_walker( $settings, $schema );
 	}
 

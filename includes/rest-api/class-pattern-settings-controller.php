@@ -210,7 +210,7 @@ class Pattern_Settings_Controller extends Rest_Controller {
 	 * @since 1.0.0
 	 */
 	protected function get_pattern( $name ) {
-		$pattern = Pattern_Settings::get_instance()->search_pattern( $name );
+		$pattern = Pattern_Settings::get_instance()->get_one_db_value( $name );
 
 		if ( null === $pattern ) {
 			return new WP_Error(

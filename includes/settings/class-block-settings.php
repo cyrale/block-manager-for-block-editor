@@ -122,6 +122,20 @@ class Block_Settings extends Settings_Multiple {
 	}
 
 	/**
+	 * Get categories used to group blocks.
+	 *
+	 * @return array Categories used to group blocks.
+	 * @since 1.0.0
+	 */
+	public function get_categories() {
+		if ( ! function_exists( 'get_block_categories' ) ) {
+			require_once ABSPATH . '/wp-admin/includes/post.php';
+		}
+
+		return get_block_categories( null );
+	}
+
+	/**
 	 * Validate the name of a block.
 	 *
 	 * @param mixed $value Name of a block.
@@ -171,10 +185,8 @@ class Block_Settings extends Settings_Multiple {
 		$args = wp_parse_args( $args, $defaults );
 
 		$blocks = $this->get_settings();
-		$blocks = self::sort_blocks( $blocks );
 
-		$total = count( $blocks );
-
+		$total     = count( $blocks );
 		$max_pages = ceil( $total / (int) $args['per_page'] );
 
 		if ( $args['page'] > $max_pages && $total > 0 ) {
@@ -338,35 +350,19 @@ class Block_Settings extends Settings_Multiple {
 	}
 
 	/**
-	 * Get option where settings were stored from database.
-	 *
-	 * @return mixed value stored in database
-	 *
-	 * @since 1.0.0
-	 */
-	protected function get_db_value() {
-		$db_value = parent::get_db_value();
-
-		return self::sort_blocks( $db_value );
-	}
-
-	/**
 	 * Sort blocks.
 	 *
-	 * @param array $blocks Array of blocks.
-	 *
-	 * @return array Sorted array of blocks.
-	 *
+	 * @return array Sorted blocks.
 	 * @since 1.0.0
 	 */
-	protected static function sort_blocks( $blocks ) {
-		if ( ! function_exists( 'get_block_categories' ) ) {
-			require_once ABSPATH . '/wp-admin/includes/post.php';
+	protected function sort_settings() {
+		if ( ! is_array( $this->settings ) ) {
+			return $this->settings;
 		}
 
 		// Sort settings by categories and names (core categories and blocks first).
 		usort(
-			$blocks,
+			$this->settings,
 			function ( $a, $b ) {
 				$name_order = array(
 					'core/',
@@ -374,7 +370,7 @@ class Block_Settings extends Settings_Multiple {
 				);
 
 				$category_order = array();
-				foreach ( get_block_categories( null ) as $category ) {
+				foreach ( $this->get_categories() as $category ) {
 					$category_order[] = $category['slug'];
 				}
 
@@ -416,7 +412,7 @@ class Block_Settings extends Settings_Multiple {
 			}
 		);
 
-		return $blocks;
+		return $this->settings;
 	}
 
 	/**

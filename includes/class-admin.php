@@ -9,6 +9,7 @@
 namespace BMFBE;
 
 use BMFBE\Interfaces\WP_Plugin_Class;
+use BMFBE\Settings\Block_Settings;
 use BMFBE\Settings\Global_Settings;
 use BMFBE\Utils\Supports;
 
@@ -65,7 +66,7 @@ class Admin implements WP_Plugin_Class {
 		// Register block categories.
 		wp_add_inline_script(
 			'wp-blocks',
-			sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( get_block_categories( null ) ) ),
+			sprintf( 'wp.blocks.setCategories( %s );', wp_json_encode( Block_Settings::get_instance()->get_categories() ) ),
 			'after'
 		);
 
