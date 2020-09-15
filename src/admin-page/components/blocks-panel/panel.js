@@ -18,7 +18,7 @@ import { Fragment, useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { BLOCKS_STORE } from '../../../stores/blocks/constants';
+import { COLLECTION_STORE as BLOCKS_STORE } from '../../../stores/blocks/constants';
 import Block from './block';
 
 export default function Panel() {
@@ -26,8 +26,8 @@ export default function Panel() {
 
 	const { blocks, categories } = useSelect(
 		( select ) => ( {
-			blocks: select( BLOCKS_STORE ).getBlocks(),
-			categories: select( BLOCKS_STORE ).getBlockCategories(),
+			blocks: select( BLOCKS_STORE ).getCollection(),
+			categories: select( BLOCKS_STORE ).getCategories(),
 		} ),
 		[]
 	);
@@ -72,7 +72,7 @@ export default function Panel() {
 				>
 					{ categories.map( ( category ) => {
 						const categorizedBlocks = blocks.filter(
-							( { category: c } ) => c === category.slug
+							( { categories: c } ) => c.includes( category.slug )
 						);
 
 						if ( 0 === categorizedBlocks.length ) {

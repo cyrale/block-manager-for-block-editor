@@ -21,8 +21,8 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { BLOCKS_STORE } from '../../../stores/blocks/constants';
-import { SETTINGS_STORE } from '../../../stores/settings/constants';
+import { COLLECTION_STORE as BLOCKS_STORE } from '../../../stores/blocks/constants';
+import { ITEM_STORE as SETTINGS_STORE } from '../../../stores/settings/constants';
 import Access from '../access';
 import Description from '../description';
 import ExternalLink from '../external-link';
@@ -100,15 +100,15 @@ export default function Block( { name } ) {
 
 	const { block, settings, status } = useSelect(
 		( select ) => ( {
-			block: select( BLOCKS_STORE ).getBlock( name ),
-			settings: select( SETTINGS_STORE ).getSettings(),
+			block: select( BLOCKS_STORE ).getItem( name ),
+			settings: select( SETTINGS_STORE ).getItem(),
 			status: select( BLOCKS_STORE ).getStatus( name ),
 		} ),
 		[]
 	);
 
-	const { saveBlock, updateBlock } = useDispatch( BLOCKS_STORE );
-	const { enqueueChanges, setInitialData } = useDelayedChanges( saveBlock );
+	const { saveItem, updateItem } = useDispatch( BLOCKS_STORE );
+	const { enqueueChanges, setInitialData } = useDelayedChanges( saveItem );
 
 	useEffect( () => {
 		setInitialData( pick( block, changingFields ) );
@@ -154,9 +154,9 @@ export default function Block( { name } ) {
 	 * @since 1.0.0
 	 */
 	async function handleBlockChange( value ) {
-		await updateBlock( name, value );
+		await updateItem( name, value );
 
-		const newBlock = wpSelect( BLOCKS_STORE ).getBlock( name );
+		const newBlock = wpSelect( BLOCKS_STORE ).getItem( name );
 		enqueueChanges( pick( newBlock, changingFields ) );
 	}
 

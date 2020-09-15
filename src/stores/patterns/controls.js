@@ -4,14 +4,9 @@ import {
 	updatePattern,
 } from '../../api/patterns';
 
-export function API_FETCH_ALL_CATEGORIES() {
-	return allPatternCategories();
-}
+export const API_FETCH_ALL_CATEGORIES = allPatternCategories;
+export const API_FETCH_ALL = allPatterns;
 
-export function API_FETCH_ALL() {
-	return allPatterns();
-}
-
-export function SAVE_PATTERN( { pattern } ) {
-	return updatePattern( pattern );
+export function SAVE_ITEM( { item } ) {
+	return updatePattern( item );
 }

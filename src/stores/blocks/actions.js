@@ -1,65 +1,22 @@
-export { fetchAllCategoriesFromAPI, fetchAllFromAPI } from '../actions';
+export * from '../common/collection/actions';
 
-export function initBlockCategories( categories ) {
+export function createItems( items ) {
 	return {
-		type: 'INIT_BLOCK_CATEGORIES',
-		categories,
+		type: 'CREATE_ITEMS',
+		items,
 	};
 }
 
-export function initBlocks( blocks ) {
+export function updateItems( items ) {
 	return {
-		type: 'INIT_BLOCKS',
-		blocks,
+		type: 'UPDATE_ITEMS',
+		items,
 	};
 }
 
-export function createBlocks( blocks ) {
+export function deleteItems( items ) {
 	return {
-		type: 'CREATE_BLOCKS',
-		blocks,
+		type: 'DELETE_ITEMS',
+		items,
 	};
-}
-
-export function updateBlocks( blocks ) {
-	return {
-		type: 'UPDATE_BLOCKS',
-		blocks,
-	};
-}
-
-export function deleteBlocks( blocks ) {
-	return {
-		type: 'DELETE_BLOCKS',
-		blocks,
-	};
-}
-
-export function updateBlock( name, value ) {
-	return {
-		type: 'UPDATE_BLOCK',
-		name,
-		value,
-	};
-}
-
-export function* saveBlock( block ) {
-	yield {
-		type: 'SAVE_BLOCK_START',
-		block,
-	};
-
-	const savedBlock = yield {
-		type: 'SAVE_BLOCK',
-		block,
-	};
-
-	yield updateBlock( savedBlock.name, savedBlock );
-
-	yield {
-		type: 'SAVE_BLOCK_FINISH',
-		block,
-	};
-
-	return savedBlock;
 }

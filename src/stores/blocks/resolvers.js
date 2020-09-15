@@ -9,13 +9,9 @@ import { isEqual, mapValues, merge, pick, pickBy } from 'lodash';
 import { getEditorBlocks } from '../../api/blocks';
 import * as actions from './actions';
 
-export function* getBlockCategories() {
-	const categories = yield actions.fetchAllCategoriesFromAPI();
+export * from '../common/collection/resolvers';
 
-	return actions.initBlockCategories( categories );
-}
-
-export function* getBlocks() {
+export function* getCollection() {
 	function findElementByName( elements, name ) {
 		return elements.find( ( el ) => el.name === name );
 	}
@@ -48,7 +44,7 @@ export function* getBlocks() {
 	if ( newBlocks.length ) {
 		updatedBlockData = [
 			...updatedBlockData,
-			...( yield actions.createBlocks( newBlocks ) ),
+			...( yield actions.createItems( newBlocks ) ),
 		];
 	}
 
@@ -147,7 +143,7 @@ export function* getBlocks() {
 	if ( updatedBlocks.length ) {
 		updatedBlockData = [
 			...updatedBlockData,
-			...( yield actions.updateBlocks( updatedBlocks ) ),
+			...( yield actions.updateItems( updatedBlocks ) ),
 		];
 	}
 
@@ -160,7 +156,7 @@ export function* getBlocks() {
 	} ) );
 
 	if ( deletedBlocks.length ) {
-		yield actions.deleteBlocks( deletedBlocks );
+		yield actions.deleteItems( deletedBlocks );
 	}
 
 	// Get updated values to display.
@@ -184,5 +180,5 @@ export function* getBlocks() {
 		return merge( registeredBlock, pick( block, informationFields ) );
 	} );
 
-	return actions.initBlocks( resultBlocks );
+	return actions.initCollection( resultBlocks );
 }

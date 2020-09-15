@@ -12,7 +12,7 @@ import {
 	STATUS_LOADING,
 	STATUS_PENDING,
 	STATUS_SAVING,
-} from '../../stores/constants';
+} from '../../stores/common/constants';
 
 const loadingIcon = (
 	<SVG

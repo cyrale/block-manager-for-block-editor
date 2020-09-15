@@ -2,7 +2,7 @@ import { Notice as WPNotice } from '@wordpress/components';
 import { useEffect, useRef } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
-import { STATUS_PENDING, STATUS_SAVING } from '../../stores/constants';
+import { STATUS_PENDING, STATUS_SAVING } from '../../stores/common/constants';
 
 export default function Notice( { status } ) {
 	const previousStatus = useRef( null );

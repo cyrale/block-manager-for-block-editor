@@ -4,6 +4,6 @@ export function API_FETCH_ALL() {
 	return allSettings();
 }
 
-export function SAVE_SETTINGS( { settings } ) {
-	return updateSettings( settings );
+export function SAVE_ITEM( { item } ) {
+	return updateSettings( item );
 }

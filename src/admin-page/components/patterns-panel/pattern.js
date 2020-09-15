@@ -13,7 +13,7 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies.
  */
-import { PATTERNS_STORE } from '../../../stores/patterns/constants';
+import { COLLECTION_STORE as PATTERNS_STORE } from '../../../stores/patterns/constants';
 import Description from '../description';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import StatusIcon from '../status-icon';
@@ -29,12 +29,12 @@ const changingFields = [ 'name', 'disabled' ];
 
 export default function Pattern( { name } ) {
 	const { pattern, status } = useSelect( ( select ) => ( {
-		pattern: select( PATTERNS_STORE ).getPattern( name ),
+		pattern: select( PATTERNS_STORE ).getItem( name ),
 		status: select( PATTERNS_STORE ).getStatus( name ),
 	} ) );
 
-	const { savePattern, updatePattern } = useDispatch( PATTERNS_STORE );
-	const { enqueueChanges, setInitialData } = useDelayedChanges( savePattern );
+	const { saveItem, updateItem } = useDispatch( PATTERNS_STORE );
+	const { enqueueChanges, setInitialData } = useDelayedChanges( saveItem );
 
 	useEffect( () => {
 		setInitialData( pick( pattern, changingFields ) );
@@ -47,9 +47,9 @@ export default function Pattern( { name } ) {
 	 * @since 1.0.0
 	 */
 	async function handleDisabledChange( enabled ) {
-		await updatePattern( name, { disabled: ! enabled } );
+		await updateItem( name, { disabled: ! enabled } );
 
-		const newPattern = wpSelect( PATTERNS_STORE ).getPattern( name );
+		const newPattern = wpSelect( PATTERNS_STORE ).getItem( name );
 		enqueueChanges( pick( newPattern, changingFields ) );
 	}
 

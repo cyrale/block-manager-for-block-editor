@@ -12,7 +12,7 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { SETTINGS_STORE } from '../../../stores/settings/constants';
+import { ITEM_STORE as SETTINGS_STORE } from '../../../stores/settings/constants';
 import Body from './body';
 import Head, { displayHead } from './head';
 import Item from './item';
@@ -114,7 +114,7 @@ function splitToCheckAndIndeterminateValues( values ) {
 
 export default function Access( { onChange = noop, value } ) {
 	const settings = useSelect(
-		( select ) => select( SETTINGS_STORE ).getSettings(),
+		( select ) => select( SETTINGS_STORE ).getItem(),
 		[]
 	);
 

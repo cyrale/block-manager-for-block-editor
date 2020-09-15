@@ -18,7 +18,7 @@ import { Fragment, useEffect, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import { PATTERNS_STORE } from '../../../stores/patterns/constants';
+import { COLLECTION_STORE as PATTERNS_STORE } from '../../../stores/patterns/constants';
 import Pattern from './pattern';
 
 export default function Panel() {
@@ -26,8 +26,8 @@ export default function Panel() {
 
 	const { categories, patterns } = useSelect(
 		( select ) => ( {
-			categories: select( PATTERNS_STORE ).getPatternCategories(),
-			patterns: select( PATTERNS_STORE ).getPatterns(),
+			categories: select( PATTERNS_STORE ).getCategories(),
+			patterns: select( PATTERNS_STORE ).getCollection(),
 		} ),
 		[]
 	);

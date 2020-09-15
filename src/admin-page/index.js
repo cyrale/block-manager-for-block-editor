@@ -12,10 +12,10 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { BLOCKS_STORE } from '../stores/blocks/constants';
-import { PATTERNS_STORE } from '../stores/patterns/constants';
-import { SETTINGS_STORE } from '../stores/settings/constants';
-import { STATUS_PENDING, STATUS_SAVING } from '../stores/constants';
+import { COLLECTION_STORE as BLOCKS_STORE } from '../stores/blocks/constants';
+import { COLLECTION_STORE as PATTERNS_STORE } from '../stores/patterns/constants';
+import { ITEM_STORE as SETTINGS_STORE } from '../stores/settings/constants';
+import { STATUS_PENDING, STATUS_SAVING } from '../stores/common/constants';
 import {
 	default as BlocksPanel,
 	TabTitle as BlocksTab,
@@ -40,7 +40,7 @@ export default function AdminPage() {
 	);
 
 	const settings = useSelect(
-		( select ) => select( SETTINGS_STORE ).getSettings(),
+		( select ) => select( SETTINGS_STORE ).getItem(),
 		[]
 	);
 

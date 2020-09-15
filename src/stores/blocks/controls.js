@@ -14,40 +14,35 @@ import {
 	updateBlock,
 } from '../../api/blocks';
 
-export function API_FETCH_ALL_CATEGORIES() {
-	return allBlockCategories();
-}
+export const API_FETCH_ALL_CATEGORIES = allBlockCategories;
+export const API_FETCH_ALL = allBlocks;
 
-export function API_FETCH_ALL() {
-	return allBlocks();
-}
-
-export function CREATE_BLOCKS( { blocks } ) {
-	return chunk( blocks, 10 ).reduce(
+export function CREATE_ITEMS( { items } ) {
+	return chunk( items, 10 ).reduce(
 		async ( memo, part ) => [
 			...( await memo ),
 			...( await Promise.all(
-				part.map( ( block ) => createBlock( block ) )
+				part.map( ( item ) => createBlock( item ) )
 			) ),
 		],
 		[]
 	);
 }
 
-export function UPDATE_BLOCKS( { blocks } ) {
-	return chunk( blocks, 10 ).reduce(
+export function UPDATE_ITEMS( { items } ) {
+	return chunk( items, 10 ).reduce(
 		async ( memo, part ) => [
 			...( await memo ),
 			...( await Promise.all(
-				part.map( ( block ) => updateBlock( block ) )
+				part.map( ( item ) => updateBlock( item ) )
 			) ),
 		],
 		[]
 	);
 }
 
-export function DELETE_BLOCKS( { blocks } ) {
-	return chunk( blocks, 10 ).reduce(
+export function DELETE_ITEMS( { items } ) {
+	return chunk( items, 10 ).reduce(
 		async ( memo, part ) => [
 			...( await memo ),
 			...( await Promise.all(
@@ -58,6 +53,6 @@ export function DELETE_BLOCKS( { blocks } ) {
 	);
 }
 
-export function SAVE_BLOCK( { block } ) {
-	return updateBlock( block );
+export function SAVE_ITEM( { item } ) {
+	return updateBlock( item );
 }
