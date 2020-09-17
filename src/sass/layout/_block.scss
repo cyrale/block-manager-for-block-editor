@@ -15,12 +15,17 @@
 			margin: 0 1rem 0 0.5rem;
 
 			svg {
+				display: inline-block;
 				max-width: 24px;
 				height: auto;
 
 				outline: none;
 
 				fill: currentColor;
+			}
+
+			.dashicon {
+				margin-top: 2px;
 			}
 		}
 
