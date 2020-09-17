@@ -12,11 +12,15 @@
 		}
 
 		&__icon {
-			margin: 0.1rem 1rem 0 0.5rem;
+			margin: 0 1rem 0 0.5rem;
 
 			svg {
 				max-width: 24px;
 				height: auto;
+
+				outline: none;
+
+				fill: currentColor;
 			}
 		}
 

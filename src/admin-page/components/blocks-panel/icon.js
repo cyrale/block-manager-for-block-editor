@@ -1,20 +1,12 @@
+/**
+ * WordPress dependencies
+ */
+import { Icon as WPIcon } from '@wordpress/components';
+
 export default function Icon( { icon } ) {
-	if ( 'string' === typeof icon && '' !== icon ) {
-		if ( /^<svg (.*)<\/svg>$/i.test( icon ) ) {
-			return (
-				<div
-					className="bmfbe-block__icon"
-					dangerouslySetInnerHTML={ { __html: icon } }
-				/>
-			);
-		}
-
-		return (
-			<div className="bmfbe-block__icon">
-				<span className={ `dashicons dashicons-${ icon }` } />
-			</div>
-		);
-	}
-
-	return <div className="bmfbe-block__icon" />;
+	return (
+		<div className="bmfbe-block__icon">
+			{ icon && icon.src && <WPIcon icon={ icon.src } size={ 24 } /> }
+		</div>
+	);
 }
