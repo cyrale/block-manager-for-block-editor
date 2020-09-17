@@ -175,7 +175,7 @@ class Editor implements WP_Plugin_Class {
 		}
 
 		if ( ! isset( $settings['disable_block_patterns'] ) || true !== $settings['disable_block_patterns'] ) {
-			$patterns = Pattern_Settings::get_instance()->get_all_registered();
+			$patterns = Pattern_Settings::get_instance()->get_settings();
 
 			foreach ( $patterns as $pattern ) {
 				if ( true === $pattern['disabled'] ) {
