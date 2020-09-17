@@ -2,16 +2,20 @@
 @import "../layout/animations";
 
 .bmfbe-status-icon {
-	width: 20px;
-	@include reduce-motion("animation");
+	display: flex;
+	align-items: center;
 
 	.icon {
+		margin: 4px 0.5rem 0 0;
+
 		&--check {
 			color: $alert-green;
 
-			animation: bmfbe-disappear 800ms ease-out forwards;
+			animation: bmfbe-disappear 300ms 800ms ease-out forwards;
 
 			fill: $alert-green;
+
+			@include reduce-motion( "animation" );
 		}
 
 		&--cloud {
@@ -20,6 +24,8 @@
 			animation: bmfbe-light-blink 1.6s ease-in-out infinite;
 
 			fill: $alert-yellow;
+
+			@include reduce-motion( "animation" );
 		}
 
 		&--loading {
@@ -29,9 +35,19 @@
 			stroke-width: 1em;
 			animation: bmfbe-rotation 1.6s ease-out infinite;
 
+			@include reduce-motion( "animation" );
+
 			.bar {
 				stroke: $alert-yellow;
 			}
+		}
+	}
+
+	&__percentage {
+		&.is-finished {
+			animation: bmfbe-disappear 300ms 800ms ease-out forwards;
+
+			@include reduce-motion( "animation" );
 		}
 	}
 }

@@ -1,0 +1,18 @@
+@import "~@wordpress/base-styles/colors";
+@import "~@wordpress/base-styles/variables";
+
+.bmfbe-save-contents {
+	display: flex;
+	justify-content: space-between;
+	margin: $default-block-margin 0 0;
+}
+
+.bmfbe-sticky-footer .bmfbe-save-contents {
+	margin: 0 $default-block-margin;
+	padding: $default-block-margin/2;
+
+	@include break-large {
+		max-width: $widget-area-width;
+		margin: 0 auto;
+	}
+}

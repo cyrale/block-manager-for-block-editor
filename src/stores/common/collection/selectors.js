@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { isEqual } from 'lodash';
+import { find, isEqual } from 'lodash';
 
 /**
  * Internal dependencies
@@ -43,13 +43,17 @@ export function getStatus( { items }, name = '' ) {
 	return null;
 }
 
-export function isModified( { items }, name = '' ) {
+export function getModified( { itemList, items } ) {
+	return Object.values( items )
+		.filter( ( item ) => ! isEqual( item.initialValue, item.value ) )
+		.map( ( { value: { name } } ) => find( itemList, { name } ) );
+}
+
+export function isModified( state, name = '' ) {
+	const { items } = state;
+
 	if ( '' === name ) {
-		return Object.values( items ).reduce(
-			( modified, item ) =>
-				modified || ! isEqual( item.initialValue, item.value ),
-			false
-		);
+		return getModified( state ).length > 0;
 	}
 
 	if ( items[ name ] ) {

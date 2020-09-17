@@ -27,21 +27,3 @@
 		transform: rotate(360deg);
 	}
 }
-
-@keyframes bmfbe-notice-slide-in {
-	0% {
-		top: 100%;
-	}
-	100% {
-		top: 0;
-	}
-}
-
-@keyframes bmfbe-notice-slide-out {
-	0% {
-		top: 0;
-	}
-	100% {
-		top: 100%;
-	}
-}

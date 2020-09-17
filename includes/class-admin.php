@@ -125,7 +125,7 @@ class Admin implements WP_Plugin_Class {
 		echo '      <h1>' . __( 'Block Manager for WordPress Block Editor (Gutenberg)', 'bmfbe' ) . '</h1>';
 		echo '    </div>';
 		echo '  </div>';
-		echo '  <div class="bmfbe-settings__content" id="bmfbeSettings"></div>';
+		echo '  <div class="bmfbe-settings__main" id="bmfbeSettings"></div>';
 		echo '</div>';
 	}
 

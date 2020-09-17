@@ -25,6 +25,9 @@ import {
 	default as SettingsPanel,
 	TabTitle as SettingsTab,
 } from './components/settings-panel';
+import ContentLayout from './components/content-layout';
+import SaveContents from './components/save-contents';
+import StickyFooter from './components/sticky-footer';
 
 export default function AdminPage() {
 	const settings = useSelect(
@@ -51,17 +54,26 @@ export default function AdminPage() {
 					) }
 				</TabList>
 				<TabPanel>
-					<SettingsPanel />
+					<ContentLayout>
+						<SettingsPanel />
+					</ContentLayout>
 				</TabPanel>
 				<TabPanel>
-					<BlocksPanel />
+					<ContentLayout>
+						<BlocksPanel />
+					</ContentLayout>
 				</TabPanel>
 				{ false === settings.disable_block_patterns && (
 					<TabPanel>
-						<PatternsPanel />
+						<ContentLayout>
+							<PatternsPanel />
+						</ContentLayout>
 					</TabPanel>
 				) }
 			</Tabs>
+			<StickyFooter>
+				<SaveContents />
+			</StickyFooter>
 		</>
 	);
 }

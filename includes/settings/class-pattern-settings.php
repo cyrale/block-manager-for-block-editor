@@ -107,6 +107,8 @@ class Pattern_Settings extends Settings_Multiple {
 			);
 		}
 
+		// TODO: delete old patterns.
+
 		return $value;
 	}
 

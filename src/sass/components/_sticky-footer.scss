@@ -1,0 +1,21 @@
+.bmfbe-sticky-footer {
+	position: sticky;
+	bottom: 0;
+
+	width: 100%;
+	margin: $default-block-margin 0 0;
+
+	background-color: transparent;
+	border-top: 1px solid transparent;
+
+	transition: background-color 150ms ease-in-out, border-top 100ms ease-in-out;
+
+	&.is-stuck {
+		background-color: $white;
+		border-top: 1px solid $gray-200;
+	}
+
+	&__sentinel {
+		height: 1px;
+	}
+}

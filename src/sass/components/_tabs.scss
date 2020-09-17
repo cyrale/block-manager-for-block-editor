@@ -14,7 +14,6 @@
 
 		background: $white;
 		border-bottom: 1px solid $gray-200;
-		cursor: pointer;
 	}
 
 	&__tab {
@@ -26,6 +25,7 @@
 		text-decoration: none;
 
 		outline-offset: -1px;
+		cursor: pointer;
 
 		transition: box-shadow 0.1s linear;
 		@include reduce-motion( "transition" );
@@ -57,12 +57,6 @@
 
 	&__tab-panel {
 		display: none;
-		margin: 0 $default-block-margin;
-
-		@include break-large {
-			max-width: $widget-area-width;
-			margin: 0 auto;
-		}
 
 		&--selected {
 			display: block;
