@@ -151,12 +151,9 @@ export function* getCollection() {
 	const deletedBlockNames = registeredBlockNames.filter(
 		( name ) => ! editorBlockNames.includes( name )
 	);
-	const deletedBlocks = deletedBlockNames.map( ( name ) => ( {
-		name,
-	} ) );
 
-	if ( deletedBlocks.length ) {
-		yield actions.deleteItems( deletedBlocks );
+	if ( deletedBlockNames.length ) {
+		yield actions.deleteItems( deletedBlockNames );
 	}
 
 	// Get updated values to display.
