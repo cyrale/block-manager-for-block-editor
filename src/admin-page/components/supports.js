@@ -21,9 +21,13 @@ import IndeterminateToggleControl from './indeterminate-toggle-control';
  * @constant {string[]}
  * @since 1.0.0
  */
-const alignValues = bmfbeAdminGlobal.availableSupportsFields.align.values.map(
-	( a ) => a.value
-);
+const alignValues = Array.isArray(
+	bmfbeAdminGlobal.availableSupportsFields?.align?.values
+)
+	? bmfbeAdminGlobal.availableSupportsFields.align.values.map(
+			( a ) => a.value
+	  )
+	: [];
 
 /**
  * Parser to convert raw HTML from translations to React DOM structure.

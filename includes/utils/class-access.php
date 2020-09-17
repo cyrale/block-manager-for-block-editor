@@ -41,7 +41,7 @@ class Access extends Singleton {
 
 		// Extract roles.
 		if ( ! function_exists( 'get_editable_roles' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/user.php';
+			require_once( ABSPATH . 'wp-admin/includes/user.php' );
 		}
 		$roles = get_editable_roles();
 

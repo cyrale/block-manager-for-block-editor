@@ -79,7 +79,9 @@ export function* getCollection() {
 		// Extract supports.
 		editor.supports = filterObject(
 			editorBlock.supports,
-			( v, k ) => ! registeredBlock.supports[ k ].isActive
+			( v, k ) =>
+				registeredBlock.supports[ k ] &&
+				! registeredBlock.supports[ k ].isActive
 		);
 		registered.supports = mapValues(
 			filterObject( registeredBlock.supports, ( v, k ) =>

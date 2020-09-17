@@ -55,7 +55,7 @@ class Editor implements WP_Plugin_Class {
 	 * Enqueue scripts and styles.
 	 */
 	public function enqueue_block_editor_assets() {
-		$asset = require_once $this->plugin->path . 'build/editor.asset.php';
+		$asset = require_once( $this->plugin->path . 'build/editor.asset.php' );
 
 		$post_type = get_post_type();
 		$wp_user   = wp_get_current_user();

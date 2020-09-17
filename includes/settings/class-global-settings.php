@@ -99,6 +99,18 @@ class Global_Settings extends Settings {
 	}
 
 	/**
+	 * Retrieves all available options.
+	 *
+	 * @return array Schema for available options.
+	 * @since 1.0.0
+	 */
+	public function get_schema() {
+		$this->schema['supports']['properties'] = Supports::get_instance()->schema;
+
+		return $this->schema;
+	}
+
+	/**
 	 * The capability required to use the plugin.
 	 *
 	 * @return string Capability name

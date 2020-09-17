@@ -122,6 +122,18 @@ class Block_Settings extends Settings_Multiple {
 	}
 
 	/**
+	 * Retrieves all available options.
+	 *
+	 * @return array Schema for available options.
+	 * @since 1.0.0
+	 */
+	public function get_schema() {
+		$this->schema['items']['properties']['supports']['properties'] = Supports::get_instance()->schema;
+
+		return $this->schema;
+	}
+
+	/**
 	 * Get categories used to group blocks.
 	 *
 	 * @return array Categories used to group blocks.
@@ -129,7 +141,7 @@ class Block_Settings extends Settings_Multiple {
 	 */
 	public function get_categories() {
 		if ( ! function_exists( 'get_block_categories' ) ) {
-			require_once ABSPATH . '/wp-admin/includes/post.php';
+			require_once( ABSPATH . '/wp-admin/includes/post.php' );
 		}
 
 		return get_block_categories( null );

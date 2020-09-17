@@ -312,7 +312,7 @@ class Pattern_Settings extends Settings_Multiple {
 	 */
 	protected function sort_settings() {
 		if ( ! function_exists( 'get_block_categories' ) ) {
-			require_once ABSPATH . '/wp-admin/includes/post.php';
+			require_once( ABSPATH . '/wp-admin/includes/post.php' );
 		}
 
 		// Sort settings by names (core patterns first).

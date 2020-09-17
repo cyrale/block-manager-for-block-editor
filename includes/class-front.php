@@ -50,7 +50,7 @@ class Front implements WP_Plugin_Class {
 	 * Enqueue scripts and styles.
 	 */
 	public function enqueue_front_assets() {
-		$asset = require_once $this->plugin->path . 'build/front.asset.php';
+		$asset = require_once( $this->plugin->path . 'build/front.asset.php' );
 
 		wp_enqueue_script(
 			'bmfbe-front',

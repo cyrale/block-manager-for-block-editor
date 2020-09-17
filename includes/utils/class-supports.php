@@ -15,7 +15,7 @@ use Exception;
  *
  * @since 1.0.0
  * @package BMFBE\Utils
-
+ *
  * @property-read array $fields Schema that defined supports.
  * @property-read array $schema Schema that defined supports.
  */
@@ -51,6 +51,22 @@ class Supports extends Singleton {
 	 * @since 1.0.0
 	 */
 	protected $fields = array();
+
+	/**
+	 * Flag to identify if properties are initialized for the first time.
+	 *
+	 * @var boolean
+	 * @since 1.0.0
+	 */
+	protected $properties_init = false;
+
+	/**
+	 * Flag to identify if properties are initialized after Gutenberg.
+	 *
+	 * @var boolean
+	 * @since 1.0.0
+	 */
+	protected $gutenberg_init = false;
 
 	/**
 	 * Constructor.
@@ -277,16 +293,7 @@ class Supports extends Singleton {
 			),
 		);
 
-		// Apply common schema to all properties to define supports schema and
-		// extract fields definition.
-		foreach ( $this->properties as $name => $prop ) {
-			$this->schema[ $name ] = array_merge_recursive(
-				$this->common_schema,
-				$prop['schema']
-			);
-
-			$this->fields[ $name ] = $prop['field'];
-		}
+		$this->init_properties();
 	}
 
 	/**
@@ -299,6 +306,8 @@ class Supports extends Singleton {
 	 * @since 1.0.0
 	 */
 	public function __get( $field ) {
+		$this->init_properties();
+
 		switch ( $field ) {
 			case 'fields':
 			case 'schema':
@@ -306,5 +315,47 @@ class Supports extends Singleton {
 			default:
 				throw new Exception( 'Invalid ' . __CLASS__ . ' property: ' . $field );
 		}
+	}
+
+	/**
+	 * Initialize some properties.
+	 *
+	 * @return void
+	 * @since 1.0.0
+	 */
+	protected function init_properties() {
+		if ( ! function_exists( 'is_plugin_active' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/plugin.php';
+		}
+
+		if ( $this->properties_init && ( ! is_plugin_active( 'gutenberg/gutenberg.php' ) || $this->gutenberg_init ) ) {
+			return;
+		}
+
+		$properties = $this->properties;
+
+		$this->schema = array();
+		$this->fields = array();
+
+		foreach ( $properties as $name => $prop ) {
+			// Filter properties with current version of WordPress or Gutenberg
+			// plugin.
+			if ( isset( $prop['version'] ) && ! Version::version_compare( $prop['version'] ) ) {
+				unset( $properties[ $name ] );
+			} else {
+
+				// Apply common schema to all properties to define supports
+				// schema and extract fields definition.
+				$this->schema[ $name ] = array_merge_recursive(
+					$this->common_schema,
+					$prop['schema']
+				);
+
+				$this->fields[ $name ] = $prop['field'];
+			}
+		}
+
+		$this->properties_init = true;
+		$this->gutenberg_init  = is_plugin_active( 'gutenberg/gutenberg.php' ) && defined( 'GUTENBERG_VERSION' );
 	}
 }

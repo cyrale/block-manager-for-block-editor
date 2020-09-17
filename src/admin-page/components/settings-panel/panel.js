@@ -46,17 +46,12 @@ export default function Panel() {
 									settings.supports_override
 							)
 							.map( ( field ) => {
-								let props = {
-									label: field.label,
-									checked: settings[ field.name ] ?? false,
-									onChange: ( { checked } ) =>
-										handleOnChange( field.name, checked ),
-								};
+								let props = {};
 
 								if ( 'supports' === field.name ) {
 									props = {
 										label: field.label,
-										value: props.checked,
+										value: settings[ field.name ] ?? false,
 										disabled: ! settings.supports_override,
 										onChange: ( value ) =>
 											handleOnChange( field.name, value ),
@@ -69,6 +64,13 @@ export default function Panel() {
 										/>
 									);
 								}
+
+								props = {
+									label: field.label,
+									checked: settings[ field.name ] ?? false,
+									onChange: ( { checked } ) =>
+										handleOnChange( field.name, checked ),
+								};
 
 								return (
 									<IndeterminateToggleControl

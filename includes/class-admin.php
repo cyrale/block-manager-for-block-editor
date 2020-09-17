@@ -10,12 +10,13 @@ namespace BMFBE;
 
 use BMFBE\Interfaces\WP_Plugin_Class;
 use BMFBE\Settings\Block_Settings;
-use BMFBE\Settings\Global_Settings;
 use BMFBE\Utils\Supports;
+use BMFBE\Utils\Version;
 
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Admin.
  *
+ * @package BMFBE
  * @since 1.0.0
  */
 class Admin implements WP_Plugin_Class {
@@ -70,7 +71,7 @@ class Admin implements WP_Plugin_Class {
 			'after'
 		);
 
-		$asset = require_once $this->plugin->path . 'build/admin.asset.php';
+		$asset = require_once( $this->plugin->path . 'build/admin.asset.php' );
 
 		wp_enqueue_script(
 			'bmfbe-admin',
@@ -216,9 +217,27 @@ class Admin implements WP_Plugin_Class {
 			),
 		);
 
-		// TODO: filter sections and fields with current version of WordPress or Gutenberg plugin.
+		// Filter sections and fields with current version of WordPress or
+		// Gutenberg plugin.
+		foreach ( $sections as $s_index => $section ) {
+			if ( isset( $section['version'] ) && ! Version::version_compare( $section['version'] ) ) {
+				unset( $sections[ $s_index ] );
+				continue;
+			}
 
-		return $sections;
+			foreach ( $section['fields'] as $f_index => $field ) {
+				if ( ! isset( $field['version'] ) ) {
+					continue;
+				}
+
+				if ( ! Version::version_compare( $field['version'] ) ) {
+					unset( $sections[ $s_index ]['fields'][ $f_index ] );
+					$sections[ $s_index ]['fields'] = array_values( $sections[ $s_index ]['fields'] );
+				}
+			}
+		}
+
+		return apply_filters( 'bmfbe_settings_sections', $sections );
 	}
 
 	/**
@@ -231,8 +250,6 @@ class Admin implements WP_Plugin_Class {
 	protected function available_supports() {
 		$schema   = Supports::get_instance()->schema;
 		$supports = array_keys( $schema );
-
-		// TODO: filter supports with current version of WordPress or Gutenberg plugin.
 
 		return $supports;
 	}
