@@ -63,3 +63,17 @@
 		}
 	}
 }
+
+.bmfbe-settings__main {
+	> .react-tabs {
+		.react-tabs__tab-list {
+			position: sticky;
+			top: $admin-bar-height-big;
+			z-index: 1;
+
+			@include break-medium {
+				top: $admin-bar-height;
+			}
+		}
+	}
+}
