@@ -107,7 +107,13 @@ class Pattern_Settings extends Settings_Multiple {
 			);
 		}
 
-		// TODO: delete old patterns.
+		// Delete old patterns.
+		$db_names = array_column( $db_value, 'name' );
+		$names    = array_column( $value, 'name' );
+
+		foreach ( array_diff( $db_names, $names ) as $name ) {
+			$this->delete_pattern( $name );
+		}
 
 		return $value;
 	}
