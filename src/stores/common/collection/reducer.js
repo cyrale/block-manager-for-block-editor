@@ -71,6 +71,12 @@ export default function reducer( state = DEFAULT_STATE, action ) {
 				action.value
 			);
 
+			if ( action.resetInitialValue ) {
+				state.items[ action.name ].initialValue = cloneDeep(
+					state.items[ action.name ].value
+				);
+			}
+
 			return { ...state };
 
 		case 'SAVE_ITEM_START':

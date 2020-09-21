@@ -56,6 +56,7 @@ export function* saveItem( item ) {
 		type: 'UPDATE_ITEM',
 		name: savedItem.name,
 		value: savedItem,
+		resetInitialValue: true,
 	};
 
 	yield {
