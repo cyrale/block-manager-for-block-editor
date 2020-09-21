@@ -65,6 +65,7 @@ export function* saveItem( item ) {
 
 	yield {
 		type: 'CHANGE_STATUS',
+		name: 'items',
 		status: STATUS_PENDING,
 	};
 
