@@ -3,11 +3,6 @@
  */
 import { find, isEqual } from 'lodash';
 
-/**
- * Internal dependencies
- */
-import { STATUS_LOADING, STATUS_PENDING, STATUS_SAVING } from './constants';
-
 export function getCategories( { categories } ) {
 	return categories;
 }
@@ -20,20 +15,9 @@ export function getItem( { items }, name ) {
 	return items[ name ].value;
 }
 
-export function getStatus( { items }, name = '' ) {
+export function getStatus( { items, status }, name = '' ) {
 	if ( '' === name ) {
-		return Object.values( items ).reduce( ( status, item ) => {
-			if ( STATUS_LOADING !== status && STATUS_LOADING === item.status ) {
-				status = STATUS_LOADING;
-			} else if (
-				STATUS_SAVING !== status &&
-				STATUS_SAVING === item.status
-			) {
-				status = STATUS_SAVING;
-			}
-
-			return status;
-		}, STATUS_PENDING );
+		return status.items;
 	}
 
 	if ( items[ name ] ) {

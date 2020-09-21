@@ -1,4 +1,17 @@
+/**
+ * Internal dependencies
+ */
+import { STATUS_PENDING, STATUS_SAVING } from '../constants';
+
 export { fetchAllCategoriesFromAPI, fetchAllFromAPI } from '../actions';
+
+export function changeStatus( name, status ) {
+	return {
+		type: 'CHANGE_STATUS',
+		name,
+		status,
+	};
+}
 
 export function initCategories( categories ) {
 	return {
@@ -24,6 +37,12 @@ export function updateItem( name, value ) {
 
 export function* saveItem( item ) {
 	yield {
+		type: 'CHANGE_STATUS',
+		name: 'items',
+		status: STATUS_SAVING,
+	};
+
+	yield {
 		type: 'SAVE_ITEM_START',
 		item,
 	};
@@ -42,6 +61,11 @@ export function* saveItem( item ) {
 	yield {
 		type: 'SAVE_ITEM_FINISH',
 		item,
+	};
+
+	yield {
+		type: 'CHANGE_STATUS',
+		status: STATUS_PENDING,
 	};
 
 	return savedItem;

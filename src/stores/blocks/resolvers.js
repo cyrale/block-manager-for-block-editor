@@ -8,10 +8,13 @@ import { isEqual, mapValues, merge, pick, pickBy } from 'lodash';
  */
 import { getEditorBlocks } from '../../api/blocks';
 import * as actions from './actions';
+import { STATUS_LOADING } from './constants';
 
 export * from '../common/collection/resolvers';
 
 export function* getCollection() {
+	yield actions.changeStatus( 'items', STATUS_LOADING );
+
 	function findElementByName( elements, name ) {
 		return elements.find( ( el ) => el.name === name );
 	}

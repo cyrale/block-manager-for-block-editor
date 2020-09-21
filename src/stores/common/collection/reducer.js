@@ -10,10 +10,23 @@ import { DEFAULT_STATE, STATUS_PENDING, STATUS_SAVING } from './constants';
 
 export default function reducer( state = DEFAULT_STATE, action ) {
 	switch ( action.type ) {
+		case 'CHANGE_STATUS':
+			return {
+				...state,
+				status: {
+					...state.status,
+					[ action.name ]: action.status,
+				},
+			};
+
 		case 'INIT_CATEGORIES':
 			return {
 				...state,
 				categories: action.categories,
+				status: {
+					...state.status,
+					categories: STATUS_PENDING,
+				},
 			};
 
 		case 'INIT_COLLECTION':
@@ -45,6 +58,10 @@ export default function reducer( state = DEFAULT_STATE, action ) {
 				...state,
 				itemList,
 				items,
+				status: {
+					...state.status,
+					items: STATUS_PENDING,
+				},
 			};
 
 		case 'UPDATE_ITEM':
