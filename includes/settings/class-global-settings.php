@@ -90,8 +90,8 @@ class Global_Settings extends Settings {
 				'type'        => 'boolean',
 				'default'     => false,
 			),
-			'limit_access_by_post_type'   => array(
-				'description' => __( 'Limit access to block by post type', 'bmfbe' ),
+			'limit_access_by_section'     => array(
+				'description' => __( 'Limit access to block by post type or section', 'bmfbe' ),
 				'type'        => 'boolean',
 				'default'     => false,
 			),

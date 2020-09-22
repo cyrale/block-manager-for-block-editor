@@ -124,7 +124,7 @@ export default function Access( { onChange = noop, value } ) {
 	let modifiedValues = {}; // Modified values to be used by checkboxes.
 
 	if (
-		settings.limit_access_by_post_type &&
+		settings.limit_access_by_section &&
 		! settings.limit_access_by_user_group
 	) {
 		// Display one dimension table: post types.
@@ -133,7 +133,7 @@ export default function Access( { onChange = noop, value } ) {
 
 		modifiedValues = mergeRowsValues( value );
 	} else if (
-		! settings.limit_access_by_post_type &&
+		! settings.limit_access_by_section &&
 		settings.limit_access_by_user_group
 	) {
 		// Display one dimension table: user roles.
@@ -217,7 +217,7 @@ export default function Access( { onChange = noop, value } ) {
 		let newValues = merge( {}, value );
 
 		if (
-			settings.limit_access_by_post_type &&
+			settings.limit_access_by_section &&
 			! settings.limit_access_by_user_group
 		) {
 			// Process values for one dimension table: post types.
@@ -229,7 +229,7 @@ export default function Access( { onChange = noop, value } ) {
 				return rowValues;
 			} );
 		} else if (
-			! settings.limit_access_by_post_type &&
+			! settings.limit_access_by_section &&
 			settings.limit_access_by_user_group
 		) {
 			// Process values for one dimension table: user roles.
@@ -275,7 +275,7 @@ export default function Access( { onChange = noop, value } ) {
 	 */
 	function handleOnClickRow( name ) {
 		if (
-			! settings.limit_access_by_post_type &&
+			! settings.limit_access_by_section &&
 			settings.limit_access_by_user_group
 		) {
 			onChange( flipColumnValues( name ) );

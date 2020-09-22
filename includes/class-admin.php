@@ -206,8 +206,8 @@ class Admin implements WP_Plugin_Class {
 				'label'  => __( 'Advanced', 'bmfbe' ),
 				'fields' => array(
 					array(
-						'name'  => 'limit_access_by_post_type',
-						'label' => __( 'Limit access by post type', 'bmfbe' ),
+						'name'  => 'limit_access_by_section',
+						'label' => __( 'Limit access by post type or section', 'bmfbe' ),
 					),
 					array(
 						'name'  => 'limit_access_by_user_group',

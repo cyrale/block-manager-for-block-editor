@@ -108,7 +108,7 @@ export default function Block( { name } ) {
 
 	// Display access panel or fake it?
 	const displayGlobalActivation =
-		! settings.limit_access_by_post_type &&
+		! settings.limit_access_by_section &&
 		! settings.limit_access_by_user_group;
 	// Split value to be used by checkbox.
 	const globalActivation = {
