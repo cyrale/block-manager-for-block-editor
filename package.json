@@ -19,6 +19,7 @@
 		"node": ">=12.18",
 		"pnpm": ">=5.5"
 	},
+	"dependencies": {},
 	"devDependencies": {
 		"@babel/core": "7.11.1",
 		"@babel/runtime": "7.11.2",
@@ -49,8 +50,8 @@
 		"lodash": "4.17.19",
 		"prettier": "npm:wp-prettier@2.0.5",
 		"react-accessible-accordion": "3.3.3",
+		"react-router-dom": "5.2.0",
 		"react-tabs": "3.1.1",
-		"react-test-renderer": "16.13.1",
 		"react-use": "15.3.4",
 		"rimraf": "3.0.2",
 		"stylelint-config-rational-order": "0.1.2",
@@ -93,8 +94,5 @@
 			"composer run-script format",
 			"composer run-script lint"
 		]
-	},
-	"dependencies": {
-		"react-router-dom": "5.2.0"
 	}
 }
