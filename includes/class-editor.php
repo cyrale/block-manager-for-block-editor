@@ -12,7 +12,6 @@ use BMFBE\Interfaces\WP_Plugin_Class;
 use BMFBE\Settings\Block_Settings;
 use BMFBE\Settings\Global_Settings;
 use BMFBE\Settings\Pattern_Settings;
-use BMFBE\Utils\Version;
 
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Editor.
