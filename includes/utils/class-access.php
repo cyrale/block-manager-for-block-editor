@@ -58,15 +58,20 @@ class Access extends Singleton {
 			$post_types,
 			array(
 				'#widgets' => (object) array(
-					'name' => '#widgets',
-					'cap'  => 'edit_theme_options',
+					'name'    => '#widgets',
+					'cap'     => 'edit_theme_options',
+					'version' => array(
+						'wp'        => '5.6',
+						'gutenberg' => '8.9',
+					),
 				),
 			)
 		);
 
 		foreach ( $sections as $section ) {
 			// Remove post type that not support editor.
-			if ( '#' !== $section->name[0] && ! post_type_supports( $section->name, 'editor' ) ) {
+			if ( ( '#' !== $section->name[0] || ! isset( $section->version ) || ! Version::version_compare( $section->version ) )
+				&& ! post_type_supports( $section->name, 'editor' ) ) {
 				continue;
 			}
 
