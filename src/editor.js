@@ -80,7 +80,10 @@ function getBlocksInContent( clientId = '' ) {
 
 domReady( () => {
 	// Disable fullscreen mode
-	if ( bmfbeEditorGlobal.settings.disable_fullscreen ) {
+	if (
+		bmfbeEditorGlobal.settings.disable_fullscreen &&
+		select( 'core/edit-post' )
+	) {
 		const isFullscreenMode = select( 'core/edit-post' ).isFeatureActive(
 			'fullscreenMode'
 		);

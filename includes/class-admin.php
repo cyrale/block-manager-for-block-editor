@@ -155,6 +155,14 @@ class Admin implements WP_Plugin_Class {
 						'name'  => 'disable_block_patterns',
 						'label' => __( 'Disable block patterns', 'bmfbe' ),
 					),
+					array(
+						'name'    => 'disable_block_based_widgets',
+						'label'   => __( 'Disable block-based widgets', 'bmfbe' ),
+						'version' => array(
+							'wp'        => '5.6',
+							'gutenberg' => '8.9',
+						),
+					),
 				),
 			),
 			array(

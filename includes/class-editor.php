@@ -12,6 +12,7 @@ use BMFBE\Interfaces\WP_Plugin_Class;
 use BMFBE\Settings\Block_Settings;
 use BMFBE\Settings\Global_Settings;
 use BMFBE\Settings\Pattern_Settings;
+use BMFBE\Utils\Version;
 
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Editor.
@@ -46,19 +47,43 @@ class Editor implements WP_Plugin_Class {
 	 * @since 1.0.0
 	 */
 	public function hooks() {
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 9 );
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ), 999 );
 		add_action( 'init', array( $this, 'early_editor_settings' ), 1 );
 		add_action( 'init', array( $this, 'editor_settings' ), 999 );
 	}
 
 	/**
-	 * Enqueue scripts and styles.
+	 * Enqueue admin scripts and styles.
+	 *
+	 * @param string $hook The current admin page.
+	 *
+	 * @since 1.0.0
 	 */
-	public function enqueue_block_editor_assets() {
+	public function admin_enqueue_scripts( $hook ) {
+		if ( 'appearance_page_gutenberg-widgets' !== $hook ) {
+			return;
+		}
+
+		$this->enqueue_block_editor_assets( $hook );
+	}
+
+	/**
+	 * Enqueue scripts and styles.
+	 *
+	 * @param string $hook The current admin page.
+	 *
+	 * @since 1.0.0
+	 */
+	public function enqueue_block_editor_assets( $hook ) {
 		$asset = require_once( $this->plugin->path . 'build/editor.asset.php' );
 
-		$post_type = get_post_type();
-		$wp_user   = wp_get_current_user();
+		$current_section = get_post_type();
+		if ( 'appearance_page_gutenberg-widgets' === $hook ) {
+			$current_section = '#widgets';
+		}
+
+		$current_user = wp_get_current_user();
 
 		$settings = Global_Settings::get_instance()->get_settings();
 
@@ -80,17 +105,17 @@ class Editor implements WP_Plugin_Class {
 
 			// Check if block is enabled.
 			$current_block['enabled'] = true;
-			if ( isset( $block['access'][ $post_type ] ) ) {
+			if ( isset( $block['access'][ $current_section ] ) ) {
 				$block_not_tested = true;
 				$block_enabled    = false;
 
-				foreach ( $wp_user->roles as $user_role ) {
-					if ( ! isset( $block['access'][ $post_type ][ $user_role ] ) ) {
+				foreach ( $current_user->roles as $user_role ) {
+					if ( ! isset( $block['access'][ $current_section ][ $user_role ] ) ) {
 						continue;
 					}
 
 					$block_not_tested = false;
-					$block_enabled    = $block_enabled || $block['access'][ $post_type ][ $user_role ];
+					$block_enabled    = $block_enabled || $block['access'][ $current_section ][ $user_role ];
 				}
 
 				$current_block['enabled'] = $block_not_tested || $block_enabled;
@@ -129,11 +154,15 @@ class Editor implements WP_Plugin_Class {
 	 * @since 1.0.0
 	 */
 	public function early_editor_settings() {
+		$settings = Global_Settings::get_instance()->get_settings();
+
+		if ( isset( $settings['disable_block_based_widgets'] ) && true === $settings['disable_block_based_widgets'] ) {
+			add_filter( 'gutenberg_use_widgets_block_editor', '__return_false' );
+		}
+
 		if ( ! self::active_editor_settings() ) {
 			return;
 		}
-
-		$settings = Global_Settings::get_instance()->get_settings();
 
 		if ( isset( $settings['disable_block_patterns'] ) && true === $settings['disable_block_patterns'] ) {
 			remove_theme_support( 'core-block-patterns' );
@@ -207,7 +236,10 @@ class Editor implements WP_Plugin_Class {
 	protected static function active_editor_settings() {
 		global $pagenow;
 
-		$active = ( isset( $pagenow ) && ( 'post.php' === $pagenow || 'post-new.php' === $pagenow ) );
+		$active = ( isset( $pagenow )
+			&& ( 'post.php' === $pagenow
+				|| 'post-new.php' === $pagenow
+				|| ( 'themes.php' === $pagenow && isset( $_GET['page'] ) && in_array( $_GET['page'], array( 'gutenberg-widgets' ), true ) ) ) );
 		$active = apply_filters( 'bmfbe_active_editor_settings', $active );
 
 		return $active;

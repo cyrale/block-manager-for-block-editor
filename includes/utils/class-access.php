@@ -53,30 +53,45 @@ class Access extends Singleton {
 			),
 			'object'
 		);
-		foreach ( $post_types as $post_type ) {
+		// Add managed sections.
+		$sections = array_merge(
+			$post_types,
+			array(
+				'#widgets' => (object) array(
+					'name' => '#widgets',
+					'cap'  => 'edit_theme_options',
+				),
+			)
+		);
+
+		foreach ( $sections as $section ) {
 			// Remove post type that not support editor.
-			if ( ! post_type_supports( $post_type->name, 'editor' ) ) {
+			if ( '#' !== $section->name[0] && ! post_type_supports( $section->name, 'editor' ) ) {
 				continue;
 			}
 
 			// Access by roles.
 			$properties = array();
-
 			foreach ( $roles as $role_name => $role ) {
-				if ( ! in_array( $post_type->cap->create_posts, array_keys( $role['capabilities'] ), true )
-					&& ! in_array( $post_type->cap->edit_posts, array_keys( $role['capabilities'] ), true ) ) {
-					continue;
-				}
+				// Keep only valid capabilities.
+				$capabilities = array_keys( array_filter( $role['capabilities'] ) );
 
-				$properties[ $role_name ] = array(
-					'type'    => 'boolean',
-					'default' => true,
-				);
+				if ( ( is_object( $section->cap )
+						&& ( in_array( $section->cap->create_posts, $capabilities, true )
+						|| in_array( $section->cap->edit_posts, $capabilities, true ) ) )
+					|| ( is_string( $section->cap )
+						&& in_array( $section->cap, $capabilities, true ) )
+					) {
+						$properties[ $role_name ] = array(
+							'type'    => 'boolean',
+							'default' => true,
+						);
+				}
 			}
 
 			// Access by post type.
 			if ( ! empty( $properties ) ) {
-				$this->schema['properties'][ $post_type->name ] = array(
+				$this->schema['properties'][ $section->name ] = array(
 					'type'       => 'object',
 					'properties' => $properties,
 				);
