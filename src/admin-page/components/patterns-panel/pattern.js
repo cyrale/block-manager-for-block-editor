@@ -13,10 +13,13 @@ import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import StatusIcon from '../status-icon';
 
 export default function Pattern( { name } ) {
-	const { pattern, status } = useSelect( ( select ) => ( {
-		pattern: select( PATTERNS_STORE ).getItem( name ),
-		status: select( PATTERNS_STORE ).getStatus( name ),
-	} ) );
+	const { pattern, status } = useSelect(
+		( select ) => ( {
+			pattern: select( PATTERNS_STORE ).getItem( name ),
+			status: select( PATTERNS_STORE ).getStatus( name ),
+		} ),
+		[]
+	);
 
 	const { updateItem } = useDispatch( PATTERNS_STORE );
 

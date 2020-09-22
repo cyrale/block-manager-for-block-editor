@@ -70,7 +70,7 @@ export default function SaveContents() {
 			settings: settingsStore.getItem(),
 			status: globalStatus,
 		};
-	} );
+	}, [] );
 
 	const { saveItem: saveSettings } = useDispatch( SETTINGS_STORE );
 	const { saveItem: saveBlock } = useDispatch( BLOCKS_STORE );
