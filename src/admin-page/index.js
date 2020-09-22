@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { Redirect, useLocation } from 'react-router-dom';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 
 /**
@@ -29,47 +30,74 @@ import ContentLayout from './components/content-layout';
 import SaveContents from './components/save-contents';
 import StickyFooter from './components/sticky-footer';
 
+const panels = [
+	{
+		path: '/settings',
+		label: __( 'Settings', 'bmfbe' ),
+		Tab: SettingsTab,
+		Panel: SettingsPanel,
+	},
+	{
+		path: '/blocks',
+		label: __( 'Blocks', 'bmfbe' ),
+		Tab: BlocksTab,
+		Panel: BlocksPanel,
+	},
+	{
+		path: '/patterns',
+		label: __( 'Patterns', 'bmfbe' ),
+		Tab: PatternsTab,
+		Panel: PatternsPanel,
+		visible: ( settings ) => false === settings.disable_block_patterns,
+	},
+];
+
 export default function AdminPage() {
 	const settings = useSelect(
 		( select ) => select( SETTINGS_STORE ).getItem(),
 		[]
 	);
 
+	const paths = panels.map( ( { path } ) => path );
+	const location = useLocation();
+
+	if ( ! paths.includes( location.pathname ) ) {
+		return <Redirect to={ paths[ 0 ] } push={ false } />;
+	}
+
+	const activePanels = panels.filter(
+		( panel ) => undefined === panel.visible || panel.visible( settings )
+	);
+
+	const tabIndex = activePanels.reduce( ( index, panel, i ) => {
+		if ( location.pathname === panel.path ) {
+			index = i;
+		}
+
+		return index;
+	}, 0 );
+
 	return (
 		<>
-			<Tabs forceRenderTabPanel={ true }>
+			<Tabs
+				forceRenderTabPanel={ true }
+				selectedIndex={ tabIndex }
+				onSelect={ () => {} }
+			>
 				<TabList>
-					<Tab>
-						<SettingsTab>{ __( 'Settings', 'bmfbe' ) }</SettingsTab>
-					</Tab>
-					<Tab>
-						<BlocksTab>{ __( 'Blocks', 'bmfbe' ) }</BlocksTab>
-					</Tab>
-					{ false === settings.disable_block_patterns && (
-						<Tab>
-							<PatternsTab>
-								{ __( 'Patterns', 'bmfbe' ) }
-							</PatternsTab>
+					{ activePanels.map( ( { path, label, Tab: PanelTab } ) => (
+						<Tab key={ path }>
+							<PanelTab to={ path }>{ label }</PanelTab>
 						</Tab>
-					) }
+					) ) }
 				</TabList>
-				<TabPanel>
-					<ContentLayout>
-						<SettingsPanel />
-					</ContentLayout>
-				</TabPanel>
-				<TabPanel>
-					<ContentLayout>
-						<BlocksPanel />
-					</ContentLayout>
-				</TabPanel>
-				{ false === settings.disable_block_patterns && (
-					<TabPanel>
+				{ activePanels.map( ( { path, Panel } ) => (
+					<TabPanel key={ path }>
 						<ContentLayout>
-							<PatternsPanel />
+							<Panel />
 						</ContentLayout>
 					</TabPanel>
-				) }
+				) ) }
 			</Tabs>
 			<StickyFooter>
 				<SaveContents />

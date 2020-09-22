@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { HashRouter } from 'react-router-dom';
+
+/**
  * WordPress dependencies
  */
 import domReady from '@wordpress/dom-ready';
@@ -17,6 +22,11 @@ domReady( () => {
 
 	const container = document.getElementById( 'bmfbeSettings' );
 	if ( null !== container ) {
-		render( <AdminPage />, container );
+		render(
+			<HashRouter>
+				<AdminPage />
+			</HashRouter>,
+			container
+		);
 	}
 } );
