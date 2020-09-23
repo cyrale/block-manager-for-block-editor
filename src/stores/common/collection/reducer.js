@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { cloneDeep, merge } from 'lodash';
+import { cloneDeep, isString, merge, omit } from 'lodash';
 
 /**
  * Internal dependencies
@@ -20,9 +20,16 @@ export default function reducer( state = DEFAULT_STATE, action ) {
 			};
 
 		case 'INIT_CATEGORIES':
+			const categories = action.categories.map( ( category ) => {
+				return {
+					slug: category.name ?? category.slug,
+					title: category.label ?? category.title,
+				};
+			} );
+
 			return {
 				...state,
-				categories: action.categories,
+				categories,
 				status: {
 					...state.status,
 					categories: STATUS_PENDING,
@@ -33,18 +40,33 @@ export default function reducer( state = DEFAULT_STATE, action ) {
 			const items = {};
 			const itemList = [];
 
-			action.items.forEach( ( item ) => {
-				items[ item.name ] = {
-					status: STATUS_PENDING,
-					initialValue: cloneDeep( item ),
-					value: item,
-				};
+			action.items
+				.map( ( item ) => {
+					let itemCategories = [];
 
-				itemList.push( {
-					name: item.name,
-					categories: item.categories ?? [],
+					if ( isString( item.category ) ) {
+						itemCategories = [ item.category ];
+					} else if ( Array.isArray( item.categories ) ) {
+						itemCategories = item.categories;
+					}
+
+					return {
+						...omit( item, [ 'category' ] ),
+						categories: itemCategories,
+					};
+				} )
+				.forEach( ( item ) => {
+					items[ item.name ] = {
+						status: STATUS_PENDING,
+						initialValue: cloneDeep( item ),
+						value: item,
+					};
+
+					itemList.push( {
+						name: item.name,
+						categories: item.categories,
+					} );
 				} );
-			} );
 
 			return {
 				...state,
