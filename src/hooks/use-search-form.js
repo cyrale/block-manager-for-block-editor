@@ -105,11 +105,13 @@ export default function useSearchForm() {
 	const [ items, setItems ] = useState( [] );
 	const [ filterValue, setFilterValue ] = useState( '' );
 
+	const filteredItems = useMemo( () => searchItems( items, filterValue ), [
+		filterValue,
+		items,
+	] );
+
 	return {
-		filteredItems: useMemo( () => searchItems( items, filterValue ), [
-			filterValue,
-			items,
-		] ),
+		filteredItems,
 		setItems,
 		filterValue,
 		setFilterValue,
