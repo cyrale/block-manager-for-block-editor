@@ -1,7 +1,12 @@
-import { STATUS_LOADING } from '../constants';
+/**
+ * External dependencies
+ */
+import { isString, omit } from 'lodash';
+
 /**
  * Internal dependencies
  */
+import { STATUS_LOADING } from '../constants';
 import * as actions from './actions';
 
 export function* getCategories() {
@@ -17,5 +22,20 @@ export function* getCollection() {
 
 	const items = yield actions.fetchAllFromAPI();
 
-	return actions.initCollection( items );
+	return actions.initCollection(
+		items.map( ( item ) => {
+			let categories = [];
+
+			if ( isString( item.category ) ) {
+				categories = [ item.category ];
+			} else if ( Array.isArray( item.categories ) ) {
+				categories = item.categories;
+			}
+
+			return {
+				...omit( item, [ 'category' ] ),
+				categories,
+			};
+		} )
+	);
 }

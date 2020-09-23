@@ -40,18 +40,10 @@ export default function reducer( state = DEFAULT_STATE, action ) {
 					value: item,
 				};
 
-				const itemForList = {
+				itemList.push( {
 					name: item.name,
-					categories: [],
-				};
-
-				if ( undefined !== item.category ) {
-					itemForList.categories = [ item.category ];
-				} else if ( Array.isArray( item.categories ) ) {
-					itemForList.categories = item.categories;
-				}
-
-				itemList.push( itemForList );
+					categories: item.categories ?? [],
+				} );
 			} );
 
 			return {

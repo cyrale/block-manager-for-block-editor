@@ -1,0 +1,16 @@
+.bmfbe-not-found {
+	margin-top: $grid-unit-40 * 2;
+	padding: $grid-unit-40;
+
+	text-align: center;
+
+	&__icon {
+		svg {
+			fill: $light-gray-800;
+		}
+	}
+
+	&__label {
+		margin: 1rem 0;
+	}
+}

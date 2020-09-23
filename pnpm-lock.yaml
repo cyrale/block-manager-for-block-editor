@@ -3642,6 +3642,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-KMV9MT96y2PFUL2C98e2nx/Gs2mhCAzYP6Gsu/9r7Rhn27qxu1yTnQBqHogUuvwVSbstEHNXTaToPNsL7oBZ9g==
+  /body-scroll-lock/3.1.5:
+    dev: true
+    resolution:
+      integrity: sha512-Yi1Xaml0EvNA0OYWxXiYNqY24AfWkbA6w5vxE7GWxtKfzIbZM+Qw+aSmkgsbWzbHiy/RCSkUZBplVxTA+E4jJg==
   /body/5.1.0:
     dependencies:
       continuable-cache: 0.3.1
@@ -9481,7 +9485,7 @@ packages:
       integrity: sha512-vVqVZQyf3WLx2Shd0qJ9xuvqgAyKPLAiqITEtqW0oIUjzo3PePDd6fW9iFz30ef7Ysp/oiWqbhszeGWW2T6Gzw==
   /moment-timezone/0.5.31:
     dependencies:
-      moment: 2.27.0
+      moment: 2.29.0
     dev: true
     resolution:
       integrity: sha512-+GgHNg8xRhMXfEbv81iDtrVeTcWt0kWmTEY1XQK14dICTXnWJnT0dxdlPspwqF3keKMVPXwayEsk1DI0AA/jdA==
@@ -9489,6 +9493,10 @@ packages:
     dev: true
     resolution:
       integrity: sha512-al0MUK7cpIcglMv3YF13qSgdAIqxHTO7brRtaz3DlSULbqfazqkc5kEjNrLDOM7fsjshoFIihnU8snrP7zUvhQ==
+  /moment/2.29.0:
+    dev: true
+    resolution:
+      integrity: sha512-z6IJ5HXYiuxvFTI6eiQ9dm77uE0gyy1yXNApVHqTcnIKfY9tIwEjlzsZ6u1LQXvVgKeTnv9Xm7NDvJ7lso3MtA==
   /moo/0.5.1:
     dev: true
     resolution:
@@ -11582,7 +11590,7 @@ packages:
   /reakit/1.1.0:
     dependencies:
       '@popperjs/core': 2.4.4
-      body-scroll-lock: 3.1.3
+      body-scroll-lock: 3.1.5
       reakit-system: 0.13.1
       reakit-utils: 0.13.1
       reakit-warning: 0.4.1
