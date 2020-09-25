@@ -7,7 +7,7 @@ import { find } from 'lodash';
 /**
  * WordPress dependencies
  */
-import { useEffect, useMemo, useState } from '@wordpress/element';
+import { useEffect, useMemo } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -16,8 +16,7 @@ import useSearchForm from '../../../hooks/use-search-form';
 import { STATUS_LOADING } from '../../../stores/blocks/constants';
 import NotFound from '../not-found';
 import SearchForm from '../search-form';
-import Category from './category';
-import Container from './container';
+import { CollapsibleContainer, CollapsibleItem } from '../collapsible';
 
 export default function Panel( {
 	categories,
@@ -34,31 +33,13 @@ export default function Panel( {
 		setFilterValue,
 	} = useSearchForm();
 
-	const [ displayedCategories, setDisplayedCategories ] = useState( {} );
-
-	// Initialize items.
-	useEffect( () => {
-		setItems( items );
-	}, [ items ] );
-
-	// Set displayed category.
-	useEffect( () => {
-		const defaultDisplayedCategories = {};
-
-		categories.forEach( ( { slug }, index ) => {
-			defaultDisplayedCategories[ slug ] = 0 === index;
-		} );
-
-		setDisplayedCategories( defaultDisplayedCategories );
-	}, [ categories ] );
-
 	const filteredChildren = useMemo( () => {
-		const result = {};
+		const childrenItems = {};
 
 		filteredItems.forEach( ( item ) => {
 			item.categories.forEach( ( category ) => {
-				result[ category ] = [
-					...( result[ category ] ?? [] ),
+				childrenItems[ category ] = [
+					...( childrenItems[ category ] ?? [] ),
 					find(
 						children,
 						( child ) => child.props.name === item.name
@@ -67,26 +48,19 @@ export default function Panel( {
 			} );
 		} );
 
-		return result;
+		return childrenItems;
 	}, [ filteredItems ] );
 
-	/**
-	 * Handle changes with accordion. Display or hide categories.
-	 *
-	 * @param {string[]} accordionNames Names of displayed categories.
-	 * @since 1.0.0
-	 */
-	function handleAccordionChange( accordionNames ) {
-		const currentDisplayedCategories = {};
+	const filteredCategories = useMemo( () => {
+		return categories.filter(
+			( { slug } ) => filteredChildren[ slug ]?.length
+		);
+	}, [ filteredChildren ] );
 
-		categories.forEach( ( { slug } ) => {
-			currentDisplayedCategories[ slug ] = accordionNames.includes(
-				slug
-			);
-		} );
-
-		setDisplayedCategories( currentDisplayedCategories );
-	}
+	// Initialize items.
+	useEffect( () => {
+		setItems( items );
+	}, [ items ] );
 
 	return (
 		<div className={ classnames( 'bmfbe-settings-panel', className ) }>
@@ -100,32 +74,35 @@ export default function Panel( {
 					{ 0 === filteredItems.length && (
 						<NotFound label={ labels.notFound } />
 					) }
-					{ 0 !== filteredItems.length && (
-						<Container
-							categories={ categories }
-							onChange={ handleAccordionChange }
-						>
-							{ categories
-								.filter(
-									( { slug } ) =>
-										filteredChildren[ slug ]?.length
-								)
-								.map( ( category ) => (
-									<Category
+					{ 0 !== filteredItems.length &&
+						0 !== filteredCategories.length && (
+							<CollapsibleContainer
+								preOpened={ [ filteredCategories[ 0 ].slug ] }
+							>
+								{ filteredCategories.map( ( category ) => (
+									<CollapsibleItem
 										key={ category.slug }
-										category={ category }
-										count={
-											filteredChildren[ category.slug ]
-												.length
+										uuid={ category.slug }
+										trigger={
+											<>
+												{ category.title }
+												<em>
+													(
+													{
+														filteredChildren[
+															category.slug
+														].length
+													}
+													)
+												</em>
+											</>
 										}
 									>
-										{ displayedCategories[
-											category.slug
-										] && filteredChildren[ category.slug ] }
-									</Category>
+										{ filteredChildren[ category.slug ] }
+									</CollapsibleItem>
 								) ) }
-						</Container>
-					) }
+							</CollapsibleContainer>
+						) }
 				</>
 			) }
 		</div>

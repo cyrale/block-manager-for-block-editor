@@ -27,7 +27,7 @@ devDependencies:
   lint-staged: 10.2.11
   lodash: 4.17.19
   prettier: /wp-prettier/2.0.5
-  react-accessible-accordion: 3.3.3
+  react-collapsible: 2.8.1
   react-router-dom: 5.2.0
   react-tabs: 3.1.1
   react-use: 15.3.4
@@ -11139,13 +11139,6 @@ packages:
     dev: true
     resolution:
       integrity: sha512-z7Vl5PStOxSDlpeLz73+hIKBC3raoy00KYNVGz1G4C01Q1goog6061lbXhWQsjS16DV59IPA2snjvZYPkxc2Vw==
-  /react-accessible-accordion/3.3.3:
-    dev: true
-    peerDependencies:
-      react: ^16.3.2
-      react-dom: ^16.3.3
-    resolution:
-      integrity: sha512-I1Niy21IIyXIzcDuIlTnnN3k8bUux7puq60eyNuwf+lhvftnocn7hLhAz2NycXrZOqBClqi50YBqXlnbOTNrjQ==
   /react-addons-shallow-compare/15.6.2:
     dependencies:
       fbjs: 0.8.17
@@ -11164,6 +11157,14 @@ packages:
       react-dom: ^0.14.0 || ^15.0.0 || ^16.0.0
     resolution:
       integrity: sha512-iOSZK7RUuJ+iEwkJ9rqYciqtjQgrG1CCRFL6h8Bk61kODnRyEq4tS74IgXpI1t4S6jBBZVm+6ugaU+tWTlVxXg==
+  /react-collapsible/2.8.1:
+    dev: true
+    peerDependencies:
+      prop-types: ^15.5.8
+      react: ~15 || ~16
+      react-dom: ~15 || ~16
+    resolution:
+      integrity: sha512-ykV+EpCBYC6UoOsZLtBxrs/kFVgJc2gFMU1/SS2JLG+LrMHSOERpWSG+fexyFYk44hdfJRmc/If+HlSjXcbCiw==
   /react-dates/17.2.0_moment@2.27.0:
     dependencies:
       airbnb-prop-types: 2.16.0
@@ -14798,7 +14799,7 @@ specifiers:
   lint-staged: 10.2.11
   lodash: 4.17.19
   prettier: 'npm:wp-prettier@2.0.5'
-  react-accessible-accordion: 3.3.3
+  react-collapsible: 2.8.1
   react-router-dom: 5.2.0
   react-tabs: 3.1.1
   react-use: 15.3.4

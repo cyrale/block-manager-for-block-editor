@@ -1,30 +1,29 @@
-import {
-	Accordion,
-	AccordionItem,
-	AccordionItemButton,
-	AccordionItemHeading,
-	AccordionItemPanel,
-} from 'react-accessible-accordion';
-
+/**
+ * WordPress dependencies
+ */
 import { __ } from '@wordpress/i18n';
 
-import InternalSupports from '../supports';
+/**
+ * Internal dependencies
+ */
+import { CollapsibleContainer, CollapsibleItem } from '../collapsible';
 import ExternalLink from '../external-link';
+import InternalSupports from '../supports';
 
 export default function Supports( props ) {
 	return (
-		<Accordion allowZeroExpanded={ true }>
-			<AccordionItem className="accordion__item accordion__item--supports">
-				<AccordionItemHeading>
-					<AccordionItemButton>
+		<CollapsibleContainer>
+			<CollapsibleItem
+				className="collapsible__wrapper--supports"
+				trigger={
+					<>
 						{ __( 'Supports', 'bmfbe' ) }
 						<ExternalLink link="https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#supports-optional" />
-					</AccordionItemButton>
-				</AccordionItemHeading>
-				<AccordionItemPanel>
-					<InternalSupports { ...props } />
-				</AccordionItemPanel>
-			</AccordionItem>
-		</Accordion>
+					</>
+				}
+			>
+				<InternalSupports { ...props } />
+			</CollapsibleItem>
+		</CollapsibleContainer>
 	);
 }

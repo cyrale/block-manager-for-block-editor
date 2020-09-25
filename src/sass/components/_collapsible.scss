@@ -1,0 +1,90 @@
+@import "~@wordpress/base-styles/colors";
+@import "~@wordpress/base-styles/mixins";
+
+.collapsible {
+	&__container,
+	&__fake {
+		background-color: $white;
+	}
+
+	&__wrapper {
+		border: 1px solid $gray-200;
+		border-top-width: 0;
+
+		&:first-child {
+			border-top-width: 1px;
+		}
+	}
+
+	&__item {
+		&__trigger {
+			position: relative;
+
+			display: flex;
+
+			padding: 1rem 3.5rem 1rem 1.5rem;
+
+			font-weight: 600;
+
+			background: $white;
+			cursor: pointer;
+
+			&::before {
+				position: absolute;
+				top: 50%;
+				right: 1.5rem;
+
+				width: 0.5rem;
+				height: 0.5rem;
+
+				border-color: $gray-700;
+				border-style: solid;
+				border-width: 0 2px 2px 0;
+				outline-offset: -1px;
+				transform: translateY(-70%) rotate(45deg);
+
+				transition: transform 0.1s linear;
+
+				content: "";
+				@include reduce-motion( "transition" );
+			}
+
+			&.is-open {
+				&::before {
+					transform: translateY(-30%) rotate(-135deg);
+				}
+			}
+
+			em {
+				margin-left: 0.3rem;
+			}
+
+			.bmfbe-external-link {
+				display: inline-block;
+				margin-left: 0.5rem;
+			}
+
+			.indeterminate-toggle-control,
+			.indeterminate-toggle-control .components-base-control__field {
+				margin: 0;
+			}
+		}
+
+		&__contentInner {
+			margin: 0;
+			padding: 1rem 1.5rem;
+
+			background: $white;
+		}
+	}
+
+	&__wrapper--fake {
+		.collapsible__item__trigger {
+			cursor: default;
+
+			&::before {
+				display: none;
+			}
+		}
+	}
+}

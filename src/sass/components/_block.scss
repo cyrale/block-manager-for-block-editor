@@ -8,22 +8,17 @@
 		padding: 0 1rem;
 	}
 
-	.accordion {
-		border: 0;
+	.collapsible__wrapper {
+		border-right-width: 0;
+		border-left-width: 0;
 
-		&__item {
-			border-top: 1px solid $gray-200;
-
-			&--access {
-				.accordion__panel {
-					padding: 0;
-				}
-			}
+		&:last-child {
+			border-bottom-width: 0;
 		}
 
-		&__button {
-			.components-base-control__field {
-				margin: 0;
+		&--access {
+			.collapsible__item__contentInner {
+				padding: 0;
 			}
 		}
 	}

@@ -4,7 +4,6 @@
 	margin: 0 0 1rem;
 
 	background: $white;
-	border: 1px solid $gray-200;
 }
 
 .bmfbe-supports-settings {
@@ -13,7 +12,7 @@
 	border-top: 1px solid $gray-200;
 
 	&:first-child {
-		border-top: 0;
+		border-top-width: 0;
 	}
 
 	&__values {
@@ -21,16 +20,13 @@
 	}
 }
 
-.accordion {
-	&__item--supports {
-		.accordion__panel {
-			padding: 0;
-		}
+.collapsible__wrapper--supports {
+	.collapsible__wrapper {
+		border-right-width: 0;
+		border-left-width: 0;
 	}
 
-	.bmfbe-supports {
-		margin: 0;
-
-		border: 0;
+	.collapsible__item__contentInner {
+		padding: 0;
 	}
 }

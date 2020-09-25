@@ -1,21 +1,12 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
 import { mapValues, uniq } from 'lodash';
-import {
-	Accordion,
-	AccordionItem,
-	AccordionItemButton,
-	AccordionItemHeading,
-	AccordionItemPanel,
-} from 'react-accessible-accordion';
 
 /**
  * WordPress dependencies
  */
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useState } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
 
 /**
@@ -24,15 +15,26 @@ import { __ } from '@wordpress/i18n';
 import { COLLECTION_STORE as BLOCKS_STORE } from '../../../stores/blocks/constants';
 import { ITEM_STORE as SETTINGS_STORE } from '../../../stores/settings/constants';
 import Access from '../access';
+import {
+	CollapsibleContainer,
+	CollapsibleFake,
+	CollapsibleItem,
+} from '../collapsible';
 import Description from '../description';
 import ExternalLink from '../external-link';
-import FakeAccordion from '../fake-accordion';
 import Icon from './icon';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import Styles from './styles';
 import Supports from '../supports';
 import StatusIcon from '../status-icon';
 import Variations from './variations';
+
+const defaultRenderTrigger = ( { label, link } ) => (
+	<>
+		{ label }
+		{ link && <ExternalLink link={ link } /> }
+	</>
+);
 
 /**
  * Panels to display below of block description.
@@ -46,26 +48,39 @@ const panels = [
 		label: __( 'Supports', 'bmfbe' ),
 		link:
 			'https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#supports-optional',
-		Component: Supports,
+		renderTrigger: defaultRenderTrigger,
+		renderContent: ( props ) => <Supports { ...props } />,
 	},
 	{
 		name: 'styles',
 		label: __( 'Styles', 'bmfbe' ),
 		link:
 			'https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#styles-optional',
-		Component: Styles,
+		renderTrigger: defaultRenderTrigger,
+		renderContent: ( props ) => <Styles { ...props } />,
 	},
 	{
 		name: 'variations',
 		label: __( 'Variations', 'bmfbe' ),
 		link:
 			'https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#variations-optional',
-		Component: Variations,
+		renderTrigger: defaultRenderTrigger,
+		renderContent: ( props ) => <Variations { ...props } />,
 	},
 	{
 		name: 'access',
 		label: __( 'Enable this block', 'bmfbe' ),
-		Component: Access,
+		renderTrigger: ( { label, link, globalActivation, onChange } ) => (
+			<>
+				<IndeterminateToggleControl
+					onChange={ onChange }
+					{ ...globalActivation }
+				/>{ ' ' }
+				{ label }
+				{ link && <ExternalLink link={ link } /> }
+			</>
+		),
+		renderContent: ( props ) => <Access { ...props } />,
 	},
 ];
 
@@ -81,11 +96,6 @@ panels.forEach( ( { name } ) => {
 } );
 
 export default function Block( { name } ) {
-	// Status of panels: show/hide.
-	const [ displayedPanels, setDisplayedPanels ] = useState(
-		defaultDisplayedPanels
-	);
-
 	const { block, settings, status } = useSelect(
 		( select ) => ( {
 			block: select( BLOCKS_STORE ).getItem( name ),
@@ -117,20 +127,6 @@ export default function Block( { name } ) {
 	};
 
 	/**
-	 * Handle changes with accordion. Display or hide panels.
-	 *
-	 * @param {string[]} accordionNames Names of displayed panels.
-	 * @since 1.0.0
-	 */
-	function handleAccordionChange( accordionNames ) {
-		const currentDisplayedPanels = mapValues(
-			displayedPanels,
-			( displayed, panelName ) => accordionNames.includes( panelName )
-		);
-		setDisplayedPanels( currentDisplayedPanels );
-	}
-
-	/**
 	 * Handle changes on block settings.
 	 *
 	 * @param {Object} value New block settings.
@@ -156,6 +152,61 @@ export default function Block( { name } ) {
 		} );
 	}
 
+	function renderPanel( {
+		label,
+		link,
+		name: panelName,
+		renderContent,
+		renderTrigger,
+	} ) {
+		return (
+			<CollapsibleItem
+				key={ `${ name }/${ panelName }` }
+				uuid={ panelName }
+				className={ `collapsible__wrapper--${ panelName }` }
+				trigger={ renderTrigger( {
+					label,
+					link,
+					globalActivation,
+					onChange: ( { checked } ) =>
+						handleOnGlobalAccessChange( checked ),
+				} ) }
+			>
+				{ renderContent( {
+					disabled:
+						'supports' === panelName && ! block.supports_override,
+					value: block[ panelName ],
+					onChange: ( checked ) =>
+						handleBlockChange( {
+							[ panelName ]: checked,
+						} ),
+				} ) }
+			</CollapsibleItem>
+		);
+	}
+
+	function renderFakePanel( {
+		label,
+		link,
+		name: panelName,
+		renderTrigger,
+	} ) {
+		return (
+			<CollapsibleFake
+				key={ `${ name }/${ panelName }` }
+				uuid={ panelName }
+				className={ `collapsible__wrapper--${ panelName }` }
+				trigger={ renderTrigger( {
+					label,
+					link,
+					globalActivation,
+					onChange: ( { checked } ) =>
+						handleOnGlobalAccessChange( checked ),
+				} ) }
+			/>
+		);
+	}
+
 	return (
 		<div className="bmfbe-block">
 			<StatusIcon status={ status } />
@@ -178,11 +229,7 @@ export default function Block( { name } ) {
 					} )
 				}
 			/>
-			<Accordion
-				allowMultipleExpanded={ true }
-				allowZeroExpanded={ true }
-				onChange={ handleAccordionChange }
-			>
+			<CollapsibleContainer>
 				{ panels
 					.filter(
 						( { name: panelName } ) =>
@@ -191,66 +238,14 @@ export default function Block( { name } ) {
 								block[ panelName ].length > 0 ) &&
 							// Hide supports panel.
 							( 'supports' !== panelName ||
-								block.supports_override ) &&
-							// Hide access panels.
-							( 'access' !== panelName ||
-								! displayGlobalActivation )
+								block.supports_override )
 					)
-					.map( ( { label, link, name: panelName, Component } ) => (
-						<AccordionItem
-							key={ `${ name }/${ panelName }` }
-							uuid={ panelName }
-							className={ classnames(
-								'accordion__item',
-								`accordion__item--${ panelName }`
-							) }
-						>
-							<AccordionItemHeading>
-								<AccordionItemButton>
-									{ 'access' === panelName && (
-										<IndeterminateToggleControl
-											onChange={ ( { checked } ) =>
-												handleOnGlobalAccessChange(
-													checked
-												)
-											}
-											{ ...globalActivation }
-										/>
-									) }
-									{ label }
-									{ link && <ExternalLink link={ link } /> }
-								</AccordionItemButton>
-							</AccordionItemHeading>
-							<AccordionItemPanel>
-								{ displayedPanels[ panelName ] && (
-									<Component
-										value={ block[ panelName ] }
-										disabled={
-											'supports' === panelName &&
-											! block.supports_override
-										}
-										onChange={ ( checked ) =>
-											handleBlockChange( {
-												[ panelName ]: checked,
-											} )
-										}
-									/>
-								) }
-							</AccordionItemPanel>
-						</AccordionItem>
-					) ) }
-			</Accordion>
-			{ displayGlobalActivation && (
-				<FakeAccordion>
-					<IndeterminateToggleControl
-						label={ __( 'Enable this block', 'bmfbe' ) }
-						onChange={ ( { checked } ) =>
-							handleOnGlobalAccessChange( checked )
-						}
-						{ ...globalActivation }
-					/>
-				</FakeAccordion>
-			) }
+					.map( ( panel ) =>
+						'access' === panel.name && displayGlobalActivation
+							? renderFakePanel( panel )
+							: renderPanel( panel )
+					) }
+			</CollapsibleContainer>
 		</div>
 	);
 }
