@@ -20,7 +20,6 @@ export default function Item( {
 	className,
 	children,
 	itemClassName,
-	open,
 	uuid,
 	...props
 } ) {
@@ -32,8 +31,8 @@ export default function Item( {
 	const [ hideContent, setHideContent ] = useState( true );
 
 	useEffect( () => {
-		setHideContent( ! open );
-	}, [ open ] );
+		setHideContent( ! containerContext.isItemOpened( instanceUuid ) );
+	}, [] );
 
 	return (
 		<div className={ classnames( 'collapsible__wrapper', className ) }>

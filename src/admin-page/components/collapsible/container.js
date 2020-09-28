@@ -23,10 +23,12 @@ export default function CollapsibleContainer( {
 	onChange = noop,
 	preOpened = [],
 } ) {
+	const [ initialized, setInitialized ] = useState( false );
 	const [ opened, setOpened ] = useState( [] );
 
 	useEffect( () => {
 		setOpened( preOpened );
+		setInitialized( true );
 	}, [] );
 
 	function handleOnTriggerOpening( uuid ) {
@@ -60,7 +62,7 @@ export default function CollapsibleContainer( {
 			<div
 				className={ classnames( 'collapsible__container', className ) }
 			>
-				{ children }
+				{ initialized && children }
 			</div>
 		</CollapsibleContainerContext.Provider>
 	);
