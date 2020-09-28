@@ -56,7 +56,8 @@ export default function Item( {
 							containerContext.onTriggerOpening( instanceUuid ),
 						onTriggerClosing: () =>
 							containerContext.onTriggerClosing( instanceUuid ),
-						transitionTime: 200,
+						easing: 'ease-in-out',
+						transitionTime: 300,
 					},
 				} }
 			>
