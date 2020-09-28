@@ -8,6 +8,7 @@
 
 namespace BMFBE\Settings;
 
+use BMFBE\Utils\Access;
 use WP_Block_Patterns_Registry;
 use WP_Block_Pattern_Categories_Registry;
 use WP_Error;
@@ -62,11 +63,7 @@ class Pattern_Settings extends Settings_Multiple {
 							'type' => 'string',
 						),
 					),
-					'disabled'    => array(
-						'description' => __( 'Is current pattern disable?', 'bmfbe' ),
-						'type'        => 'boolean',
-						'required'    => true,
-					),
+					'access'      => Access::get_instance()->schema,
 				),
 			),
 		);
@@ -94,17 +91,22 @@ class Pattern_Settings extends Settings_Multiple {
 
 		$summarized_value = array();
 		foreach ( $db_value as $pattern ) {
-			$summarized_value[ $pattern['name'] ] = isset( $pattern['disabled'] ) ? $pattern['disabled'] : false;
+			$summarized_value[ $pattern['name'] ] = $pattern;
 		}
 
 		foreach ( WP_Block_Patterns_Registry::get_instance()->get_all_registered() as $pattern ) {
-			$value[] = array(
+			$p = array(
 				'name'        => $pattern['name'],
 				'title'       => $pattern['title'],
 				'description' => $pattern['description'],
 				'categories'  => $pattern['categories'],
-				'disabled'    => isset( $summarized_value[ $pattern['name'] ] ) ? $summarized_value[ $pattern['name'] ] : false,
 			);
+
+			if ( isset( $summarized_value[ $pattern['name'] ] ) ) {
+				$p = array_merge_recursive( $p, $summarized_value[ $pattern['name'] ] );
+			}
+
+			$value[] = $p;
 		}
 
 		// Delete old patterns.
@@ -122,28 +124,26 @@ class Pattern_Settings extends Settings_Multiple {
 	 * Get one option from database.
 	 *
 	 * @param string $name    Name of the settings.
-	 * @param bool   $from_db Optional. Flag to search value from database or not.
 	 *
 	 * @return array|null Option value, Null if not exists.
 	 * @since 1.0.0
 	 */
-	public function get_one_db_value( $name, $from_db = true ) {
-		if ( $from_db ) {
-			$db_value = get_option( $this->option_prefix() . $name, null );
-			if ( null !== $db_value ) {
-				return $db_value;
-			}
-		}
-
+	public function get_one_db_value( $name ) {
 		foreach ( WP_Block_Patterns_Registry::get_instance()->get_all_registered() as $pattern ) {
 			if ( $name === $pattern['name'] ) {
-				return array(
+				$p = array(
 					'name'        => $pattern['name'],
 					'title'       => $pattern['title'],
 					'description' => $pattern['description'],
 					'categories'  => $pattern['categories'],
-					'disabled'    => false,
 				);
+
+				$db_value = get_option( $this->option_prefix() . $name, null );
+				if ( null !== $db_value ) {
+					return array_merge_recursive( $p, $db_value );
+				}
+
+				return $p;
 			}
 		}
 
@@ -211,6 +211,27 @@ class Pattern_Settings extends Settings_Multiple {
 			'patterns' => $patterns,
 			'total'    => $total,
 		);
+	}
+
+	/**
+	 * Get one pattern by name.
+	 *
+	 * @param string $name Name of searched pattern.
+	 *
+	 * @return array|WP_Error Found pattern.
+	 * @since 1.0.0
+	 */
+	public function get_pattern( $name ) {
+		$db_pattern = $this->get_one_db_value( $name );
+
+		if ( null === $db_pattern ) {
+			return new WP_Error(
+				'invalid_pattern_name',
+				__( 'Invalid pattern name.', 'bmfbe' )
+			);
+		}
+
+		return $this->prepare_settings( $db_pattern, $this->schema['items'] );
 	}
 
 	/**
