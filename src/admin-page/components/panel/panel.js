@@ -2,12 +2,12 @@
  * External dependencies
  */
 import classnames from 'classnames';
-import { find } from 'lodash';
+import { find, intersection } from 'lodash';
 
 /**
  * WordPress dependencies
  */
-import { useEffect, useMemo } from '@wordpress/element';
+import { useEffect, useMemo, useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -32,6 +32,8 @@ export default function Panel( {
 		filterValue,
 		setFilterValue,
 	} = useSearchForm();
+
+	const [ opened, setOpened ] = useState( [] );
 
 	const filteredChildren = useMemo( () => {
 		const childrenItems = {};
@@ -62,6 +64,31 @@ export default function Panel( {
 		setItems( items );
 	}, [ items ] );
 
+	useEffect( () => {
+		if ( categories.length ) {
+			setOpened( [ categories[ 0 ].slug ] );
+		}
+	}, [ categories ] );
+
+	// Keep one collapsible item opened.
+	useEffect( () => {
+		if (
+			opened.length &&
+			filteredCategories.length &&
+			0 ===
+				intersection(
+					opened,
+					filteredCategories.map( ( c ) => c.slug )
+				).length
+		) {
+			setOpened( [ filteredCategories[ 0 ].slug ] );
+		}
+	}, [ filteredCategories ] );
+
+	function handleCollapsibleOnChange( collapsibleOpened ) {
+		setOpened( collapsibleOpened );
+	}
+
 	return (
 		<div className={ classnames( 'bmfbe-settings-panel', className ) }>
 			{ STATUS_LOADING !== status && 0 !== categories.length && (
@@ -77,12 +104,16 @@ export default function Panel( {
 					{ 0 !== filteredItems.length &&
 						0 !== filteredCategories.length && (
 							<CollapsibleContainer
-								preOpened={ [ filteredCategories[ 0 ].slug ] }
+								// preOpened={ [ filteredCategories[ 0 ].slug ] }
+								onChange={ handleCollapsibleOnChange }
 							>
 								{ filteredCategories.map( ( category ) => (
 									<CollapsibleItem
 										key={ category.slug }
 										uuid={ category.slug }
+										opened={ opened.includes(
+											category.slug
+										) }
 										trigger={
 											<>
 												{ category.title }

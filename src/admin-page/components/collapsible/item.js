@@ -20,6 +20,7 @@ export default function Item( {
 	className,
 	children,
 	itemClassName,
+	opened = false,
 	uuid,
 	...props
 } ) {
@@ -31,7 +32,9 @@ export default function Item( {
 	const [ hideContent, setHideContent ] = useState( true );
 
 	useEffect( () => {
-		setHideContent( ! containerContext.isItemOpened( instanceUuid ) );
+		setHideContent(
+			! opened && ! containerContext.isItemOpened( instanceUuid )
+		);
 	}, [] );
 
 	return (
@@ -44,7 +47,9 @@ export default function Item( {
 							'collapsible__item',
 							itemClassName
 						),
-						open: containerContext.isItemOpened( instanceUuid ),
+						open:
+							opened ||
+							containerContext.isItemOpened( instanceUuid ),
 						onOpening: () => setHideContent( false ),
 						onClose: () => setHideContent( true ),
 						onTriggerOpening: () =>
