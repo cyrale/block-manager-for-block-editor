@@ -13,7 +13,6 @@ export const CollapsibleContainerContext = createContext( {
 	isItemOpened: noop,
 	onTriggerOpening: noop,
 	onTriggerClosing: noop,
-	registerItem: noop,
 } );
 
 export default function CollapsibleContainer( {
