@@ -57,7 +57,7 @@ class Block_Settings extends Settings_Multiple {
 					'supports'          => array(
 						'description'       => __( 'Block supports', 'bmfbe' ),
 						'type'              => 'object',
-						'properties'        => Supports::get_instance()->schema,
+						'properties'        => Supports::get_schema(),
 						'validate_callback' => null,
 					),
 					'styles'            => array(
@@ -115,7 +115,7 @@ class Block_Settings extends Settings_Multiple {
 							),
 						),
 					),
-					'access'            => Access::get_instance()->schema,
+					'access'            => Access::get_schema(),
 				),
 			),
 		);
@@ -128,7 +128,8 @@ class Block_Settings extends Settings_Multiple {
 	 * @since 1.0.0
 	 */
 	public function get_schema() {
-		$this->schema['items']['properties']['supports']['properties'] = Supports::get_instance()->schema;
+		$this->schema['items']['properties']['supports']['properties'] = Supports::get_schema();
+		$this->schema['items']['properties']['access']                 = Access::get_schema();
 
 		return $this->schema;
 	}

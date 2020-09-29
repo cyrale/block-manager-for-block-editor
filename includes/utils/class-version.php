@@ -15,7 +15,6 @@ namespace BMFBE\Utils;
  * @package BMFBE\Utils
  */
 class Version {
-
 	/**
 	 * Test if versions of WordPress or Gutenberg are valid.
 	 *

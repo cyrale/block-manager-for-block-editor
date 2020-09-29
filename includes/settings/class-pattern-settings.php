@@ -63,7 +63,7 @@ class Pattern_Settings extends Settings_Multiple {
 							'type' => 'string',
 						),
 					),
-					'access'      => Access::get_instance()->schema,
+					'access'      => Access::get_schema(),
 				),
 			),
 		);
@@ -77,6 +77,41 @@ class Pattern_Settings extends Settings_Multiple {
 	 */
 	public function get_categories() {
 		return WP_Block_Pattern_Categories_Registry::get_instance()->get_all_registered();
+	}
+
+	/**
+	 * Retrieves all available options.
+	 *
+	 * @return array Schema for available options.
+	 * @since 1.0.0
+	 */
+	public function get_schema() {
+		$schema = $this->schema;
+
+		$schema['items']['properties']['access'] = Access::get_schema();
+
+		return $schema;
+	}
+
+		/**
+		 * Retrieves all available options used in update.
+		 *
+		 * @return array Schema for available options used in update.
+		 * @since 1.0.0
+		 */
+	public function get_update_schema() {
+		$schema = $this->get_schema();
+
+		// Keep only name and disable properties.
+		$schema['items']['properties'] = array_intersect_key(
+			$schema['items']['properties'],
+			array(
+				'name'   => true,
+				'access' => true,
+			)
+		);
+
+		return $schema;
 	}
 
 	/**
@@ -151,27 +186,6 @@ class Pattern_Settings extends Settings_Multiple {
 	}
 
 	/**
-	 * Retrieves all available options used in update.
-	 *
-	 * @return array Schema for available options used in update.
-	 * @since 1.0.0
-	 */
-	public function get_update_schema() {
-		$schema = $this->get_schema();
-
-		// Keep only name and disable properties.
-		$schema['items']['properties'] = array_intersect_key(
-			$schema['items']['properties'],
-			array(
-				'name'   => true,
-				'access' => true,
-			)
-		);
-
-		return $schema;
-	}
-
-	/**
 	 * List available patterns.
 	 *
 	 * @param array $args {
@@ -231,7 +245,9 @@ class Pattern_Settings extends Settings_Multiple {
 			);
 		}
 
-		return $this->prepare_settings( $db_pattern, $this->schema['items'] );
+		$schema = $this->get_schema();
+
+		return $this->prepare_settings( $db_pattern, $schema['items']['properties'] );
 	}
 
 	/**

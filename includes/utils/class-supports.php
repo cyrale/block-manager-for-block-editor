@@ -8,25 +8,20 @@
 
 namespace BMFBE\Utils;
 
-use Exception;
-
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Supports.
  *
  * @since 1.0.0
  * @package BMFBE\Utils
- *
- * @property-read array $fields Schema that defined supports.
- * @property-read array $schema Schema that defined supports.
  */
-class Supports extends Singleton {
+class Supports {
 	/**
 	 * Common schema for all properties.
 	 *
 	 * @var array
 	 * @since 1.0.0
 	 */
-	protected $common_schema = array();
+	protected static $common_schema = array();
 
 	/**
 	 * List of all supported properties.
@@ -34,49 +29,15 @@ class Supports extends Singleton {
 	 * @var array
 	 * @since 1.0.0
 	 */
-	protected $properties = array();
+	protected static $properties = array();
 
 	/**
-	 * Schema that defined supports.
-	 *
-	 * @var array
-	 * @since 1.0.0
-	 */
-	protected $schema = array();
-
-	/**
-	 * Fields used in admin screen.
-	 *
-	 * @var array
-	 * @since 1.0.0
-	 */
-	protected $fields = array();
-
-	/**
-	 * Flag to identify if properties are initialized for the first time.
-	 *
-	 * @var boolean
-	 * @since 1.0.0
-	 */
-	protected $properties_init = false;
-
-	/**
-	 * Flag to identify if properties are initialized after Gutenberg.
-	 *
-	 * @var boolean
-	 * @since 1.0.0
-	 */
-	protected $gutenberg_init = false;
-
-	/**
-	 * Constructor.
+	 * Initialize.
 	 *
 	 * @since 1.0.0
 	 */
-	public function __construct() {
-		parent::__construct();
-
-		$this->common_schema = array(
+	public static function init() {
+		self::$common_schema = array(
 			'type'       => 'object',
 			'properties' => array(
 				'isActive' => array(
@@ -91,7 +52,7 @@ class Supports extends Singleton {
 			),
 		);
 
-		$this->properties = array(
+		self::$properties = array(
 			'align'              => array(
 				'field'  => array(
 					'help'   => __(
@@ -292,70 +253,62 @@ class Supports extends Singleton {
 				),
 			),
 		);
-
-		$this->init_properties();
 	}
 
 	/**
-	 * Magic getter for our object.
+	 * Get schema and fields.
 	 *
-	 * @param string $field Field to get.
-	 *
-	 * @return mixed     Value of the field.
-	 * @throws Exception Throws an exception if the field is invalid.
+	 * @return array
 	 * @since 1.0.0
 	 */
-	public function __get( $field ) {
-		$this->init_properties();
+	protected static function get_properties() {
+		$schema = array();
+		$fields = array();
 
-		switch ( $field ) {
-			case 'fields':
-			case 'schema':
-				return $this->$field;
-			default:
-				throw new Exception( 'Invalid ' . __CLASS__ . ' property: ' . $field );
-		}
-	}
-
-	/**
-	 * Initialize some properties.
-	 *
-	 * @return void
-	 * @since 1.0.0
-	 */
-	protected function init_properties() {
-		if ( ! function_exists( 'is_plugin_active' ) ) {
-			require_once ABSPATH . 'wp-admin/includes/plugin.php';
-		}
-
-		if ( $this->properties_init && ( ! is_plugin_active( 'gutenberg/gutenberg.php' ) || $this->gutenberg_init ) ) {
-			return;
-		}
-
-		$properties = $this->properties;
-
-		$this->schema = array();
-		$this->fields = array();
-
-		foreach ( $properties as $name => $prop ) {
+		foreach ( self::$properties as $name => $prop ) {
 			// Filter properties with current version of WordPress or Gutenberg
 			// plugin.
-			if ( isset( $prop['version'] ) && ! Version::version_compare( $prop['version'] ) ) {
-				unset( $properties[ $name ] );
-			} else {
-
+			if ( ! isset( $prop['version'] ) || Version::version_compare( $prop['version'] ) ) {
 				// Apply common schema to all properties to define supports
 				// schema and extract fields definition.
-				$this->schema[ $name ] = array_merge_recursive(
-					$this->common_schema,
+				$schema[ $name ] = array_merge_recursive(
+					self::$common_schema,
 					$prop['schema']
 				);
 
-				$this->fields[ $name ] = $prop['field'];
+				$fields[ $name ] = $prop['field'];
 			}
 		}
 
-		$this->properties_init = true;
-		$this->gutenberg_init  = is_plugin_active( 'gutenberg/gutenberg.php' ) && defined( 'GUTENBERG_VERSION' );
+		return array(
+			'schema' => $schema,
+			'fields' => $fields,
+		);
+	}
+
+	/**
+	 * Get supports schema.
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public static function get_schema() {
+		$properties = self::get_properties();
+
+		return $properties['schema'];
+	}
+
+	/**
+	 * Get fields used in admin screen.
+	 *
+	 * @return array
+	 * @since 1.0.0
+	 */
+	public static function get_fields() {
+		$properties = self::get_properties();
+
+		return $properties['fields'];
 	}
 }
+
+Supports::init();

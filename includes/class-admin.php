@@ -256,7 +256,7 @@ class Admin implements WP_Plugin_Class {
 	 * @since 1.0.0
 	 */
 	protected function available_supports() {
-		$schema   = Supports::get_instance()->schema;
+		$schema   = Supports::get_schema();
 		$supports = array_keys( $schema );
 
 		return $supports;
@@ -272,7 +272,7 @@ class Admin implements WP_Plugin_Class {
 	protected function available_supports_fields() {
 		$supports = $this->available_supports();
 
-		$fields = Supports::get_instance()->fields;
+		$fields = Supports::get_fields();
 		$fields = array_intersect_key( $fields, array_flip( $supports ) );
 
 		return $fields;

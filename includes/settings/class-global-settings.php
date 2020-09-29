@@ -57,7 +57,7 @@ class Global_Settings extends Settings {
 			'supports'                    => array(
 				'description'       => __( 'Global block supports', 'bmfbe' ),
 				'type'              => 'object',
-				'properties'        => Supports::get_instance()->schema,
+				'properties'        => Supports::get_schema(),
 				'validate_callback' => array( $this, 'validate_supports' ),
 			),
 			'disable_color_palettes'      => array(
@@ -110,7 +110,7 @@ class Global_Settings extends Settings {
 	 * @since 1.0.0
 	 */
 	public function get_schema() {
-		$this->schema['supports']['properties'] = Supports::get_instance()->schema;
+		$this->schema['supports']['properties'] = Supports::get_schema();
 
 		return $this->schema;
 	}

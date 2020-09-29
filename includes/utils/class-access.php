@@ -8,36 +8,24 @@
 
 namespace BMFBE\Utils;
 
-use Exception;
-
 /**
  * Block Manager for WordPress Block Editor (Gutenberg): Access.
  *
  * @since 1.0.0
  * @package BMFBE\Utils
- *
- * @property-read array $schema Schema that defined access.
  */
-class Access extends Singleton {
+class Access {
 	/**
-	 * Schema.
+	 * Get schema.
 	 *
-	 * @var array
-	 * @since 1.0.0
+	 * @return array
 	 */
-	protected $schema = array(
-		'description' => '',
-		'type'        => 'object',
-		'properties'  => array(),
-	);
-
-	/**
-	 * Constructor.
-	 *
-	 * @since 1.0.0
-	 */
-	public function __construct() {
-		parent::__construct();
+	public static function get_schema() {
+		$schema = array(
+			'description' => '',
+			'type'        => 'object',
+			'properties'  => array(),
+		);
 
 		// Extract roles.
 		if ( ! function_exists( 'get_editable_roles' ) ) {
@@ -96,29 +84,13 @@ class Access extends Singleton {
 
 			// Access by post type.
 			if ( ! empty( $properties ) ) {
-				$this->schema['properties'][ $section->name ] = array(
+				$schema['properties'][ $section->name ] = array(
 					'type'       => 'object',
 					'properties' => $properties,
 				);
 			}
 		}
-	}
 
-	/**
-	 * Magic getter for our object.
-	 *
-	 * @param string $field Field to get.
-	 *
-	 * @return mixed     Value of the field.
-	 * @throws Exception Throws an exception if the field is invalid.
-	 * @since 1.0.0
-	 */
-	public function __get( $field ) {
-		switch ( $field ) {
-			case 'schema':
-				return $this->$field;
-			default:
-				throw new Exception( 'Invalid ' . __CLASS__ . ' property: ' . $field );
-		}
+		return $schema;
 	}
 }
