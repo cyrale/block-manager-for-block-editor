@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { mapValues, uniq } from 'lodash';
-
-/**
  * WordPress dependencies
  */
 import { useDispatch, useSelect } from '@wordpress/data';
@@ -13,13 +8,11 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { COLLECTION_STORE as BLOCKS_STORE } from '../../../stores/blocks/constants';
-import { ITEM_STORE as SETTINGS_STORE } from '../../../stores/settings/constants';
-import Access from '../access';
 import {
-	CollapsibleContainer,
-	CollapsibleFake,
-	CollapsibleItem,
-} from '../collapsible';
+	default as Access,
+	AccessCollapsible as CollapsibleAccess,
+} from '../access';
+import { CollapsibleContainer, CollapsibleItem } from '../collapsible';
 import Description from '../description';
 import ExternalLink from '../external-link';
 import Icon from './icon';
@@ -70,17 +63,32 @@ const panels = [
 	{
 		name: 'access',
 		label: __( 'Enable this block', 'bmfbe' ),
-		renderTrigger: ( { label, link, globalActivation, onChange } ) => (
+		renderTrigger: ( { label, globalActivation, onChange } ) => (
 			<>
 				<IndeterminateToggleControl
 					onChange={ onChange }
 					{ ...globalActivation }
-				/>{ ' ' }
+				/>
 				{ label }
-				{ link && <ExternalLink link={ link } /> }
 			</>
 		),
 		renderContent: ( props ) => <Access { ...props } />,
+		renderContainer: ( props ) => {
+			const { block, content, label, name, onChange } = props;
+
+			return (
+				<CollapsibleAccess
+					key={ `${ block.name }/${ name }` }
+					uuid={ name }
+					className={ `collapsible__wrapper--${ name }` }
+					label={ label }
+					itemAccess={ block.access }
+					onChange={ onChange }
+				>
+					{ content }
+				</CollapsibleAccess>
+			);
+		},
 	},
 ];
 
@@ -96,10 +104,9 @@ panels.forEach( ( { name } ) => {
 } );
 
 export default function Block( { name } ) {
-	const { block, settings, status } = useSelect(
+	const { block, status } = useSelect(
 		( select ) => ( {
 			block: select( BLOCKS_STORE ).getItem( name ),
-			settings: select( SETTINGS_STORE ).getItem(),
 			status: select( BLOCKS_STORE ).getStatus( name ),
 		} ),
 		[]
@@ -107,58 +114,45 @@ export default function Block( { name } ) {
 
 	const { updateItem } = useDispatch( BLOCKS_STORE );
 
-	// Get uniquely values for access panel.
-	const uniqFlatValues = uniq(
-		Object.values(
-			mapValues( block.access, ( postTypeValues ) =>
-				Object.values( postTypeValues )
-			)
-		).reduce( ( acc, values ) => [ ...acc, ...values ], [] )
-	);
-
-	// Display access panel or fake it?
-	const displayGlobalActivation =
-		! settings.limit_access_by_section &&
-		! settings.limit_access_by_user_group;
-	// Split value to be used by checkbox.
-	const globalActivation = {
-		checked: 1 === uniqFlatValues.length && uniqFlatValues[ 0 ],
-		indeterminate: 1 < uniqFlatValues.length,
-	};
-
 	/**
 	 * Handle changes on block settings.
 	 *
 	 * @param {Object} value New block settings.
 	 * @since 1.0.0
 	 */
-	async function handleBlockChange( value ) {
+	function handleBlockChange( value ) {
 		updateItem( name, value );
-	}
-
-	/**
-	 * Handle changes with global checkbox for access panel.
-	 *
-	 * @param {boolean} value New access value for all properties.
-	 * @since 1.0.0
-	 */
-	function handleOnGlobalAccessChange( value ) {
-		const newAccess = mapValues( block.access, ( postTypeValues ) =>
-			mapValues( postTypeValues, () => value )
-		);
-
-		handleBlockChange( {
-			access: newAccess,
-		} );
 	}
 
 	function renderPanel( {
 		label,
 		link,
 		name: panelName,
+		renderContainer,
 		renderContent,
 		renderTrigger,
 	} ) {
+		const onChange = ( value ) =>
+			handleBlockChange( {
+				[ panelName ]: value,
+			} );
+
+		const content = renderContent( {
+			disabled: 'supports' === panelName && ! block.supports_override,
+			value: block[ panelName ],
+			onChange,
+		} );
+
+		if ( renderContainer ) {
+			return renderContainer( {
+				block,
+				content,
+				label,
+				name: panelName,
+				onChange,
+			} );
+		}
+
 		return (
 			<CollapsibleItem
 				key={ `${ name }/${ panelName }` }
@@ -167,43 +161,10 @@ export default function Block( { name } ) {
 				trigger={ renderTrigger( {
 					label,
 					link,
-					globalActivation,
-					onChange: ( { checked } ) =>
-						handleOnGlobalAccessChange( checked ),
 				} ) }
 			>
-				{ renderContent( {
-					disabled:
-						'supports' === panelName && ! block.supports_override,
-					value: block[ panelName ],
-					onChange: ( checked ) =>
-						handleBlockChange( {
-							[ panelName ]: checked,
-						} ),
-				} ) }
+				{ content }
 			</CollapsibleItem>
-		);
-	}
-
-	function renderFakePanel( {
-		label,
-		link,
-		name: panelName,
-		renderTrigger,
-	} ) {
-		return (
-			<CollapsibleFake
-				key={ `${ name }/${ panelName }` }
-				uuid={ panelName }
-				className={ `collapsible__wrapper--${ panelName }` }
-				trigger={ renderTrigger( {
-					label,
-					link,
-					globalActivation,
-					onChange: ( { checked } ) =>
-						handleOnGlobalAccessChange( checked ),
-				} ) }
-			/>
 		);
 	}
 
@@ -240,11 +201,7 @@ export default function Block( { name } ) {
 							( 'supports' !== panelName ||
 								block.supports_override )
 					)
-					.map( ( panel ) =>
-						'access' === panel.name && displayGlobalActivation
-							? renderFakePanel( panel )
-							: renderPanel( panel )
-					) }
+					.map( ( panel ) => renderPanel( panel ) ) }
 			</CollapsibleContainer>
 		</div>
 	);
