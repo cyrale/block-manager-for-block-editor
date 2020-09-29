@@ -8,8 +8,12 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies.
  */
 import { COLLECTION_STORE as PATTERNS_STORE } from '../../../stores/patterns/constants';
+import {
+	default as Access,
+	AccessCollapsible as CollapsibleAccess,
+} from '../access';
+import { CollapsibleContainer } from '../collapsible';
 import Description from '../description';
-import IndeterminateToggleControl from '../indeterminate-toggle-control';
 import StatusIcon from '../status-icon';
 
 export default function Pattern( { name } ) {
@@ -23,14 +27,8 @@ export default function Pattern( { name } ) {
 
 	const { updateItem } = useDispatch( PATTERNS_STORE );
 
-	/**
-	 * Handle changes on pattern disabled.
-	 *
-	 * @param {boolean} enabled True if pattern is disabled.
-	 * @since 1.0.0
-	 */
-	async function handleDisabledChange( enabled ) {
-		updateItem( name, { disabled: ! enabled } );
+	function handleOnChange( access ) {
+		updateItem( pattern.name, { access } );
 	}
 
 	return (
@@ -44,12 +42,19 @@ export default function Pattern( { name } ) {
 					description={ pattern.description }
 				/>
 			</div>
-			<IndeterminateToggleControl
-				label={ __( 'Enable this pattern', 'bmfbe' ) }
-				className="bmfbe-pattern__disable"
-				checked={ ! pattern.disabled }
-				onChange={ ( { checked } ) => handleDisabledChange( checked ) }
-			/>
+			<CollapsibleContainer>
+				<CollapsibleAccess
+					className={ `collapsible__wrapper--access` }
+					label={ __( 'Enable this pattern', 'bmfbe' ) }
+					itemAccess={ pattern.access }
+					onChange={ handleOnChange }
+				>
+					<Access
+						value={ pattern.access }
+						onChange={ handleOnChange }
+					/>
+				</CollapsibleAccess>
+			</CollapsibleContainer>
 		</div>
 	);
 }

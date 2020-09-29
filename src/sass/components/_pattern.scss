@@ -11,4 +11,19 @@
 	&__disable {
 		padding: 0 1rem;
 	}
+
+	.collapsible__wrapper {
+		border-right-width: 0;
+		border-left-width: 0;
+
+		&:last-child {
+			border-bottom-width: 0;
+		}
+
+		&--access {
+			.collapsible__item__contentInner {
+				padding: 0;
+			}
+		}
+	}
 }
