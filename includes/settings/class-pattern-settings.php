@@ -103,7 +103,7 @@ class Pattern_Settings extends Settings_Multiple {
 			);
 
 			if ( isset( $summarized_value[ $pattern['name'] ] ) ) {
-				$p = array_merge_recursive( $p, $summarized_value[ $pattern['name'] ] );
+				$p = array_merge( $p, $summarized_value[ $pattern['name'] ] );
 			}
 
 			$value[] = $p;
@@ -123,7 +123,7 @@ class Pattern_Settings extends Settings_Multiple {
 	/**
 	 * Get one option from database.
 	 *
-	 * @param string $name    Name of the settings.
+	 * @param string $name Name of the settings.
 	 *
 	 * @return array|null Option value, Null if not exists.
 	 * @since 1.0.0
@@ -140,7 +140,7 @@ class Pattern_Settings extends Settings_Multiple {
 
 				$db_value = get_option( $this->option_prefix() . $name, null );
 				if ( null !== $db_value ) {
-					return array_merge_recursive( $p, $db_value );
+					return array_merge( $p, $db_value );
 				}
 
 				return $p;
@@ -163,8 +163,8 @@ class Pattern_Settings extends Settings_Multiple {
 		$schema['items']['properties'] = array_intersect_key(
 			$schema['items']['properties'],
 			array(
-				'name'     => true,
-				'disabled' => true,
+				'name'   => true,
+				'access' => true,
 			)
 		);
 

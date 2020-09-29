@@ -146,17 +146,9 @@ class Pattern_Settings_Controller extends Rest_Controller {
 	 */
 	protected function prepare_item_for_database( $request ) {
 		$params = $request->get_params();
-		$schema = $this->get_item_schema();
+		$schema = Pattern_Settings::get_instance()->get_update_schema();
 
-		$properties = array_intersect_key(
-			$schema['properties'],
-			array(
-				'name'     => true,
-				'disabled' => true,
-			)
-		);
-
-		return Pattern_Settings::prepare_settings_walker( $params, $properties );
+		return Pattern_Settings::prepare_settings_walker( $params, $schema['items']['properties'] );
 	}
 
 	// phpcs:disable VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable -- parent compatibility
