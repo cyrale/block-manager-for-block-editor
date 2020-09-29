@@ -31,8 +31,9 @@ export default function Panel() {
 			) }
 			status={ status }
 			labels={ {
-				searchForm: __( 'Search for a block', 'bmfbe' ),
+				loading: __( 'Loading blocks…', 'bmfbe' ),
 				notFound: __( 'Block not found.', 'bmfbe' ),
+				searchForm: __( 'Search for a block', 'bmfbe' ),
 			} }
 		>
 			{ blocks.map( ( block ) => (

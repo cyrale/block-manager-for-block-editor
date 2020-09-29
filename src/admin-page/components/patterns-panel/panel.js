@@ -31,8 +31,9 @@ export default function Panel() {
 			) }
 			status={ status }
 			labels={ {
-				searchForm: __( 'Search for a pattern', 'bmfbe' ),
+				loading: __( 'Loading patterns…', 'bmfbe' ),
 				notFound: __( 'Pattern not found.', 'bmfbe' ),
+				searchForm: __( 'Search for a pattern', 'bmfbe' ),
 			} }
 		>
 			{ patterns.map( ( pattern ) => (

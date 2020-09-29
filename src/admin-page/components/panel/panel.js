@@ -13,7 +13,8 @@ import { useEffect, useMemo, useState } from '@wordpress/element';
  * Internal dependencies
  */
 import useSearchForm from '../../../hooks/use-search-form';
-import { STATUS_LOADING } from '../../../stores/blocks/constants';
+import { STATUS_LOADING } from '../../../stores/common/constants';
+import Loader from '../loader';
 import NotFound from '../not-found';
 import SearchForm from '../search-form';
 import { CollapsibleContainer, CollapsibleItem } from '../collapsible';
@@ -91,6 +92,7 @@ export default function Panel( {
 
 	return (
 		<div className={ classnames( 'bmfbe-settings-panel', className ) }>
+			{ STATUS_LOADING === status && <Loader label={ labels.loading } /> }
 			{ STATUS_LOADING !== status && 0 !== categories.length && (
 				<>
 					<SearchForm
