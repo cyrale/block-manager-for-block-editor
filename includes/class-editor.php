@@ -50,6 +50,7 @@ class Editor implements WP_Plugin_Class {
 		add_action( 'enqueue_block_editor_assets', array( $this, 'enqueue_block_editor_assets' ), 999 );
 		add_action( 'init', array( $this, 'early_editor_settings' ), 1 );
 		add_action( 'init', array( $this, 'editor_settings' ), 999 );
+		add_action( 'posts_selection', array( $this, 'late_editor_settings' ), 999 );
 	}
 
 	/**
@@ -201,14 +202,38 @@ class Editor implements WP_Plugin_Class {
 		if ( isset( $settings['disable_custom_font_sizes'] ) && true === $settings['disable_custom_font_sizes'] ) {
 			add_theme_support( 'disable-custom-font-sizes' );
 		}
+	}
 
-		if ( ! isset( $settings['disable_block_patterns'] ) || true !== $settings['disable_block_patterns'] ) {
-			$patterns = Pattern_Settings::get_instance()->get_settings();
+	/**
+	 * Customize editor settings later.
+	 *
+	 * @since 1.0.0
+	 */
+	public function late_editor_settings() {
+		if ( ! self::active_editor_settings() ) {
+			return;
+		}
 
-			foreach ( $patterns as $pattern ) {
-				if ( true === $pattern['disabled'] ) {
-					unregister_block_pattern( $pattern['name'] );
-				}
+		$settings = Global_Settings::get_instance()->get_settings();
+		$patterns = Pattern_Settings::get_instance()->get_settings();
+
+		$current_screen  = get_current_screen();
+		$current_section = get_post_type();
+		if ( 'appearance_page_gutenberg-widgets' === $current_screen->id ) {
+			$current_section = '#widgets';
+		}
+
+		$current_user = wp_get_current_user();
+
+		foreach ( $patterns as $pattern ) {
+			$user_access = true;
+			foreach ( $current_user->roles as $role ) {
+				$user_access = $user_access && $pattern['access'][ $current_section ][ $role ];
+			}
+
+			if ( ( isset( $settings['disable_block_patterns'] ) && true === $settings['disable_block_patterns'] )
+				|| ! $user_access ) {
+				unregister_block_pattern( $pattern['name'] );
 			}
 		}
 	}
