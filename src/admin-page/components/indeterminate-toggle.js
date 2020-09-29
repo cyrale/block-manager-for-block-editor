@@ -7,8 +7,8 @@ import { noop } from 'lodash';
 /**
  * WordPress dependencies
  */
-import { useEffect, useRef } from '@wordpress/element';
 import { Path, SVG } from '@wordpress/primitives';
+import { useEffect, useRef } from '@wordpress/element';
 
 export default function IndeterminateToggle( {
 	className,
@@ -20,8 +20,8 @@ export default function IndeterminateToggle( {
 	...props
 } ) {
 	const wrapperClasses = classnames( 'indeterminate-toggle', className, {
-		'is-disabled': disabled,
 		'is-checked': checked,
+		'is-disabled': disabled,
 		'is-indeterminate': indeterminate,
 	} );
 

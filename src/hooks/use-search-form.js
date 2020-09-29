@@ -111,9 +111,9 @@ export default function useSearchForm() {
 	] );
 
 	return {
-		filteredItems,
-		setItems,
 		filterValue,
+		filteredItems,
 		setFilterValue,
+		setItems,
 	};
 }

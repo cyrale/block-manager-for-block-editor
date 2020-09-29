@@ -7,67 +7,67 @@ export { fetchAllCategoriesFromAPI, fetchAllFromAPI } from '../actions';
 
 export function changeStatus( name, status ) {
 	return {
-		type: 'CHANGE_STATUS',
 		name,
 		status,
+		type: 'CHANGE_STATUS',
 	};
 }
 
 export function initCategories( categories ) {
 	return {
-		type: 'INIT_CATEGORIES',
 		categories,
+		type: 'INIT_CATEGORIES',
 	};
 }
 
 export function initCollection( items ) {
 	return {
-		type: 'INIT_COLLECTION',
 		items,
+		type: 'INIT_COLLECTION',
 	};
 }
 
 export function updateItem( name, value ) {
 	return {
-		type: 'UPDATE_ITEM',
 		name,
+		type: 'UPDATE_ITEM',
 		value,
 	};
 }
 
 export function* saveItem( item ) {
 	yield {
-		type: 'CHANGE_STATUS',
 		name: 'items',
 		status: STATUS_SAVING,
+		type: 'CHANGE_STATUS',
 	};
 
 	yield {
-		type: 'SAVE_ITEM_START',
 		item,
+		type: 'SAVE_ITEM_START',
 	};
 
 	const savedItem = yield {
+		item,
 		type: 'SAVE_ITEM',
-		item,
 	};
 
 	yield {
-		type: 'UPDATE_ITEM',
 		name: savedItem.name,
-		value: savedItem,
 		resetInitialValue: true,
+		type: 'UPDATE_ITEM',
+		value: savedItem,
 	};
 
 	yield {
-		type: 'SAVE_ITEM_FINISH',
 		item,
+		type: 'SAVE_ITEM_FINISH',
 	};
 
 	yield {
-		type: 'CHANGE_STATUS',
 		name: 'items',
 		status: STATUS_PENDING,
+		type: 'CHANGE_STATUS',
 	};
 
 	return savedItem;

@@ -7,10 +7,13 @@ import { merge, uniq } from 'lodash';
  * WordPress dependencies
  */
 import * as blocks from '@wordpress/blocks';
+import * as hooks from '@wordpress/hooks';
 import { dispatch, select } from '@wordpress/data';
 import domReady from '@wordpress/dom-ready';
-import * as hooks from '@wordpress/hooks';
 
+/**
+ * Internal dependencies
+ */
 import './sass/editor.scss';
 
 /**

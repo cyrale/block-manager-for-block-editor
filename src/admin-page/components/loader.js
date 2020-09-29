@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { blockDefault, Icon } from '@wordpress/icons';
+import { Icon, blockDefault } from '@wordpress/icons';
 
 export default function Loader( { label } ) {
 	return (

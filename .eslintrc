@@ -8,5 +8,14 @@
 		"bmfbeAdminGlobal": "readonly",
 		"bmfbeEditorGlobal": "readonly",
 		"wp": "readonly"
+	},
+	"rules": {
+		"sort-imports": [
+			"warn",
+			{
+				"allowSeparatedGroups": true
+			}
+		],
+		"sort-keys": "warn"
 	}
 }

@@ -7,13 +7,13 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies.
  */
-import { COLLECTION_STORE as PATTERNS_STORE } from '../../../stores/patterns/constants';
 import {
 	default as Access,
 	AccessCollapsible as CollapsibleAccess,
 } from '../access';
 import { CollapsibleContainer } from '../collapsible';
 import Description from '../description';
+import { COLLECTION_STORE as PATTERNS_STORE } from '../../../stores/patterns/constants';
 import StatusIcon from '../status-icon';
 
 export default function Pattern( { name } ) {

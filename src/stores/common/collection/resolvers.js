@@ -1,8 +1,8 @@
 /**
  * Internal dependencies
  */
-import { STATUS_LOADING } from '../constants';
 import * as actions from './actions';
+import { STATUS_LOADING } from '../constants';
 
 export function* getCategories() {
 	yield actions.changeStatus( 'categories', STATUS_LOADING );

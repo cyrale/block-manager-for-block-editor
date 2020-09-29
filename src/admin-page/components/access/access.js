@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
 import { difference, mapValues, merge, noop, uniq } from 'lodash';
+import classnames from 'classnames';
 
 /**
  * WordPress dependencies
@@ -12,10 +12,10 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { ITEM_STORE as SETTINGS_STORE } from '../../../stores/settings/constants';
-import Body from './body';
 import Head, { displayHead } from './head';
+import Body from './body';
 import Item from './item';
+import { ITEM_STORE as SETTINGS_STORE } from '../../../stores/settings/constants';
 import Table from './table';
 import Title from './title';
 

@@ -7,8 +7,8 @@ import { usePreviousDistinct } from 'react-use';
 /**
  * WordPress dependencies
  */
-import { check, cloud, Icon } from '@wordpress/icons';
 import { Circle, SVG } from '@wordpress/primitives';
+import { Icon, check, cloud } from '@wordpress/icons';
 
 /**
  * Internal dependencies

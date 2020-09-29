@@ -6,22 +6,22 @@ import { chunk } from 'lodash';
 /**
  * WordPress dependencies
  */
-import { Button } from '@wordpress/components';
 import { useDispatch, useSelect } from '@wordpress/data';
-import { useState } from '@wordpress/element';
+import { Button } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
+import { useState } from '@wordpress/element';
 
 /**
  * Internal dependencies
  */
-import { COLLECTION_STORE as BLOCKS_STORE } from '../../stores/blocks/constants';
-import { COLLECTION_STORE as PATTERNS_STORE } from '../../stores/patterns/constants';
-import { ITEM_STORE as SETTINGS_STORE } from '../../stores/settings/constants';
 import {
 	STATUS_LOADING,
 	STATUS_PENDING,
 	STATUS_SAVING,
 } from '../../stores/common/constants';
+import { COLLECTION_STORE as BLOCKS_STORE } from '../../stores/blocks/constants';
+import { COLLECTION_STORE as PATTERNS_STORE } from '../../stores/patterns/constants';
+import { ITEM_STORE as SETTINGS_STORE } from '../../stores/settings/constants';
 import StatusIcon from './status-icon';
 
 export default function SaveContents() {
@@ -60,13 +60,13 @@ export default function SaveContents() {
 		}
 
 		return {
-			modifiedBlocks: blocksStore.getModified(),
-			modifiedPatterns: patternsStore.getModified(),
+			getBlock: blocksStore.getItem,
+			getPattern: patternsStore.getItem,
 			isBlocksModified: blocksStore.isModified(),
 			isPatternsModified: patternsStore.isModified(),
 			isSettingsModified: settingsStore.isModified(),
-			getBlock: blocksStore.getItem,
-			getPattern: patternsStore.getItem,
+			modifiedBlocks: blocksStore.getModified(),
+			modifiedPatterns: patternsStore.getModified(),
 			settings: settingsStore.getItem(),
 			status: globalStatus,
 		};

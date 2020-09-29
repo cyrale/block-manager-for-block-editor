@@ -63,15 +63,15 @@ export default function Panel() {
 
 									if ( 'supports' === field.name ) {
 										props = {
-											label: field.label,
-											value:
-												settings[ field.name ] ?? false,
 											disabled: ! settings.supports_override,
+											label: field.label,
 											onChange: ( value ) =>
 												handleOnChange(
 													field.name,
 													value
 												),
+											value:
+												settings[ field.name ] ?? false,
 										};
 
 										return (
@@ -83,9 +83,9 @@ export default function Panel() {
 									}
 
 									props = {
-										label: field.label,
 										checked:
 											settings[ field.name ] ?? false,
+										label: field.label,
 										onChange: ( { checked } ) =>
 											handleOnChange(
 												field.name,

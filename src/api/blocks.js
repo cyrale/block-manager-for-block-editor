@@ -7,8 +7,8 @@ import { omit, pick } from 'lodash';
  * WordPress dependencies
  */
 import * as apiFetch from '@wordpress/api-fetch';
-import { getBlockTypes } from '@wordpress/blocks';
 import { addQueryArgs, isValidPath } from '@wordpress/url';
+import { getBlockTypes } from '@wordpress/blocks';
 
 /**
  * API path for blocks.
@@ -88,8 +88,8 @@ export function getEditorBlocks() {
  */
 export async function allBlockCategories() {
 	return await apiFetch( {
-		path: BLOCK_CATEGORIES_API_PATH,
 		method: 'GET',
+		path: BLOCK_CATEGORIES_API_PATH,
 	} );
 }
 
@@ -103,9 +103,9 @@ export async function allBlockCategories() {
  */
 export async function updateBlockCategories( categories ) {
 	return await apiFetch( {
-		path: BLOCK_CATEGORIES_API_PATH,
-		method: 'PUT',
 		data: categories,
+		method: 'PUT',
+		path: BLOCK_CATEGORIES_API_PATH,
 	} );
 }
 
@@ -117,8 +117,8 @@ export async function updateBlockCategories( categories ) {
  */
 export async function allBlocks() {
 	const apiBlocks = await apiFetch( {
-		path: addQueryArgs( BLOCKS_API_PATH, { per_page: -1 } ),
 		method: 'GET',
+		path: addQueryArgs( BLOCKS_API_PATH, { per_page: -1 } ),
 	} );
 
 	return apiBlocks.map( ( block ) => omit( block, [ '_links' ] ) );
@@ -138,8 +138,8 @@ export async function oneBlock( name ) {
 	}
 
 	const block = await apiFetch( {
-		path: `${ BLOCKS_API_PATH }/${ name }`,
 		method: 'GET',
+		path: `${ BLOCKS_API_PATH }/${ name }`,
 	} );
 
 	return omit( block, [ '_links' ] );
@@ -155,9 +155,9 @@ export async function oneBlock( name ) {
  */
 export async function createBlock( block ) {
 	const res = await apiFetch( {
-		path: BLOCKS_API_PATH,
-		method: 'POST',
 		data: block,
+		method: 'POST',
+		path: BLOCKS_API_PATH,
 	} );
 
 	return omit( res, [ '_links' ] );
@@ -173,9 +173,9 @@ export async function createBlock( block ) {
  */
 export async function updateBlock( block ) {
 	const res = await apiFetch( {
-		path: `${ BLOCKS_API_PATH }/${ block.name }`,
-		method: 'PUT',
 		data: block,
+		method: 'PUT',
+		path: `${ BLOCKS_API_PATH }/${ block.name }`,
 	} );
 
 	return omit( res, [ '_links' ] );
@@ -191,7 +191,7 @@ export async function updateBlock( block ) {
  */
 export async function deleteBlock( name ) {
 	return await apiFetch( {
-		path: `${ BLOCKS_API_PATH }/${ name }`,
 		method: 'DELETE',
+		path: `${ BLOCKS_API_PATH }/${ name }`,
 	} );
 }

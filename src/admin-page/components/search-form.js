@@ -6,11 +6,11 @@ import { noop } from 'lodash';
 /**
  * WordPress dependencies
  */
-import { useInstanceId } from '@wordpress/compose';
 import { Button, VisuallyHidden } from '@wordpress/components';
-import { useRef } from '@wordpress/element';
-import { Icon, search, closeSmall } from '@wordpress/icons';
+import { Icon, closeSmall, search } from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
+import { useInstanceId } from '@wordpress/compose';
+import { useRef } from '@wordpress/element';
 
 export default function SearchForm( {
 	onChange = noop,

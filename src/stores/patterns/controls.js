@@ -1,6 +1,9 @@
+/**
+ * Internal dependencies
+ */
 import {
-	allPatterns,
 	allPatternCategories,
+	allPatterns,
 	updatePattern,
 } from '../../api/patterns';
 

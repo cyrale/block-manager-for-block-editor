@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
 import { noop, uniq } from 'lodash';
+import classnames from 'classnames';
 
 /**
  * WordPress dependencies
@@ -11,8 +11,8 @@ import { createContext, useEffect, useState } from '@wordpress/element';
 
 export const CollapsibleContainerContext = createContext( {
 	isItemOpened: noop,
-	onTriggerOpening: noop,
 	onTriggerClosing: noop,
+	onTriggerOpening: noop,
 } );
 
 export default function CollapsibleContainer( {
@@ -54,8 +54,8 @@ export default function CollapsibleContainer( {
 		<CollapsibleContainerContext.Provider
 			value={ {
 				isItemOpened: ( uuid ) => opened.includes( uuid ),
-				onTriggerOpening: handleOnTriggerOpening,
 				onTriggerClosing: handleOnTriggerClosing,
+				onTriggerOpening: handleOnTriggerOpening,
 			} }
 		>
 			<div

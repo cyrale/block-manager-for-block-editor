@@ -1,9 +1,9 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
 import { difference, intersection, merge, noop } from 'lodash';
 import { Parser as HtmlToReactParser } from 'html-to-react';
+import classnames from 'classnames';
 
 /**
  * WordPress dependencies

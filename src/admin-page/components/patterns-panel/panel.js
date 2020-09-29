@@ -1,14 +1,14 @@
 /**
  * WordPress dependencies
  */
-import { select as wpSelect, useSelect } from '@wordpress/data';
+import { useSelect, select as wpSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
-import { COLLECTION_STORE as PATTERNS_STORE } from '../../../stores/patterns/constants';
 import GenericPanel from '../panel';
+import { COLLECTION_STORE as PATTERNS_STORE } from '../../../stores/patterns/constants';
 import Pattern from './pattern';
 
 export default function Panel() {

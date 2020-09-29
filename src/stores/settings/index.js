@@ -1,5 +1,11 @@
+/**
+ * WordPress dependencies
+ */
 import { registerStore } from '@wordpress/data';
 
+/**
+ * Internal dependencies
+ */
 import * as actions from '../common/item/actions';
 import * as controls from './controls';
 import * as resolvers from '../common/item/resolvers';
@@ -8,9 +14,9 @@ import { ITEM_STORE } from './constants';
 import reducer from './reducer';
 
 registerStore( ITEM_STORE, {
-	reducer,
 	actions,
 	controls,
+	reducer,
 	resolvers,
 	selectors,
 } );

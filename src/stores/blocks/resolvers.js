@@ -6,9 +6,9 @@ import { isEqual, mapValues, merge, pick, pickBy } from 'lodash';
 /**
  * Internal dependencies
  */
-import { getEditorBlocks } from '../../api/blocks';
 import * as actions from './actions';
 import { STATUS_LOADING } from './constants';
+import { getEditorBlocks } from '../../api/blocks';
 
 export * from '../common/collection/resolvers';
 
@@ -129,11 +129,11 @@ export function* getCollection() {
 		} = exportBlockData( name );
 
 		const block = {
-			name,
 			keep: {
 				styles: false,
 				variations: false,
 			},
+			name,
 		};
 
 		[ 'category', 'supports', 'styles', 'variations' ].forEach( ( key ) => {

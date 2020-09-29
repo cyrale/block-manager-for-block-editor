@@ -16,8 +16,8 @@ export const SETTINGS_API_PATH = '/bmfbe/v1/settings';
  */
 export async function allSettings() {
 	return await apiFetch( {
-		path: SETTINGS_API_PATH,
 		method: 'GET',
+		path: SETTINGS_API_PATH,
 	} );
 }
 
@@ -31,8 +31,8 @@ export async function allSettings() {
  */
 export async function updateSettings( settings ) {
 	return await apiFetch( {
-		path: SETTINGS_API_PATH,
-		method: 'PUT',
 		data: settings,
+		method: 'PUT',
+		path: SETTINGS_API_PATH,
 	} );
 }

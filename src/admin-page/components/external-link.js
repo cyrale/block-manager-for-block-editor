@@ -6,7 +6,7 @@ import classnames from 'classnames';
 /**
  * WordPress dependencies
  */
-import { external, Icon } from '@wordpress/icons';
+import { Icon, external } from '@wordpress/icons';
 
 export default function ExternalLink( { className = '', link } ) {
 	return (

@@ -13,8 +13,8 @@ export function reducer( state = DEFAULT_STATE, action ) {
 		case 'INIT_ITEM':
 			return {
 				...state,
-				status: STATUS_PENDING,
 				initialValue: cloneDeep( action.item ),
+				status: STATUS_PENDING,
 				value: action.item,
 			};
 

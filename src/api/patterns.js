@@ -33,8 +33,8 @@ export const PATTERN_CATEGORIES_API_PATH = '/bmfbe/v1/pattern-categories';
  */
 export async function allPatternCategories() {
 	const apiPatternCategories = await apiFetch( {
-		path: addQueryArgs( PATTERN_CATEGORIES_API_PATH ),
 		method: 'GET',
+		path: addQueryArgs( PATTERN_CATEGORIES_API_PATH ),
 	} );
 
 	return apiPatternCategories;
@@ -48,8 +48,8 @@ export async function allPatternCategories() {
  */
 export async function allPatterns() {
 	const apiPatterns = await apiFetch( {
-		path: addQueryArgs( PATTERNS_API_PATH, { per_page: -1 } ),
 		method: 'GET',
+		path: addQueryArgs( PATTERNS_API_PATH, { per_page: -1 } ),
 	} );
 
 	return apiPatterns.map( ( block ) => omit( block, [ '_links' ] ) );
@@ -69,8 +69,8 @@ export async function onePattern( name ) {
 	}
 
 	const block = await apiFetch( {
-		path: `${ PATTERNS_API_PATH }/${ name }`,
 		method: 'GET',
+		path: `${ PATTERNS_API_PATH }/${ name }`,
 	} );
 
 	return omit( block, [ '_links' ] );
@@ -86,9 +86,9 @@ export async function onePattern( name ) {
  */
 export async function updatePattern( pattern ) {
 	const res = await apiFetch( {
-		path: `${ PATTERNS_API_PATH }/${ pattern.name }`,
-		method: 'PUT',
 		data: pattern,
+		method: 'PUT',
+		path: `${ PATTERNS_API_PATH }/${ pattern.name }`,
 	} );
 
 	return omit( res, [ '_links' ] );

@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
 import { mapValues, noop, uniq } from 'lodash';
+import classnames from 'classnames';
 
 /**
  * WordPress dependencies.
@@ -12,9 +12,9 @@ import { useSelect } from '@wordpress/data';
 /**
  * Internal dependencies
  */
-import { ITEM_STORE as SETTINGS_STORE } from '../../../stores/settings/constants';
 import { CollapsibleFake, CollapsibleItem } from '../collapsible';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
+import { ITEM_STORE as SETTINGS_STORE } from '../../../stores/settings/constants';
 
 export default function Collapsible( {
 	children,

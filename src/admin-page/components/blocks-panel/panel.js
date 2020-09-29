@@ -1,15 +1,15 @@
 /**
  * WordPress dependencies
  */
-import { select as wpSelect, useSelect } from '@wordpress/data';
+import { useSelect, select as wpSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import { COLLECTION_STORE as BLOCKS_STORE } from '../../../stores/blocks/constants';
-import GenericPanel from '../panel';
 import Block from './block';
+import GenericPanel from '../panel';
 
 export default function Panel() {
 	const { blocks, categories, status } = useSelect( ( select ) => {

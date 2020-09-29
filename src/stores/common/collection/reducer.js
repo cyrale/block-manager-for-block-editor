@@ -57,14 +57,14 @@ export default function reducer( state = DEFAULT_STATE, action ) {
 				} )
 				.forEach( ( item ) => {
 					items[ item.name ] = {
-						status: STATUS_PENDING,
 						initialValue: cloneDeep( item ),
+						status: STATUS_PENDING,
 						value: item,
 					};
 
 					itemList.push( {
-						name: item.name,
 						categories: item.categories,
+						name: item.name,
 					} );
 				} );
 

@@ -2,15 +2,15 @@ export { fetchAllFromAPI } from '../actions';
 
 export function initItem( item ) {
 	return {
-		type: 'INIT_ITEM',
 		item,
+		type: 'INIT_ITEM',
 	};
 }
 
 export function updateItem( name, value ) {
 	return {
-		type: 'UPDATE_ITEM',
 		name,
+		type: 'UPDATE_ITEM',
 		value,
 	};
 }
@@ -21,13 +21,13 @@ export function* saveItem( item ) {
 	};
 
 	const savedItem = yield {
-		type: 'SAVE_ITEM',
 		item,
+		type: 'SAVE_ITEM',
 	};
 
 	yield {
-		type: 'INIT_ITEM',
 		item: savedItem,
+		type: 'INIT_ITEM',
 	};
 
 	yield {

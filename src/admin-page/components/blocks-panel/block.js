@@ -7,19 +7,19 @@ import { __ } from '@wordpress/i18n';
 /**
  * Internal dependencies
  */
-import { COLLECTION_STORE as BLOCKS_STORE } from '../../../stores/blocks/constants';
 import {
 	default as Access,
 	AccessCollapsible as CollapsibleAccess,
 } from '../access';
 import { CollapsibleContainer, CollapsibleItem } from '../collapsible';
+import { COLLECTION_STORE as BLOCKS_STORE } from '../../../stores/blocks/constants';
 import Description from '../description';
 import ExternalLink from '../external-link';
 import Icon from './icon';
 import IndeterminateToggleControl from '../indeterminate-toggle-control';
+import StatusIcon from '../status-icon';
 import Styles from './styles';
 import Supports from '../supports';
-import StatusIcon from '../status-icon';
 import Variations from './variations';
 
 const defaultRenderTrigger = ( { label, link } ) => (
@@ -37,42 +37,32 @@ const defaultRenderTrigger = ( { label, link } ) => (
  */
 const panels = [
 	{
-		name: 'supports',
 		label: __( 'Supports', 'bmfbe' ),
 		link:
 			'https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#supports-optional',
-		renderTrigger: defaultRenderTrigger,
+		name: 'supports',
 		renderContent: ( props ) => <Supports { ...props } />,
+		renderTrigger: defaultRenderTrigger,
 	},
 	{
-		name: 'styles',
 		label: __( 'Styles', 'bmfbe' ),
 		link:
 			'https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#styles-optional',
-		renderTrigger: defaultRenderTrigger,
+		name: 'styles',
 		renderContent: ( props ) => <Styles { ...props } />,
+		renderTrigger: defaultRenderTrigger,
 	},
 	{
-		name: 'variations',
 		label: __( 'Variations', 'bmfbe' ),
 		link:
 			'https://developer.wordpress.org/block-editor/developers/block-api/block-registration/#variations-optional',
-		renderTrigger: defaultRenderTrigger,
+		name: 'variations',
 		renderContent: ( props ) => <Variations { ...props } />,
+		renderTrigger: defaultRenderTrigger,
 	},
 	{
-		name: 'access',
 		label: __( 'Enable this block', 'bmfbe' ),
-		renderTrigger: ( { label, globalActivation, onChange } ) => (
-			<>
-				<IndeterminateToggleControl
-					onChange={ onChange }
-					{ ...globalActivation }
-				/>
-				{ label }
-			</>
-		),
-		renderContent: ( props ) => <Access { ...props } />,
+		name: 'access',
 		renderContainer: ( props ) => {
 			const { block, content, label, name, onChange } = props;
 
@@ -89,6 +79,16 @@ const panels = [
 				</CollapsibleAccess>
 			);
 		},
+		renderContent: ( props ) => <Access { ...props } />,
+		renderTrigger: ( { label, globalActivation, onChange } ) => (
+			<>
+				<IndeterminateToggleControl
+					onChange={ onChange }
+					{ ...globalActivation }
+				/>
+				{ label }
+			</>
+		),
 	},
 ];
 
@@ -139,8 +139,8 @@ export default function Block( { name } ) {
 
 		const content = renderContent( {
 			disabled: 'supports' === panelName && ! block.supports_override,
-			value: block[ panelName ],
 			onChange,
+			value: block[ panelName ],
 		} );
 
 		if ( renderContainer ) {

@@ -1,15 +1,15 @@
 /**
  * External dependencies
  */
+import Collapsible from 'react-collapsible';
 import classnames from 'classnames';
 import { omit } from 'lodash';
-import Collapsible from 'react-collapsible';
 
 /**
  * WordPress dependencies
  */
-import { useInstanceId } from '@wordpress/compose';
 import { useContext, useEffect, useState } from '@wordpress/element';
+import { useInstanceId } from '@wordpress/compose';
 
 /**
  * Internal dependencies
@@ -47,16 +47,16 @@ export default function Item( {
 							'collapsible__item',
 							itemClassName
 						),
+						easing: 'ease-in-out',
+						onClose: () => setHideContent( true ),
+						onOpening: () => setHideContent( false ),
+						onTriggerClosing: () =>
+							containerContext.onTriggerClosing( instanceUuid ),
+						onTriggerOpening: () =>
+							containerContext.onTriggerOpening( instanceUuid ),
 						open:
 							opened ||
 							containerContext.isItemOpened( instanceUuid ),
-						onOpening: () => setHideContent( false ),
-						onClose: () => setHideContent( true ),
-						onTriggerOpening: () =>
-							containerContext.onTriggerOpening( instanceUuid ),
-						onTriggerClosing: () =>
-							containerContext.onTriggerClosing( instanceUuid ),
-						easing: 'ease-in-out',
 						transitionTime: 300,
 					},
 				} }

@@ -1,8 +1,8 @@
 /**
  * External dependencies
  */
-import classnames from 'classnames';
 import { find, intersection } from 'lodash';
+import classnames from 'classnames';
 
 /**
  * WordPress dependencies
@@ -12,12 +12,12 @@ import { useEffect, useMemo, useState } from '@wordpress/element';
 /**
  * Internal dependencies
  */
-import useSearchForm from '../../../hooks/use-search-form';
-import { STATUS_LOADING } from '../../../stores/common/constants';
+import { CollapsibleContainer, CollapsibleItem } from '../collapsible';
 import Loader from '../loader';
 import NotFound from '../not-found';
+import { STATUS_LOADING } from '../../../stores/common/constants';
 import SearchForm from '../search-form';
-import { CollapsibleContainer, CollapsibleItem } from '../collapsible';
+import useSearchForm from '../../../hooks/use-search-form';
 
 export default function Panel( {
 	categories,

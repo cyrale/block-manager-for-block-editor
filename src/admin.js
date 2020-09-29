@@ -7,8 +7,8 @@ import { HashRouter } from 'react-router-dom';
  * WordPress dependencies
  */
 import domReady from '@wordpress/dom-ready';
-import { render } from '@wordpress/element';
 import { registerCoreBlocks } from '@wordpress/block-library';
+import { render } from '@wordpress/element';
 
 /**
  * Internal dependencies

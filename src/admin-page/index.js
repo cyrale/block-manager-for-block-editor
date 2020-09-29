@@ -7,13 +7,12 @@ import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 /**
  * WordPress dependencies
  */
-import { useSelect } from '@wordpress/data';
 import { __ } from '@wordpress/i18n';
+import { useSelect } from '@wordpress/data';
 
 /**
  * Internal dependencies
  */
-import { ITEM_STORE as SETTINGS_STORE } from '../stores/settings/constants';
 import {
 	default as BlocksPanel,
 	TabTitle as BlocksTab,
@@ -27,27 +26,28 @@ import {
 	TabTitle as SettingsTab,
 } from './components/settings-panel';
 import ContentLayout from './components/content-layout';
+import { ITEM_STORE as SETTINGS_STORE } from '../stores/settings/constants';
 import SaveContents from './components/save-contents';
 import StickyFooter from './components/sticky-footer';
 
 const panels = [
 	{
-		path: '/settings',
-		label: __( 'Settings', 'bmfbe' ),
-		Tab: SettingsTab,
 		Panel: SettingsPanel,
+		Tab: SettingsTab,
+		label: __( 'Settings', 'bmfbe' ),
+		path: '/settings',
 	},
 	{
-		path: '/blocks',
-		label: __( 'Blocks', 'bmfbe' ),
-		Tab: BlocksTab,
 		Panel: BlocksPanel,
+		Tab: BlocksTab,
+		label: __( 'Blocks', 'bmfbe' ),
+		path: '/blocks',
 	},
 	{
-		path: '/patterns',
-		label: __( 'Patterns', 'bmfbe' ),
-		Tab: PatternsTab,
 		Panel: PatternsPanel,
+		Tab: PatternsTab,
+		label: __( 'Patterns', 'bmfbe' ),
+		path: '/patterns',
 		visible: ( settings ) => false === settings.disable_block_patterns,
 	},
 ];
