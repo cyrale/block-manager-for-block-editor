@@ -51,6 +51,8 @@ class Editor implements WP_Plugin_Class {
 		add_action( 'init', array( $this, 'early_editor_settings' ), 1 );
 		add_action( 'init', array( $this, 'editor_settings' ), 999 );
 		add_action( 'posts_selection', array( $this, 'late_editor_settings' ), 999 );
+
+		add_filter( 'block_editor_settings', array( $this, 'block_editor_settings' ), 999 );
 	}
 
 	/**
@@ -236,6 +238,42 @@ class Editor implements WP_Plugin_Class {
 				unregister_block_pattern( $pattern['name'] );
 			}
 		}
+	}
+
+	/**
+	 * Customize settings passed to the block editor.
+	 *
+	 * @param array $editor_settings Current editor settings.
+	 *
+	 * @return array New editor settings.
+	 * @since 1.0.0
+	 */
+	public function block_editor_settings( $editor_settings ) {
+		if ( ! self::active_editor_settings() && ! isset( $editor_settings['__experimentalFeatures'] ) ) {
+			return $editor_settings;
+		}
+
+		$settings = Global_Settings::get_instance()->get_settings();
+
+		foreach ( $editor_settings['__experimentalFeatures'] as &$s ) {
+			if ( isset( $s['color'] ) && isset( $s['color']['palette'] )
+				&& isset( $settings['disable_color_palettes'] ) && true === $settings['disable_color_palettes'] ) {
+					die( 'color' );
+				$s['color']['palette'] = array();
+			}
+
+			if ( isset( $s['color'] ) && isset( $s['color']['gradients'] )
+				&& isset( $settings['disable_gradient_presets'] ) && true === $settings['disable_gradient_presets'] ) {
+				$s['color']['gradients'] = array();
+			}
+
+			if ( isset( $s['typography'] ) && isset( $s['typography']['fontSizes'] )
+				&& isset( $settings['disable_font_sizes'] ) && true === $settings['disable_font_sizes'] ) {
+				$s['typography']['fontSizes'] = array();
+			}
+		}
+
+		return $editor_settings;
 	}
 
 	/**
