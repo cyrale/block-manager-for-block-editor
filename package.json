@@ -16,8 +16,7 @@
 		"url": "https://github.com/cyrale/block-manager-for-block-editor/issue"
 	},
 	"engines": {
-		"node": ">=12.18",
-		"pnpm": ">=5.5"
+		"node": ">=12.18.0"
 	},
 	"devDependencies": {
 		"@babel/core": "7.11.1",
@@ -62,7 +61,7 @@
 		"check-engines": "wp-scripts check-engines",
 		"check-licenses": "concurrently \"wp-scripts check-licenses --prod --gpl2\" \"wp-scripts check-licenses --dev\"",
 		"clean": "rimraf ./build",
-		"format:css": "pnpm run lint:css -- --fix",
+		"format:css": "npm run lint:css -- --fix",
 		"format:js": "wp-scripts format-js",
 		"format:php": "composer run-script format",
 		"lint:css": "wp-scripts lint-style",
@@ -82,12 +81,12 @@
 	},
 	"lint-staged": {
 		"src/**/*.js": [
-			"pnpm run format:js",
-			"pnpm run lint:js"
+			"npm run format:js",
+			"npm run lint:js"
 		],
 		"src/**/*.scss": [
-			"pnpm run format:css",
-			"pnpm run lint:css"
+			"npm run format:css",
+			"npm run lint:css"
 		],
 		"*.php": [
 			"composer run-script format",
