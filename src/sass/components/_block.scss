@@ -4,6 +4,8 @@
 @include block( "block" );
 
 .bmfbe-block {
+	font-size: 0.8rem;
+
 	&__override-supports {
 		padding: 0 1rem;
 	}
