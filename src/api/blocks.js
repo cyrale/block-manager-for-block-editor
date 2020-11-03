@@ -29,7 +29,7 @@ export const BLOCK_CATEGORIES_API_PATH = '/bmfbe/v1/block-categories';
 /**
  * Get all blocks registered in editor.
  *
- * @return {[]} List of all blocks in editor.
+ * @return {Array} List of all blocks in editor.
  * @since 1.0.0
  */
 export function getEditorBlocks() {
