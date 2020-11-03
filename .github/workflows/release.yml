@@ -23,8 +23,6 @@ jobs:
               with:
                   node-version: 12
                   registry-url: https://registry.npmjs.org/
-            - name: Install pnpm
-              run: npm add -g pnpm
             - name: Setup PHP
               uses: shivammathur/setup-php@v2
               with:
@@ -35,13 +33,13 @@ jobs:
             - name: Install PHP dependencies
               run: composer install --no-ansi --no-dev --no-interaction --no-progress --no-plugins --no-scripts --no-suggest --optimize-autoloader
             - name: Install NodeJS dependencies
-              run: pnpm install
+              run: npm install
               env:
                   CI: true
             - name: Build project
               shell: bash
               run: |
-                  pnpm run build
+                  npm run build
                   rsync -az --exclude-from=.release-exclude . "${RUNNER_TEMP}/${{ github.event.repository.name }}"
                   pushd "${RUNNER_TEMP}"
                   tar -czf "${{ github.workspace }}/${{ github.event.repository.name }}-${{ steps.tag_name.outputs.current_version }}.tar.gz" ${{ github.event.repository.name }}
