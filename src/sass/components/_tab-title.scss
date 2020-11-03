@@ -1,4 +1,4 @@
-@import "~@wordpress/base-styles/colors";
+@import "~@wordpress/base-styles/colors.native";
 
 .bmfbe-tab-title {
 	position: relative;
@@ -14,7 +14,7 @@
 		outline: none;
 
 		&:focus {
-			outline: 1px solid $dark-gray-300;
+			outline: 1px solid $gray-50;
 			box-shadow: none;
 		}
 	}
